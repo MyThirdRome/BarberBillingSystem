@@ -41,16 +41,27 @@ if ($_POST) {
             });
             $workRevenue = array_sum(array_column($periodWork, 'amount'));
             
-            // Calculate pending advances
-            $pendingAdvances = array_filter($advances, function($a) use ($crew_id) {
-                return $a['crew_id'] === $crew_id && $a['status'] === 'pending';
+            // Calculate pending advances for the period
+            $pendingAdvances = array_filter($advances, function($a) use ($crew_id, $period_start, $period_end) {
+                $advanceDate = substr($a['date'], 0, 10);
+                return $a['crew_id'] === $crew_id && 
+                       $a['status'] === 'pending' &&
+                       $advanceDate >= $period_start && 
+                       $advanceDate <= $period_end;
             });
             $totalAdvances = array_sum(array_column($pendingAdvances, 'amount'));
             
-            // Calculate payment
-            $bonusAmount = ($baseSalary + $workRevenue) * ($bonus_percentage / 100);
-            $grossPayment = $baseSalary + $workRevenue + $bonusAmount;
-            $netPayment = $grossPayment - $totalAdvances;
+            // Calculate payment using new logic
+            // Step 1: Calculate remaining base salary (Base - Advances)
+            $remainingSalary = $baseSalary - $totalAdvances;
+            
+            // Step 2: Calculate bonus on revenue above 2000 TND
+            $bonusThreshold = 2000;
+            $eligibleForBonus = max(0, $workRevenue - $bonusThreshold);
+            $bonusAmount = ($eligibleForBonus * $bonus_percentage) / 100;
+            
+            // Step 3: Calculate final payment
+            $netPayment = $remainingSalary + $bonusAmount;
             
             $newPayment = [
                 'id' => generateId(),
@@ -60,8 +71,10 @@ if ($_POST) {
                 'base_salary' => $baseSalary,
                 'work_revenue' => $workRevenue,
                 'bonus_percentage' => $bonus_percentage,
+                'bonus_threshold' => $bonusThreshold,
+                'eligible_bonus' => $eligibleForBonus,
                 'bonus_amount' => $bonusAmount,
-                'gross_payment' => $grossPayment,
+                'remaining_salary' => $remainingSalary,
                 'advances_deducted' => $totalAdvances,
                 'net_payment' => $netPayment,
                 'notes' => $notes,
@@ -72,9 +85,13 @@ if ($_POST) {
             $payments[] = $newPayment;
             saveData('payments', $payments);
             
-            // Mark advances as deducted
+            // Mark advances as deducted (only those in the period)
             foreach ($advances as &$advance) {
-                if ($advance['crew_id'] === $crew_id && $advance['status'] === 'pending') {
+                $advanceDate = substr($advance['date'], 0, 10);
+                if ($advance['crew_id'] === $crew_id && 
+                    $advance['status'] === 'pending' &&
+                    $advanceDate >= $period_start && 
+                    $advanceDate <= $period_end) {
                     $advance['status'] = 'deducted';
                     $advance['deducted_in_payment'] = $newPayment['id'];
                 }
@@ -425,32 +442,78 @@ include 'includes/header.php';
                     <!-- Payment Preview Section -->
                     <div id="payment-preview" class="alert alert-info" style="display: none;">
                         <h6><i class="fas fa-calculator"></i> Aperçu du Paiement</h6>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <strong>Travail du Mois Précédent:</strong>
-                                <div id="prev-month-work">0.000 TND</div>
+                        
+                        <!-- Base Salary Calculation -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-primary text-white">
+                                <h6 class="mb-0">1. Calcul du Salaire de Base</h6>
                             </div>
-                            <div class="col-md-6">
-                                <strong>Avances Prises:</strong>
-                                <div id="total-advances">0.000 TND</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Salaire de Base:</strong>
+                                        <div id="base-salary" class="text-success">0.000 TND</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Avances Prises:</strong>
+                                        <div id="total-advances" class="text-warning">0.000 TND</div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Reste du Salaire:</strong>
+                                        <div id="remaining-salary" class="text-info fw-bold">0.000 TND</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="row mt-2">
-                            <div class="col-md-6">
-                                <strong>Salaire de Base:</strong>
-                                <div id="base-salary">0.000 TND</div>
+
+                        <!-- Revenue and Bonus Calculation -->
+                        <div class="card mb-3">
+                            <div class="card-header bg-success text-white">
+                                <h6 class="mb-0">2. Calcul du Bonus sur Revenus</h6>
                             </div>
-                            <div class="col-md-6">
-                                <strong>Bonus (%):</strong>
-                                <div id="bonus-amount">0.000 TND</div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>Revenus Générés:</strong>
+                                        <div id="prev-month-work" class="text-success">0.000 TND</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Seuil Bonus:</strong>
+                                        <div class="text-muted">2000.000 TND</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Éligible Bonus:</strong>
+                                        <div id="eligible-bonus" class="text-primary">0.000 TND</div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Bonus (%):</strong>
+                                        <div id="bonus-amount" class="text-success fw-bold">0.000 TND</div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <hr>
-                        <div class="row">
-                            <div class="col-12">
-                                <strong class="text-success">Montant Total à Payer:</strong>
-                                <div id="total-payment" class="text-success h5">0.000 TND</div>
-                                <small class="text-muted">Calcul: (Salaire de Base - Avances) + Bonus</small>
+
+                        <!-- Final Payment -->
+                        <div class="card">
+                            <div class="card-header bg-dark text-white">
+                                <h6 class="mb-0">3. Montant Final à Payer</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="calculation-formula">
+                                            <span id="formula-remaining">500.000</span> TND 
+                                            <span class="text-muted">(Salaire - Avances)</span> 
+                                            + <span id="formula-bonus">0.000</span> TND 
+                                            <span class="text-muted">(Bonus)</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <strong class="text-success h4">
+                                            <span id="total-payment">0.000</span> TND
+                                        </strong>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -573,18 +636,29 @@ function updatePaymentPreview() {
     );
     const totalAdvances = periodAdvances.reduce((sum, a) => sum + parseFloat(a.amount), 0);
     
-    // Calculate bonus based on percentage of base salary
-    const bonusAmount = (baseSalary * bonusPercentage) / 100;
+    // Step 1: Calculate remaining base salary (Base - Advances)
+    const remainingSalary = baseSalary - totalAdvances;
     
-    // Calculate final payment: Base Salary - Advances + Bonus
-    const totalPayment = baseSalary - totalAdvances + bonusAmount;
+    // Step 2: Calculate bonus on revenue above 2000 TND
+    const bonusThreshold = 2000;
+    const eligibleForBonus = Math.max(0, workRevenue - bonusThreshold);
+    const bonusAmount = (eligibleForBonus * bonusPercentage) / 100;
     
-    // Update preview display
-    document.getElementById('prev-month-work').textContent = workRevenue.toFixed(3) + ' TND';
-    document.getElementById('total-advances').textContent = totalAdvances.toFixed(3) + ' TND';
-    document.getElementById('base-salary').textContent = baseSalary.toFixed(3) + ' TND';
-    document.getElementById('bonus-amount').textContent = bonusAmount.toFixed(3) + ' TND';
-    document.getElementById('total-payment').textContent = totalPayment.toFixed(3) + ' TND';
+    // Step 3: Calculate final payment
+    const totalPayment = remainingSalary + bonusAmount;
+    
+    // Update all display elements
+    document.getElementById('base-salary').textContent = baseSalary.toFixed(3);
+    document.getElementById('total-advances').textContent = totalAdvances.toFixed(3);
+    document.getElementById('remaining-salary').textContent = remainingSalary.toFixed(3);
+    document.getElementById('prev-month-work').textContent = workRevenue.toFixed(3);
+    document.getElementById('eligible-bonus').textContent = eligibleForBonus.toFixed(3);
+    document.getElementById('bonus-amount').textContent = bonusAmount.toFixed(3);
+    document.getElementById('total-payment').textContent = totalPayment.toFixed(3);
+    
+    // Update formula display
+    document.getElementById('formula-remaining').textContent = remainingSalary.toFixed(3);
+    document.getElementById('formula-bonus').textContent = bonusAmount.toFixed(3);
     
     // Auto-fill the amount field
     document.getElementById('amount').value = totalPayment.toFixed(3);

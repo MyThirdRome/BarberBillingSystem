@@ -64,30 +64,90 @@ if ($_POST) {
             $advances = loadData('advances');
         }
     } elseif ($action === 'add_payment') {
-        $amount = floatval($_POST['amount'] ?? 0);
+        $salary_month = $_POST['salary_month'] ?? '';
         $bonus_percentage = floatval($_POST['bonus_percentage'] ?? 0);
-        $date = $_POST['date'] ?? date('Y-m-d H:i:s');
+        $net_payment = floatval($_POST['amount'] ?? 0);
+        $payment_date = $_POST['payment_date'] ?? date('Y-m-d');
         $notes = trim($_POST['notes'] ?? '');
         
-        if ($amount <= 0) {
+        if ($net_payment <= 0) {
             $error = 'Le montant doit être supérieur à 0.';
+        } elseif (empty($salary_month)) {
+            $error = 'Le mois de salaire est obligatoire.';
         } else {
+            // Calculate period dates
+            $year = substr($salary_month, 0, 4);
+            $month = substr($salary_month, 5, 2);
+            $period_start = $year . '-' . $month . '-01';
+            $last_day = date('t', strtotime($period_start));
+            $period_end = $year . '-' . $month . '-' . $last_day;
+            
+            // Calculate actual values for the period
+            $base_salary = floatval($crewMember['salary_base'] ?? 0);
+            
+            // Get work revenue for period
+            $work_revenue = 0;
+            foreach ($crewWork as $work) {
+                $work_date = substr($work['date'], 0, 10);
+                if ($work_date >= $period_start && $work_date <= $period_end) {
+                    $work_revenue += floatval($work['amount']);
+                }
+            }
+            
+            // Get advances for period
+            $advances_deducted = 0;
+            foreach ($crewAdvances as $advance) {
+                if ($advance['status'] === 'pending') {
+                    $advance_date = substr($advance['date'], 0, 10);
+                    if ($advance_date >= $period_start && $advance_date <= $period_end) {
+                        $advances_deducted += floatval($advance['amount']);
+                    }
+                }
+            }
+            
+            // Calculate bonus
+            $bonus_threshold = 2000;
+            $eligible_bonus = max(0, $work_revenue - $bonus_threshold);
+            $bonus_amount = ($eligible_bonus * $bonus_percentage) / 100;
+            
             $newPayment = [
                 'id' => generateId(),
                 'crew_id' => $crew_id,
-                'amount' => $amount,
+                'period_start' => $period_start,
+                'period_end' => $period_end,
+                'base_salary' => $base_salary,
+                'work_revenue' => $work_revenue,
                 'bonus_percentage' => $bonus_percentage,
-                'date' => $date,
+                'bonus_threshold' => $bonus_threshold,
+                'eligible_bonus' => $eligible_bonus,
+                'bonus_amount' => $bonus_amount,
+                'remaining_salary' => $base_salary,
+                'advances_deducted' => $advances_deducted,
+                'net_payment' => $net_payment,
                 'notes' => $notes,
+                'payment_date' => $payment_date,
                 'created_at' => date('Y-m-d H:i:s')
             ];
             
             $payments[] = $newPayment;
             saveData('payments', $payments);
-            $message = 'Paiement ajouté avec succès.';
+            $message = 'Paiement enregistré avec succès.';
+            
+            // Mark advances as deducted
+            foreach ($advances as &$advance) {
+                if ($advance['crew_id'] === $crew_id && $advance['status'] === 'pending') {
+                    $advance_date = substr($advance['date'], 0, 10);
+                    if ($advance_date >= $period_start && $advance_date <= $period_end) {
+                        $advance['status'] = 'deducted';
+                        $advance['deducted_at'] = date('Y-m-d H:i:s');
+                    }
+                }
+            }
+            saveData('advances', $advances);
             
             // Reload data
             $payments = loadData('payments');
+            $advances = loadData('advances');
         }
     }
 }

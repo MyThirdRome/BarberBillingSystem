@@ -31,6 +31,19 @@ if (!$crewMember) {
     exit;
 }
 
+// Filter data for this crew member (before form processing)
+$crewWork = array_filter($work, function($w) use ($crew_id) {
+    return $w['crew_id'] === $crew_id;
+});
+
+$crewAdvances = array_filter($advances, function($a) use ($crew_id) {
+    return $a['crew_id'] === $crew_id;
+});
+
+$crewPayments = array_filter($payments, function($p) use ($crew_id) {
+    return $p['crew_id'] === $crew_id;
+});
+
 // Handle form submissions
 $message = '';
 $error = '';
@@ -151,19 +164,6 @@ if ($_POST) {
         }
     }
 }
-
-// Filter data for this crew member
-$crewWork = array_filter($work, function($w) use ($crew_id) {
-    return $w['crew_id'] === $crew_id;
-});
-
-$crewAdvances = array_filter($advances, function($a) use ($crew_id) {
-    return $a['crew_id'] === $crew_id;
-});
-
-$crewPayments = array_filter($payments, function($p) use ($crew_id) {
-    return $p['crew_id'] === $crew_id;
-});
 
 // Calculate statistics
 $totalWork = array_sum(array_column($crewWork, 'amount'));

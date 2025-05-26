@@ -439,80 +439,67 @@ include 'includes/header.php';
                         </div>
                     </div>
                     
-                    <!-- Payment Preview Section -->
-                    <div id="payment-preview" class="alert alert-info" style="display: none;">
-                        <h6><i class="fas fa-calculator"></i> Aperçu du Paiement</h6>
-                        
-                        <!-- Base Salary Calculation -->
-                        <div class="card mb-3">
-                            <div class="card-header bg-primary text-white">
-                                <h6 class="mb-0">1. Calcul du Salaire de Base</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <strong>Salaire de Base:</strong>
-                                        <div id="base-salary" class="text-success">0.000 TND</div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Avances Prises:</strong>
-                                        <div id="total-advances" class="text-warning">0.000 TND</div>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <strong>Reste du Salaire:</strong>
-                                        <div id="remaining-salary" class="text-info fw-bold">0.000 TND</div>
-                                    </div>
+                    <!-- Payment Calculation Preview - Embedded in Form -->
+                    <div id="payment-preview" style="display: none;">
+                        <hr>
+                        <div class="bg-light p-3 rounded mb-3">
+                            <h6 class="text-primary mb-3"><i class="fas fa-calculator"></i> Calcul du Paiement</h6>
+                            
+                            <!-- Step 1: Base Salary -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <strong class="text-primary">1. Salaire de Base</strong>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Salaire de Base:</small><br>
+                                    <span id="base-salary" class="fw-bold text-success">0.000 TND</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Avances Prises:</small><br>
+                                    <span id="total-advances" class="fw-bold text-warning">-0.000 TND</span>
+                                </div>
+                                <div class="col-md-4">
+                                    <small class="text-muted">Reste du Salaire:</small><br>
+                                    <span id="remaining-salary" class="fw-bold text-info">0.000 TND</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Revenue and Bonus Calculation -->
-                        <div class="card mb-3">
-                            <div class="card-header bg-success text-white">
-                                <h6 class="mb-0">2. Calcul du Bonus sur Revenus</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <strong>Revenus Générés:</strong>
-                                        <div id="prev-month-work" class="text-success">0.000 TND</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <strong>Seuil Bonus:</strong>
-                                        <div class="text-muted">2000.000 TND</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <strong>Éligible Bonus:</strong>
-                                        <div id="eligible-bonus" class="text-primary">0.000 TND</div>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <strong>Bonus (%):</strong>
-                                        <div id="bonus-amount" class="text-success fw-bold">0.000 TND</div>
-                                    </div>
+                            <!-- Step 2: Bonus Calculation -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <strong class="text-success">2. Calcul du Bonus</strong>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted">Revenus Générés:</small><br>
+                                    <span id="prev-month-work" class="fw-bold">0.000 TND</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted">Seuil Bonus:</small><br>
+                                    <span class="text-muted">2000.000 TND</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted">Éligible Bonus:</small><br>
+                                    <span id="eligible-bonus" class="fw-bold text-primary">0.000 TND</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <small class="text-muted">Bonus:</small><br>
+                                    <span id="bonus-amount" class="fw-bold text-success">+0.000 TND</span>
                                 </div>
                             </div>
-                        </div>
 
-                        <!-- Final Payment -->
-                        <div class="card">
-                            <div class="card-header bg-dark text-white">
-                                <h6 class="mb-0">3. Montant Final à Payer</h6>
-                            </div>
-                            <div class="card-body">
-                                <div class="row align-items-center">
-                                    <div class="col-md-8">
-                                        <div class="calculation-formula">
-                                            <span id="formula-remaining">500.000</span> TND 
-                                            <span class="text-muted">(Salaire - Avances)</span> 
-                                            + <span id="formula-bonus">0.000</span> TND 
-                                            <span class="text-muted">(Bonus)</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 text-end">
-                                        <strong class="text-success h4">
-                                            <span id="total-payment">0.000</span> TND
-                                        </strong>
-                                    </div>
+                            <!-- Step 3: Final Payment -->
+                            <div class="row align-items-center p-2" style="background-color: #fff3cd; border-radius: 5px;">
+                                <div class="col-md-8">
+                                    <strong class="text-dark">Calcul Final:</strong><br>
+                                    <span id="formula-remaining" class="fw-bold">0.000</span> TND 
+                                    <small class="text-muted">(Salaire - Avances)</small> 
+                                    + <span id="formula-bonus" class="fw-bold">0.000</span> TND 
+                                    <small class="text-muted">(Bonus)</small>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <strong class="text-success h5">
+                                        = <span id="total-payment">0.000</span> TND
+                                    </strong>
                                 </div>
                             </div>
                         </div>

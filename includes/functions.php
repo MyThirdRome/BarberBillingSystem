@@ -100,8 +100,8 @@ function generateId() {
 /**
  * Format currency amount
  */
-function formatCurrency($amount, $currency = '€') {
-    return number_format($amount, DECIMAL_PLACES, ',', ' ') . ' ' . $currency;
+function formatCurrency($amount, $currency = 'TND') {
+    return number_format($amount, DECIMAL_PLACES, '.', ' ') . ' ' . $currency;
 }
 
 /**

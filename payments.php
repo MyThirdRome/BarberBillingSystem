@@ -307,7 +307,7 @@ include 'includes/header.php';
                                         <option value="<?= $member['id'] ?>" 
                                                 data-salary="<?= $member['salary_base'] ?>"
                                                 data-name="<?= htmlspecialchars($member['name']) ?>">
-                                            <?= htmlspecialchars($member['name']) ?>
+                                            <?= htmlspecialchars($member['name']) ?> (Salaire: <?= number_format($member['salary_base'], 3) ?> TND)
                                         </option>
                                     <?php endforeach; ?>
                                 </select>
@@ -328,6 +328,7 @@ include 'includes/header.php';
                             <div class="mb-3">
                                 <label for="period_start" class="form-label">Début de Période *</label>
                                 <input type="date" class="form-control" id="period_start" name="period_start" 
+                                       value="<?= date('Y-m-01', strtotime('last month')) ?>"
                                        required onchange="updatePaymentPreview()">
                             </div>
                         </div>
@@ -336,11 +337,45 @@ include 'includes/header.php';
                             <div class="mb-3">
                                 <label for="period_end" class="form-label">Fin de Période *</label>
                                 <input type="date" class="form-control" id="period_end" name="period_end" 
+                                       value="<?= date('Y-m-t', strtotime('last month')) ?>"
                                        required onchange="updatePaymentPreview()">
                             </div>
                         </div>
                     </div>
                     
+                    <!-- Payment Preview Section -->
+                    <div id="payment-preview" class="alert alert-info" style="display: none;">
+                        <h6><i class="fas fa-calculator"></i> Aperçu du Paiement</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <strong>Travail du Mois Précédent:</strong>
+                                <div id="prev-month-work">0.000 TND</div>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Avances Prises:</strong>
+                                <div id="total-advances">0.000 TND</div>
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <strong>Salaire de Base:</strong>
+                                <div id="base-salary">0.000 TND</div>
+                            </div>
+                            <div class="col-md-6">
+                                <strong>Bonus (%):</strong>
+                                <div id="bonus-amount">0.000 TND</div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-12">
+                                <strong class="text-success">Montant Total à Payer:</strong>
+                                <div id="total-payment" class="text-success h5">0.000 TND</div>
+                                <small class="text-muted">Calcul: (Salaire de Base - Avances) + Bonus</small>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
@@ -431,9 +466,10 @@ function updatePaymentPreview() {
     const periodStart = document.getElementById('period_start').value;
     const periodEnd = document.getElementById('period_end').value;
     const bonusPercentage = parseFloat(document.getElementById('bonus_percentage').value) || 0;
+    const previewDiv = document.getElementById('payment-preview');
     
     if (!crewId || !periodStart || !periodEnd) {
-        document.getElementById('payment_preview').style.display = 'none';
+        previewDiv.style.display = 'none';
         return;
     }
     
@@ -449,20 +485,32 @@ function updatePaymentPreview() {
     );
     const workRevenue = periodWork.reduce((sum, w) => sum + parseFloat(w.amount), 0);
     
-    // Calculate pending advances
-    const pendingAdvances = advanceData.filter(a => 
-        a.crew_id === crewId && a.status === 'pending'
+    // Calculate pending advances for the period
+    const periodAdvances = advanceData.filter(a => 
+        a.crew_id === crewId && 
+        a.status === 'pending' &&
+        a.date.substring(0, 10) >= periodStart && 
+        a.date.substring(0, 10) <= periodEnd
     );
-    const totalAdvances = pendingAdvances.reduce((sum, a) => sum + parseFloat(a.amount), 0);
+    const totalAdvances = periodAdvances.reduce((sum, a) => sum + parseFloat(a.amount), 0);
     
-    // Calculate payment
-    const bonusAmount = (baseSalary + workRevenue) * (bonusPercentage / 100);
-    const grossPayment = baseSalary + workRevenue + bonusAmount;
-    const netPayment = grossPayment - totalAdvances;
+    // Calculate bonus based on percentage of base salary
+    const bonusAmount = (baseSalary * bonusPercentage) / 100;
     
-    // Update preview
-    document.getElementById('preview_base_salary').textContent = baseSalary.toFixed(2);
-    document.getElementById('preview_work_revenue').textContent = workRevenue.toFixed(2);
+    // Calculate final payment: Base Salary - Advances + Bonus
+    const totalPayment = baseSalary - totalAdvances + bonusAmount;
+    
+    // Update preview display
+    document.getElementById('prev-month-work').textContent = workRevenue.toFixed(3) + ' TND';
+    document.getElementById('total-advances').textContent = totalAdvances.toFixed(3) + ' TND';
+    document.getElementById('base-salary').textContent = baseSalary.toFixed(3) + ' TND';
+    document.getElementById('bonus-amount').textContent = bonusAmount.toFixed(3) + ' TND';
+    document.getElementById('total-payment').textContent = totalPayment.toFixed(3) + ' TND';
+    
+    // Auto-fill the amount field
+    document.getElementById('amount').value = totalPayment.toFixed(3);
+    
+    previewDiv.style.display = 'block';
     document.getElementById('preview_bonus').textContent = bonusAmount.toFixed(2);
     document.getElementById('preview_gross').textContent = grossPayment.toFixed(2);
     document.getElementById('preview_advances').textContent = totalAdvances.toFixed(2);

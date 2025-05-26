@@ -46,8 +46,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Application constants
 define('DEFAULT_LANGUAGE', 'fr');
-define('DEFAULT_CURRENCY', 'EUR');
-define('DECIMAL_PLACES', 2);
+define('DEFAULT_CURRENCY', 'TND');
+define('DECIMAL_PLACES', 3);
 
 // Navigation menu structure
 $navigation = [
@@ -191,7 +191,7 @@ $systemSettings = [
     'address' => '',
     'phone' => '',
     'email' => '',
-    'currency_symbol' => '€',
+    'currency_symbol' => 'TND',
     'tax_rate' => 20.0,
     'default_bonus_percentage' => 5.0,
     'backup_frequency' => 'daily'

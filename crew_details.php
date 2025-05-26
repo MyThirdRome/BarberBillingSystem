@@ -247,12 +247,12 @@ include 'includes/header.php';
                         <div class="col-sm-6"><?= htmlspecialchars($crewMember['email'] ?? '-') ?></div>
                     </div>
                     <div class="row">
-                        <div class="col-sm-6"><strong>Salaire:</strong></div>
-                        <div class="col-sm-6"><?= number_format($crewMember['salary'], 3) ?> TND</div>
+                        <div class="col-sm-6"><strong>Salaire de Base:</strong></div>
+                        <div class="col-sm-6"><?= number_format($crewMember['salary_base'] ?? 0, 3) ?> TND</div>
                     </div>
                     <div class="row">
                         <div class="col-sm-6"><strong>% Bonus:</strong></div>
-                        <div class="col-sm-6"><?= number_format($crewMember['bonus_percentage'], 1) ?>%</div>
+                        <div class="col-sm-6"><?= number_format($crewMember['bonus_percentage'] ?? 0, 1) ?>%</div>
                     </div>
                 </div>
             </div>
@@ -472,7 +472,7 @@ include 'includes/header.php';
                     <div class="mb-3">
                         <label for="bonus_percentage" class="form-label">Pourcentage Bonus</label>
                         <input type="number" class="form-control" id="bonus_percentage" name="bonus_percentage" 
-                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?>">
+                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?? 0 ?>">
                     </div>
                     
                     <div class="mb-3">

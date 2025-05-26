@@ -11,13 +11,13 @@
         ],
         "created_at": "2024-01-01 12:00:00",
         "created_by": "system",
-        "last_activity": "2025-05-26 20:11:07",
+        "last_activity": "2025-05-26 20:07:13",
         "login_count": 0
     },
     {
         "id": "crew_foulen_001",
         "username": "foulen",
-        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC\/.og\/at2.uheWG\/igi",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
         "role": "crew",
         "crew_id": "68345a1ab492c6.65540680",
         "name": "Foulen Ben Foulen",

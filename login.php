@@ -31,7 +31,12 @@ if ($_POST) {
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['permissions'] = $user['permissions'];
                 
-                header('Location: dashboard.php');
+                // Redirect based on role
+                if ($user['role'] === 'crew') {
+                    header('Location: crew_dashboard.php');
+                } else {
+                    header('Location: dashboard.php');
+                }
                 exit;
             }
         }

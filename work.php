@@ -30,6 +30,8 @@ if ($_POST) {
                 'amount' => $amount,
                 'date' => $date,
                 'notes' => $notes,
+                'added_by' => 'admin',
+                'added_by_name' => $_SESSION['username'] ?? 'Administrateur',
                 'created_at' => date('Y-m-d H:i:s')
             ];
             

@@ -34,7 +34,29 @@ if ($_POST) {
             
             $advances[] = $newAdvance;
             saveData('advances', $advances);
-            $message = 'Avance ajoutée avec succès.';
+            
+            // Automatically add to charges
+            $charges = loadData('charges');
+            $crewMember = array_filter($crew, function($c) use ($crew_id) {
+                return $c['id'] === $crew_id;
+            });
+            $crewMember = reset($crewMember);
+            
+            $newCharge = [
+                'id' => generateId(),
+                'type' => 'Avance - ' . htmlspecialchars($crewMember['name']),
+                'amount' => $amount,
+                'date' => $date,
+                'description' => 'Avance: ' . $reason,
+                'category' => 'Salaires et Avances',
+                'created_at' => date('Y-m-d H:i:s'),
+                'crew_id' => $crew_id,
+                'advance_id' => $newAdvance['id']
+            ];
+            $charges[] = $newCharge;
+            saveData('charges', $charges);
+            
+            $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
         }
     } elseif ($action === 'edit') {
         $id = $_POST['id'] ?? '';
@@ -65,12 +87,19 @@ if ($_POST) {
     } elseif ($action === 'delete') {
         $id = $_POST['id'] ?? '';
         
+        // Remove related charge entry
+        $charges = loadData('charges');
+        $charges = array_filter($charges, function($charge) use ($id) {
+            return !isset($charge['advance_id']) || $charge['advance_id'] !== $id;
+        });
+        saveData('charges', $charges);
+        
         $advances = array_filter($advances, function($advance) use ($id) {
             return $advance['id'] !== $id;
         });
         
         saveData('advances', $advances);
-        $message = 'Avance supprimée avec succès.';
+        $message = 'Avance supprimée avec succès et retirée des charges.';
     }
 }
 

@@ -71,7 +71,24 @@ if ($_POST) {
             
             $advances[] = $newAdvance;
             saveData('advances', $advances);
-            $message = 'Avance ajoutée avec succès.';
+            
+            // Automatically add to charges
+            $charges = loadData('charges');
+            $newCharge = [
+                'id' => generateId(),
+                'type' => 'Avance - ' . htmlspecialchars($crewMember['name']),
+                'amount' => $amount,
+                'date' => $date,
+                'description' => 'Avance: ' . $reason,
+                'category' => 'Salaires et Avances',
+                'created_at' => date('Y-m-d H:i:s'),
+                'crew_id' => $crew_id,
+                'advance_id' => $newAdvance['id']
+            ];
+            $charges[] = $newCharge;
+            saveData('charges', $charges);
+            
+            $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
             
             // Reload data
             $advances = loadData('advances');
@@ -144,7 +161,25 @@ if ($_POST) {
             
             $payments[] = $newPayment;
             saveData('payments', $payments);
-            $message = 'Paiement enregistré avec succès.';
+            
+            // Automatically add salary to charges for the salary period month
+            $charges = loadData('charges');
+            $salaryCharge = [
+                'id' => generateId(),
+                'type' => 'Salaire - ' . htmlspecialchars($crewMember['name']),
+                'amount' => $net_payment,
+                'date' => $period_start, // Use salary period month, not payment date
+                'description' => 'Salaire pour ' . date('F Y', strtotime($salary_month)) . ' (Base: ' . number_format($base_salary, 3) . ' TND, Avances: ' . number_format($advances_deducted, 3) . ' TND, Bonus: ' . number_format($bonus_amount, 3) . ' TND)',
+                'category' => 'Salaires et Avances',
+                'created_at' => date('Y-m-d H:i:s'),
+                'crew_id' => $crew_id,
+                'payment_id' => $newPayment['id'],
+                'salary_month' => $salary_month
+            ];
+            $charges[] = $salaryCharge;
+            saveData('charges', $charges);
+            
+            $message = 'Paiement enregistré avec succès et ajouté aux charges.';
             
             // Mark advances as deducted
             foreach ($advances as &$advance) {

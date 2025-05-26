@@ -111,7 +111,7 @@ $pendingAdvances = array_sum(array_column(array_filter($crewAdvances, function($
     return $a['status'] === 'pending';
 }), 'amount'));
 $totalAdvances = array_sum(array_column($crewAdvances, 'amount'));
-$totalPayments = array_sum(array_column($crewPayments, 'amount'));
+$totalPayments = array_sum(array_column($crewPayments, 'net_payment'));
 
 // This month statistics
 $thisMonth = date('Y-m');
@@ -391,15 +391,17 @@ include 'includes/header.php';
                                 <tbody>
                                     <?php 
                                     usort($crewPayments, function($a, $b) {
-                                        return strtotime($b['date']) - strtotime($a['date']);
+                                        $dateA = $a['payment_date'] ?? $a['created_at'];
+                                        $dateB = $b['payment_date'] ?? $b['created_at'];
+                                        return strtotime($dateB) - strtotime($dateA);
                                     });
                                     
                                     foreach ($crewPayments as $payment): ?>
                                         <tr>
-                                            <td><?= date('d/m/Y H:i', strtotime($payment['date'])) ?></td>
-                                            <td class="fw-bold text-success"><?= number_format($payment['amount'], 3) ?> TND</td>
-                                            <td><?= number_format($payment['bonus_percentage'], 1) ?>%</td>
-                                            <td><?= htmlspecialchars($payment['notes']) ?></td>
+                                            <td><?= date('d/m/Y', strtotime($payment['payment_date'] ?? $payment['created_at'])) ?></td>
+                                            <td class="fw-bold text-success"><?= number_format($payment['net_payment'] ?? 0, 3) ?> TND</td>
+                                            <td><?= number_format($payment['bonus_percentage'] ?? 0, 1) ?>%</td>
+                                            <td><?= htmlspecialchars($payment['notes'] ?? '') ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>

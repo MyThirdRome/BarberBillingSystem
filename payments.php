@@ -438,7 +438,7 @@ include 'includes/header.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer ce paiement de <strong id="delete_payment_amount"></strong> € ?</p>
+                <p>Êtes-vous sûr de vouloir supprimer ce paiement de <strong id="delete_payment_amount"></strong> TND ?</p>
                 <p class="text-warning">Les avances déduites seront remises en statut "en attente".</p>
                 <p class="text-danger">Cette action est irréversible.</p>
             </div>
@@ -511,12 +511,6 @@ function updatePaymentPreview() {
     document.getElementById('amount').value = totalPayment.toFixed(3);
     
     previewDiv.style.display = 'block';
-    document.getElementById('preview_bonus').textContent = bonusAmount.toFixed(2);
-    document.getElementById('preview_gross').textContent = grossPayment.toFixed(2);
-    document.getElementById('preview_advances').textContent = totalAdvances.toFixed(2);
-    document.getElementById('preview_net').textContent = netPayment.toFixed(2);
-    
-    document.getElementById('payment_preview').style.display = 'block';
 }
 
 function viewPaymentDetails(id) {

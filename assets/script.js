@@ -529,11 +529,8 @@ function confirmAction(title, message, callback, type = 'danger') {
 /**
  * Format currency value
  */
-function formatCurrency(amount, currency = '€') {
-    return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
-        currency: 'EUR'
-    }).format(amount);
+function formatCurrency(amount, currency = 'TND') {
+    return amount.toFixed(3) + ' ' + currency;
 }
 
 /**

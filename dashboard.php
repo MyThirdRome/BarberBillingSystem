@@ -62,7 +62,7 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($todayRevenue, 2) ?> €</h4>
+                                    <h4 class="card-title"><?= number_format($todayRevenue, 3) ?> TND</h4>
                                     <p class="card-text">Revenus Aujourd'hui</p>
                                 </div>
                                 <div class="align-self-center">
@@ -94,7 +94,7 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($totalAdvances, 2) ?> €</h4>
+                                    <h4 class="card-title"><?= number_format($totalAdvances, 3) ?> TND</h4>
                                     <p class="card-text">Avances Totales</p>
                                 </div>
                                 <div class="align-self-center">
@@ -140,7 +140,7 @@ include 'includes/header.php';
                                                     <td><?= date('d/m/Y', strtotime($w['date'])) ?></td>
                                                     <td><?= htmlspecialchars($w['type']) ?></td>
                                                     <td><?= $crewMember ? htmlspecialchars($crewMember['name']) : 'N/A' ?></td>
-                                                    <td><?= number_format($w['amount'], 2) ?> €</td>
+                                                    <td><?= number_format($w['amount'], 2) ?> TND</td>
                                                 </tr>
                                             <?php endforeach; ?>
                                         </tbody>

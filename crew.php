@@ -124,7 +124,7 @@ include 'includes/header.php';
                                             <td><?= htmlspecialchars($member['name']) ?></td>
                                             <td><?= htmlspecialchars($member['position']) ?></td>
                                             <td><?= htmlspecialchars($member['phone']) ?></td>
-                                            <td><?= number_format($member['salary_base'], 2) ?> €</td>
+                                            <td><?= number_format($member['salary_base'], 2) ?> TND</td>
                                             <td><?= date('d/m/Y', strtotime($member['created_at'])) ?></td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
@@ -177,7 +177,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="salary_base" class="form-label">Salaire de Base (€)</label>
+                        <label for="salary_base" class="form-label">Salaire de Base (TND)</label>
                         <input type="number" class="form-control" id="salary_base" name="salary_base" 
                                step="0.01" min="0">
                     </div>
@@ -220,7 +220,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="edit_salary_base" class="form-label">Salaire de Base (€)</label>
+                        <label for="edit_salary_base" class="form-label">Salaire de Base (TND)</label>
                         <input type="number" class="form-control" id="edit_salary_base" name="salary_base" 
                                step="0.01" min="0">
                     </div>

@@ -223,7 +223,7 @@ include 'includes/header.php';
                                             </td>
                                             <td><?= htmlspecialchars($charge['description']) ?></td>
                                             <td><?= $crewMember ? htmlspecialchars($crewMember['name']) : '-' ?></td>
-                                            <td><?= number_format($charge['amount'], 2) ?> €</td>
+                                            <td><?= number_format($charge['amount'], 2) ?> TND</td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
                                                         onclick="editCharge('<?= $charge['id'] ?>')">
@@ -245,7 +245,7 @@ include 'includes/header.php';
                                 <h6>Total des charges: <?= count($filteredCharges) ?></h6>
                             </div>
                             <div class="col-md-6 text-end">
-                                <h6>Montant total: <?= number_format(array_sum(array_column($filteredCharges, 'amount')), 2) ?> €</h6>
+                                <h6>Montant total: <?= number_format(array_sum(array_column($filteredCharges, 'amount')), 2) ?> TND</h6>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -288,7 +288,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="amount" class="form-label">Montant (€) *</label>
+                        <label for="amount" class="form-label">Montant (TND) *</label>
                         <input type="number" class="form-control" id="amount" name="amount" 
                                step="0.01" min="0" required>
                     </div>
@@ -347,7 +347,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="edit_amount" class="form-label">Montant (€) *</label>
+                        <label for="edit_amount" class="form-label">Montant (TND) *</label>
                         <input type="number" class="form-control" id="edit_amount" name="amount" 
                                step="0.01" min="0" required>
                     </div>

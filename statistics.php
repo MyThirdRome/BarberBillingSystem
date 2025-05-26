@@ -173,7 +173,7 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($yearlyRevenue, 2) ?> €</h4>
+                                    <h4 class="card-title"><?= number_format($yearlyRevenue, 2) ?> TND</h4>
                                     <p class="card-text">Chiffre d'Affaires</p>
                                 </div>
                                 <div class="align-self-center">
@@ -189,7 +189,7 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($totalCharges, 2) ?> €</h4>
+                                    <h4 class="card-title"><?= number_format($totalCharges, 2) ?> TND</h4>
                                     <p class="card-text">Total Charges</p>
                                 </div>
                                 <div class="align-self-center">
@@ -205,7 +205,7 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($netProfit, 2) ?> €</h4>
+                                    <h4 class="card-title"><?= number_format($netProfit, 2) ?> TND</h4>
                                     <p class="card-text">Bénéfice Net</p>
                                 </div>
                                 <div class="align-self-center">
@@ -257,16 +257,16 @@ include 'includes/header.php';
                                     <?php foreach ($monthlyStats as $monthKey => $stats): ?>
                                         <tr>
                                             <td><?= htmlspecialchars($stats['month']) ?></td>
-                                            <td><?= number_format($stats['revenue'], 2) ?> €</td>
+                                            <td><?= number_format($stats['revenue'], 2) ?> TND</td>
                                             <td><?= $stats['work_count'] ?></td>
                                             <td>
-                                                <?= $stats['work_count'] > 0 ? number_format($stats['revenue'] / $stats['work_count'], 2) : '0.00' ?> €
+                                                <?= $stats['work_count'] > 0 ? number_format($stats['revenue'] / $stats['work_count'], 2) : '0.00' ?> TND
                                             </td>
                                             <?php foreach ($crew as $member): ?>
                                                 <td>
                                                     <?php
                                                     $crewStats = $stats['crew_stats'][$member['id']] ?? ['revenue' => 0, 'work_count' => 0];
-                                                    echo number_format($crewStats['revenue'], 2) . ' € (' . $crewStats['work_count'] . ')';
+                                                    echo number_format($crewStats['revenue'], 2) . ' TND (' . $crewStats['work_count'] . ')';
                                                     ?>
                                                 </td>
                                             <?php endforeach; ?>
@@ -302,9 +302,9 @@ include 'includes/header.php';
                                     <div class="card-body">
                                         <h6 class="card-title"><?= htmlspecialchars($member['name']) ?></h6>
                                         <p class="card-text">
-                                            <strong>Total Revenus:</strong> <?= number_format($totalRevenue, 2) ?> €<br>
+                                            <strong>Total Revenus:</strong> <?= number_format($totalRevenue, 2) ?> TND<br>
                                             <strong>Total Travaux:</strong> <?= $totalWork ?><br>
-                                            <strong>Moyenne/Travail:</strong> <?= number_format($avgPerWork, 2) ?> €
+                                            <strong>Moyenne/Travail:</strong> <?= number_format($avgPerWork, 2) ?> TND
                                         </p>
                                         
                                         <!-- Mini chart showing monthly progression -->
@@ -317,7 +317,7 @@ include 'includes/header.php';
                                                     $height = $maxRevenue > 0 ? ($monthData['revenue'] / $maxRevenue) * 50 : 0;
                                                 ?>
                                                     <div class="bg-primary" style="width: 8px; height: <?= $height ?>px; min-height: 2px;" 
-                                                         title="<?= $monthData['month'] ?>: <?= number_format($monthData['revenue'], 2) ?> €"></div>
+                                                         title="<?= $monthData['month'] ?>: <?= number_format($monthData['revenue'], 2) ?> TND"></div>
                                                 <?php endforeach; ?>
                                             </div>
                                         </div>

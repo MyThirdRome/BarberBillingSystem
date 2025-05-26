@@ -168,6 +168,85 @@ include 'includes/header.php';
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
+
+            <!-- Previous Month Statistics -->
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-line"></i> Statistiques du Mois Précédent (<?= date('F Y', strtotime('last month')) ?>)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Membre d'Équipe</th>
+                                    <th>Salaire de Base</th>
+                                    <th>Travaux Effectués</th>
+                                    <th>Revenus Générés</th>
+                                    <th>Avances Prises</th>
+                                    <th>À Payer (Base - Avances)</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php
+                                $lastMonthStart = date('Y-m-01', strtotime('last month'));
+                                $lastMonthEnd = date('Y-m-t', strtotime('last month'));
+                                
+                                foreach ($crew as $member):
+                                    // Calculate work for last month
+                                    $memberWork = array_filter($work, function($w) use ($member, $lastMonthStart, $lastMonthEnd) {
+                                        return $w['crew_id'] === $member['id'] && 
+                                               substr($w['date'], 0, 10) >= $lastMonthStart && 
+                                               substr($w['date'], 0, 10) <= $lastMonthEnd;
+                                    });
+                                    $workCount = count($memberWork);
+                                    $workRevenue = array_sum(array_column($memberWork, 'amount'));
+                                    
+                                    // Calculate advances for last month
+                                    $memberAdvances = array_filter($advances, function($a) use ($member, $lastMonthStart, $lastMonthEnd) {
+                                        return $a['crew_id'] === $member['id'] && 
+                                               $a['status'] === 'pending' &&
+                                               substr($a['date'], 0, 10) >= $lastMonthStart && 
+                                               substr($a['date'], 0, 10) <= $lastMonthEnd;
+                                    });
+                                    $totalAdvances = array_sum(array_column($memberAdvances, 'amount'));
+                                    
+                                    $toPay = $member['salary_base'] - $totalAdvances;
+                                ?>
+                                <tr>
+                                    <td>
+                                        <strong><?= htmlspecialchars($member['name']) ?></strong><br>
+                                        <small class="text-muted"><?= htmlspecialchars($member['position']) ?></small>
+                                    </td>
+                                    <td class="fw-bold"><?= number_format($member['salary_base'], 3) ?> TND</td>
+                                    <td>
+                                        <span class="badge bg-primary"><?= $workCount ?> travaux</span>
+                                    </td>
+                                    <td class="text-success fw-bold"><?= number_format($workRevenue, 3) ?> TND</td>
+                                    <td class="text-warning">
+                                        <?= $totalAdvances > 0 ? number_format($totalAdvances, 3) . ' TND' : 'Aucune' ?>
+                                    </td>
+                                    <td class="<?= $toPay >= 0 ? 'text-success' : 'text-danger' ?> fw-bold">
+                                        <?= number_format($toPay, 3) ?> TND
+                                    </td>
+                                    <td>
+                                        <?php if ($workCount > 0 || $totalAdvances > 0): ?>
+                                            <button type="button" class="btn btn-sm btn-success" 
+                                                    onclick="createPaymentForMember('<?= $member['id'] ?>', '<?= htmlspecialchars($member['name']) ?>')">
+                                                <i class="fas fa-money-bill"></i> Payer
+                                            </button>
+                                        <?php else: ?>
+                                            <span class="text-muted">Aucune activité</span>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
             
             <!-- Filters -->
             <div class="card mb-4">
@@ -246,14 +325,14 @@ include 'includes/header.php';
                                                 <?= date('d/m/Y', strtotime($payment['period_start'])) ?> - 
                                                 <?= date('d/m/Y', strtotime($payment['period_end'])) ?>
                                             </td>
-                                            <td><?= number_format($payment['base_salary'], 2) ?> €</td>
-                                            <td><?= number_format($payment['work_revenue'], 2) ?> €</td>
+                                            <td><?= number_format($payment['base_salary'], 2) ?> TND</td>
+                                            <td><?= number_format($payment['work_revenue'], 2) ?> TND</td>
                                             <td>
-                                                <?= number_format($payment['bonus_amount'], 2) ?> € 
+                                                <?= number_format($payment['bonus_amount'], 2) ?> TND 
                                                 (<?= $payment['bonus_percentage'] ?>%)
                                             </td>
-                                            <td class="text-danger">-<?= number_format($payment['advances_deducted'], 2) ?> €</td>
-                                            <td class="fw-bold text-success"><?= number_format($payment['net_payment'], 2) ?> €</td>
+                                            <td class="text-danger">-<?= number_format($payment['advances_deducted'], 2) ?> TND</td>
+                                            <td class="fw-bold text-success"><?= number_format($payment['net_payment'], 2) ?> TND</td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-info" 
                                                         onclick="viewPaymentDetails('<?= $payment['id'] ?>')">
@@ -275,7 +354,7 @@ include 'includes/header.php';
                                 <h6>Total des paiements: <?= count($filteredPayments) ?></h6>
                             </div>
                             <div class="col-md-6 text-end">
-                                <h6>Montant total net: <?= number_format(array_sum(array_column($filteredPayments, 'net_payment')), 2) ?> €</h6>
+                                <h6>Montant total net: <?= number_format(array_sum(array_column($filteredPayments, 'net_payment')), 2) ?> TND</h6>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -389,14 +468,14 @@ include 'includes/header.php';
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <p><strong>Salaire de Base:</strong> <span id="preview_base_salary">0.00</span> €</p>
-                                    <p><strong>Revenus Travaux:</strong> <span id="preview_work_revenue">0.00</span> €</p>
-                                    <p><strong>Bonus:</strong> <span id="preview_bonus">0.00</span> €</p>
+                                    <p><strong>Salaire de Base:</strong> <span id="preview_base_salary">0.00</span> TND</p>
+                                    <p><strong>Revenus Travaux:</strong> <span id="preview_work_revenue">0.00</span> TND</p>
+                                    <p><strong>Bonus:</strong> <span id="preview_bonus">0.00</span> TND</p>
                                 </div>
                                 <div class="col-md-6">
-                                    <p><strong>Total Brut:</strong> <span id="preview_gross">0.00</span> €</p>
-                                    <p class="text-danger"><strong>Avances:</strong> -<span id="preview_advances">0.00</span> €</p>
-                                    <p class="text-success"><strong>Net à Payer:</strong> <span id="preview_net">0.00</span> €</p>
+                                    <p><strong>Total Brut:</strong> <span id="preview_gross">0.00</span> TND</p>
+                                    <p class="text-danger"><strong>Avances:</strong> -<span id="preview_advances">0.00</span> TND</p>
+                                    <p class="text-success"><strong>Net à Payer:</strong> <span id="preview_net">0.00</span> TND</p>
                                 </div>
                             </div>
                         </div>
@@ -513,6 +592,21 @@ function updatePaymentPreview() {
     previewDiv.style.display = 'block';
 }
 
+function createPaymentForMember(crewId, crewName) {
+    // Set the crew member
+    document.getElementById('crew_id').value = crewId;
+    
+    // Trigger the preview update
+    updatePaymentPreview();
+    
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('addPaymentModal'));
+    modal.show();
+    
+    // Show notification
+    showNotification(`Formulaire de paiement préparé pour ${crewName}`, 'info');
+}
+
 function viewPaymentDetails(id) {
     const payment = paymentData.find(p => p.id === id);
     const crewMember = crewData.find(c => c.id === payment.crew_id);
@@ -528,12 +622,12 @@ function viewPaymentDetails(id) {
                 </div>
                 <div class="col-md-6">
                     <h6>Détails Financiers</h6>
-                    <p><strong>Salaire de Base:</strong> ${parseFloat(payment.base_salary).toFixed(2)} €</p>
-                    <p><strong>Revenus Travaux:</strong> ${parseFloat(payment.work_revenue).toFixed(2)} €</p>
-                    <p><strong>Bonus (${payment.bonus_percentage}%):</strong> ${parseFloat(payment.bonus_amount).toFixed(2)} €</p>
-                    <p><strong>Total Brut:</strong> ${parseFloat(payment.gross_payment).toFixed(2)} €</p>
-                    <p class="text-danger"><strong>Avances Déduites:</strong> -${parseFloat(payment.advances_deducted).toFixed(2)} €</p>
-                    <p class="text-success"><strong>Net Payé:</strong> ${parseFloat(payment.net_payment).toFixed(2)} €</p>
+                    <p><strong>Salaire de Base:</strong> ${parseFloat(payment.base_salary).toFixed(2)} TND</p>
+                    <p><strong>Revenus Travaux:</strong> ${parseFloat(payment.work_revenue).toFixed(2)} TND</p>
+                    <p><strong>Bonus (${payment.bonus_percentage}%):</strong> ${parseFloat(payment.bonus_amount).toFixed(2)} TND</p>
+                    <p><strong>Total Brut:</strong> ${parseFloat(payment.gross_payment).toFixed(2)} TND</p>
+                    <p class="text-danger"><strong>Avances Déduites:</strong> -${parseFloat(payment.advances_deducted).toFixed(2)} TND</p>
+                    <p class="text-success"><strong>Net Payé:</strong> ${parseFloat(payment.net_payment).toFixed(2)} TND</p>
                 </div>
             </div>
             ${payment.notes ? `<div class="mt-3"><h6>Notes</h6><p>${payment.notes}</p></div>` : ''}

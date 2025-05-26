@@ -155,7 +155,7 @@ include 'includes/header.php';
                             <div class="card-body">
                                 <h6 class="card-title"><?= htmlspecialchars($member['name']) ?></h6>
                                 <h4 class="card-text text-<?= $crewAdvanceTotals[$member['id']] > 0 ? 'warning' : 'success' ?>">
-                                    <?= number_format($crewAdvanceTotals[$member['id']], 2) ?> €
+                                    <?= number_format($crewAdvanceTotals[$member['id']], 2) ?> TND
                                 </h4>
                                 <small class="text-muted">Avances en attente</small>
                             </div>
@@ -243,7 +243,7 @@ include 'includes/header.php';
                                         <tr>
                                             <td><?= date('d/m/Y', strtotime($advance['date'])) ?></td>
                                             <td><?= $crewMember ? htmlspecialchars($crewMember['name']) : 'N/A' ?></td>
-                                            <td><?= number_format($advance['amount'], 2) ?> €</td>
+                                            <td><?= number_format($advance['amount'], 2) ?> TND</td>
                                             <td><?= htmlspecialchars($advance['reason']) ?></td>
                                             <td>
                                                 <span class="badge bg-<?= $advance['status'] === 'pending' ? 'warning' : 'success' ?>">
@@ -271,7 +271,7 @@ include 'includes/header.php';
                                 <h6>Total des avances: <?= count($filteredAdvances) ?></h6>
                             </div>
                             <div class="col-md-6 text-end">
-                                <h6>Montant total: <?= number_format(array_sum(array_column($filteredAdvances, 'amount')), 2) ?> €</h6>
+                                <h6>Montant total: <?= number_format(array_sum(array_column($filteredAdvances, 'amount')), 2) ?> TND</h6>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -304,7 +304,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="amount" class="form-label">Montant (€) *</label>
+                        <label for="amount" class="form-label">Montant (TND) *</label>
                         <input type="number" class="form-control" id="amount" name="amount" 
                                step="0.01" min="0" required>
                     </div>
@@ -354,7 +354,7 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="edit_amount" class="form-label">Montant (€) *</label>
+                        <label for="edit_amount" class="form-label">Montant (TND) *</label>
                         <input type="number" class="form-control" id="edit_amount" name="amount" 
                                step="0.01" min="0" required>
                     </div>
@@ -395,7 +395,7 @@ include 'includes/header.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <p>Êtes-vous sûr de vouloir supprimer cette avance de <strong id="delete_advance_amount"></strong> € ?</p>
+                <p>Êtes-vous sûr de vouloir supprimer cette avance de <strong id="delete_advance_amount"></strong> TND ?</p>
                 <p class="text-danger">Cette action est irréversible.</p>
             </div>
             <form method="POST">

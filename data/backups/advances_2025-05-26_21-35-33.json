@@ -5,8 +5,9 @@
         "amount": 150,
         "reason": "Frais médicaux urgents",
         "date": "2025-04-05 14:30:00",
-        "status": "pending",
-        "created_at": "2025-04-05 14:30:00"
+        "status": "deducted",
+        "created_at": "2025-04-05 14:30:00",
+        "deducted_at": "2025-05-26 21:30:26"
     },
     {
         "id": "advance_002",
@@ -14,8 +15,9 @@
         "amount": 100,
         "reason": "Achat matériel professionnel",
         "date": "2025-04-15 10:45:00",
-        "status": "pending",
-        "created_at": "2025-04-15 10:45:00"
+        "status": "deducted",
+        "created_at": "2025-04-15 10:45:00",
+        "deducted_at": "2025-05-26 21:30:26"
     },
     {
         "id": "advance_003",
@@ -23,8 +25,9 @@
         "amount": 50,
         "reason": "Transport famille",
         "date": "2025-04-25 16:20:00",
-        "status": "pending",
-        "created_at": "2025-04-25 16:20:00"
+        "status": "deducted",
+        "created_at": "2025-04-25 16:20:00",
+        "deducted_at": "2025-05-26 21:30:26"
     },
     {
         "id": "6834c12a26f140.11109586",

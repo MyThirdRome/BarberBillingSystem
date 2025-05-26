@@ -506,6 +506,13 @@ include 'includes/header.php';
                     </div>
 
                     <div class="mb-3">
+                        <label for="amount" class="form-label">Montant à Payer (TND) *</label>
+                        <input type="number" class="form-control" id="amount" name="amount" 
+                               step="0.001" min="0" required readonly>
+                        <small class="text-muted">Ce montant est calculé automatiquement</small>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
                         <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
                     </div>

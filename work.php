@@ -459,25 +459,25 @@ function deleteWork(id, type) {
 }
 
 // Work pagination functionality
-const workData = <?= json_encode($filteredWork) ?>;
-const crewData = <?= json_encode($crew) ?>;
-console.log('Filtered work data:', <?= json_encode($filteredWork) ?>);
+const allWorkData = <?= json_encode($filteredWork) ?>;
+const allCrewData = <?= json_encode($crew) ?>;
+console.log('Filtered work data:', allWorkData);
 console.log('All work data:', <?= json_encode($work) ?>);
 let currentWorkPage = 1;
 const workItemsPerPage = 10;
 
 function displayWorkPage(page = 1) {
-    const totalItems = workData.length;
+    const totalItems = allWorkData.length;
     const totalPages = Math.ceil(totalItems / workItemsPerPage);
     const startIndex = (page - 1) * workItemsPerPage;
     const endIndex = startIndex + workItemsPerPage;
-    const pageItems = workData.slice(startIndex, endIndex);
+    const pageItems = allWorkData.slice(startIndex, endIndex);
     
     const tbody = document.getElementById('work-table-tbody');
     tbody.innerHTML = '';
     
     pageItems.forEach(work => {
-        const crewMember = crewData.find(c => c.id === work.crew_id);
+        const crewMember = allCrewData.find(c => c.id === work.crew_id);
         const row = document.createElement('tr');
         
         const customerInfo = work.customer_name ? 
@@ -506,7 +506,7 @@ function displayWorkPage(page = 1) {
     });
     
     // Update summary
-    const totalAmount = workData.reduce((sum, work) => sum + parseFloat(work.amount), 0);
+    const totalAmount = allWorkData.reduce((sum, work) => sum + parseFloat(work.amount), 0);
     document.getElementById('work-count').textContent = `Total des travaux: ${totalItems}`;
     document.getElementById('work-total').textContent = `Montant total: ${totalAmount.toLocaleString('fr-FR', {minimumFractionDigits: 2})} TND`;
     
@@ -576,7 +576,7 @@ function updateWorkPagination(currentPage, totalPages) {
 }
 
 function changeWorkPage(page) {
-    const totalPages = Math.ceil(workData.length / workItemsPerPage);
+    const totalPages = Math.ceil(allWorkData.length / workItemsPerPage);
     if (page >= 1 && page <= totalPages) {
         currentWorkPage = page;
         displayWorkPage(page);
@@ -586,10 +586,10 @@ function changeWorkPage(page) {
 
 // Initialize work display
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Work data length:', workData.length);
-    console.log('Work data:', workData);
+    console.log('Work data length:', allWorkData.length);
+    console.log('Work data:', allWorkData);
     
-    if (workData && workData.length > 0) {
+    if (allWorkData && allWorkData.length > 0) {
         displayWorkPage(1);
         document.getElementById('no-work-message').style.display = 'none';
         document.getElementById('work-table-container').style.display = 'block';

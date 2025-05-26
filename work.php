@@ -461,6 +461,8 @@ function deleteWork(id, type) {
 // Work pagination functionality
 const workData = <?= json_encode($filteredWork) ?>;
 const crewData = <?= json_encode($crew) ?>;
+console.log('Filtered work data:', <?= json_encode($filteredWork) ?>);
+console.log('All work data:', <?= json_encode($work) ?>);
 let currentWorkPage = 1;
 const workItemsPerPage = 10;
 

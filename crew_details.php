@@ -653,6 +653,11 @@ document.getElementById('addPaymentModal').addEventListener('shown.bs.modal', fu
 document.addEventListener('DOMContentLoaded', function() {
     // Auto-calculate when page loads
     setTimeout(calculateSalary, 100);
+    
+    // Initialize crew work pagination
+    if (crewWorkData.length > 0) {
+        displayCrewWork(1);
+    }
 });
 
 // Payment and work data for JavaScript access

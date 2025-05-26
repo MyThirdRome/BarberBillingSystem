@@ -460,6 +460,137 @@ function deleteWork(id, type) {
     
     new bootstrap.Modal(document.getElementById('deleteWorkModal')).show();
 }
+
+// Work pagination functionality
+const workData = <?= json_encode($filteredWork) ?>;
+const crewData = <?= json_encode($crew) ?>;
+let currentWorkPage = 1;
+const workItemsPerPage = 10;
+
+function displayWorkPage(page = 1) {
+    const totalItems = workData.length;
+    const totalPages = Math.ceil(totalItems / workItemsPerPage);
+    const startIndex = (page - 1) * workItemsPerPage;
+    const endIndex = startIndex + workItemsPerPage;
+    const pageItems = workData.slice(startIndex, endIndex);
+    
+    const tbody = document.getElementById('work-table-tbody');
+    tbody.innerHTML = '';
+    
+    pageItems.forEach(work => {
+        const crewMember = crewData.find(c => c.id === work.crew_id);
+        const row = document.createElement('tr');
+        
+        const customerInfo = work.customer_name ? 
+            `<strong>${work.customer_name}</strong><br>
+             ${work.customer_phone ? `<small class="text-muted">${work.customer_phone}</small><br>` : ''}
+             ${work.customer_email ? `<small class="text-muted">${work.customer_email}</small>` : ''}` :
+            '<span class="text-muted">-</span>';
+        
+        row.innerHTML = `
+            <td>${new Date(work.date).toLocaleDateString('fr-FR')} ${new Date(work.date).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</td>
+            <td>${work.type}</td>
+            <td>${crewMember ? crewMember.name : 'N/A'}</td>
+            <td>${customerInfo}</td>
+            <td>${parseFloat(work.amount).toLocaleString('fr-FR', {minimumFractionDigits: 2})} TND</td>
+            <td>${work.notes || ''}</td>
+            <td>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="editWork('${work.id}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-danger" onclick="deleteWork('${work.id}', '${work.type}')">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Update summary
+    const totalAmount = workData.reduce((sum, work) => sum + parseFloat(work.amount), 0);
+    document.getElementById('work-count').textContent = `Total des travaux: ${totalItems}`;
+    document.getElementById('work-total').textContent = `Montant total: ${totalAmount.toLocaleString('fr-FR', {minimumFractionDigits: 2})} TND`;
+    
+    // Update pagination
+    if (totalPages > 1) {
+        updateWorkPagination(page, totalPages);
+        document.getElementById('work-pagination').style.display = 'block';
+    } else {
+        document.getElementById('work-pagination').style.display = 'none';
+    }
+}
+
+function updateWorkPagination(currentPage, totalPages) {
+    const pagination = document.querySelector('#work-pagination .pagination');
+    pagination.innerHTML = '';
+    
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="#" onclick="changeWorkPage(${currentPage - 1})">Précédent</a>`;
+    pagination.appendChild(prevLi);
+    
+    // Page numbers
+    const startPage = Math.max(1, currentPage - 2);
+    const endPage = Math.min(totalPages, currentPage + 2);
+    
+    if (startPage > 1) {
+        const firstLi = document.createElement('li');
+        firstLi.className = 'page-item';
+        firstLi.innerHTML = `<a class="page-link" href="#" onclick="changeWorkPage(1)">1</a>`;
+        pagination.appendChild(firstLi);
+        
+        if (startPage > 2) {
+            const dotsLi = document.createElement('li');
+            dotsLi.className = 'page-item disabled';
+            dotsLi.innerHTML = '<span class="page-link">...</span>';
+            pagination.appendChild(dotsLi);
+        }
+    }
+    
+    for (let i = startPage; i <= endPage; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#" onclick="changeWorkPage(${i})">${i}</a>`;
+        pagination.appendChild(li);
+    }
+    
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const dotsLi = document.createElement('li');
+            dotsLi.className = 'page-item disabled';
+            dotsLi.innerHTML = '<span class="page-link">...</span>';
+            pagination.appendChild(dotsLi);
+        }
+        
+        const lastLi = document.createElement('li');
+        lastLi.className = 'page-item';
+        lastLi.innerHTML = `<a class="page-link" href="#" onclick="changeWorkPage(${totalPages})">${totalPages}</a>`;
+        pagination.appendChild(lastLi);
+    }
+    
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="#" onclick="changeWorkPage(${currentPage + 1})">Suivant</a>`;
+    pagination.appendChild(nextLi);
+}
+
+function changeWorkPage(page) {
+    const totalPages = Math.ceil(workData.length / workItemsPerPage);
+    if (page >= 1 && page <= totalPages) {
+        currentWorkPage = page;
+        displayWorkPage(page);
+        window.scrollTo(0, 0);
+    }
+}
+
+// Initialize work display
+document.addEventListener('DOMContentLoaded', function() {
+    if (workData.length > 0) {
+        displayWorkPage(1);
+    }
+});
 </script>
 
 <?php include 'includes/footer.php'; ?>

@@ -466,23 +466,24 @@ include 'includes/header.php';
                     <input type="hidden" name="action" value="add_payment">
                     
                     <!-- Period Selection -->
-                    <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label for="period_start" class="form-label">Période du *</label>
-                            <input type="date" class="form-control" id="period_start" name="period_start" 
-                                   value="<?= date('Y-m-01') ?>" required onchange="calculateSalary()">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="period_end" class="form-label">Période au *</label>
-                            <input type="date" class="form-control" id="period_end" name="period_end" 
-                                   value="<?= date('Y-m-t') ?>" required onchange="calculateSalary()">
-                        </div>
+                    <div class="mb-3">
+                        <label for="salary_month" class="form-label">Mois de Salaire *</label>
+                        <input type="month" class="form-control" id="salary_month" name="salary_month" 
+                               value="<?= date('Y-m', strtotime('last month')) ?>" required onchange="calculateSalary()">
+                        <small class="text-muted">Par défaut: mois précédent</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="bonus_percentage" class="form-label">Pourcentage Bonus (%)</label>
+                        <input type="number" class="form-control" id="bonus_percentage" name="bonus_percentage" 
+                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?? 0 ?>"
+                               oninput="calculateSalary()">
                     </div>
                     
                     <!-- Salary Calculation Display -->
                     <div class="card bg-light mb-3">
                         <div class="card-header">
-                            <h6 class="mb-0">Calcul du Salaire</h6>
+                            <h6 class="mb-0">Détail du Calcul</h6>
                         </div>
                         <div class="card-body">
                             <div class="row mb-2">
@@ -511,13 +512,6 @@ include 'includes/header.php';
                                 <div class="col-4 text-end text-primary" id="total_payment_display">0.000 TND</div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="bonus_percentage" class="form-label">Pourcentage Bonus (%)</label>
-                        <input type="number" class="form-control" id="bonus_percentage" name="bonus_percentage" 
-                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?? 0 ?>"
-                               oninput="calculateSalary()">
                     </div>
                     
                     <div class="mb-3">
@@ -556,13 +550,19 @@ const advancesData = <?= json_encode(array_values($crewAdvances)) ?>;
 
 // Real-time salary calculation
 function calculateSalary() {
-    const periodStart = document.getElementById('period_start').value;
-    const periodEnd = document.getElementById('period_end').value;
+    const salaryMonth = document.getElementById('salary_month').value;
     const bonusPercentage = parseFloat(document.getElementById('bonus_percentage').value) || 0;
     
-    if (!periodStart || !periodEnd) {
+    if (!salaryMonth) {
         return;
     }
+    
+    // Get first and last day of selected month
+    const year = salaryMonth.split('-')[0];
+    const month = salaryMonth.split('-')[1];
+    const periodStart = year + '-' + month + '-01';
+    const lastDay = new Date(year, month, 0).getDate();
+    const periodEnd = year + '-' + month + '-' + lastDay.toString().padStart(2, '0');
     
     // Calculate work revenue for the period
     let periodRevenue = 0;

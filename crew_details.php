@@ -465,22 +465,72 @@ include 'includes/header.php';
                 <div class="modal-body">
                     <input type="hidden" name="action" value="add_payment">
                     
-                    <div class="mb-3">
-                        <label for="payment_amount" class="form-label">Montant (TND) *</label>
-                        <input type="number" class="form-control" id="payment_amount" name="amount" 
-                               step="0.001" min="0" required>
+                    <!-- Period Selection -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="period_start" class="form-label">Période du *</label>
+                            <input type="date" class="form-control" id="period_start" name="period_start" 
+                                   value="<?= date('Y-m-01') ?>" required onchange="calculateSalary()">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="period_end" class="form-label">Période au *</label>
+                            <input type="date" class="form-control" id="period_end" name="period_end" 
+                                   value="<?= date('Y-m-t') ?>" required onchange="calculateSalary()">
+                        </div>
+                    </div>
+                    
+                    <!-- Salary Calculation Display -->
+                    <div class="card bg-light mb-3">
+                        <div class="card-header">
+                            <h6 class="mb-0">Calcul du Salaire</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-2">
+                                <div class="col-8">Salaire de base:</div>
+                                <div class="col-4 text-end" id="base_salary_display"><?= number_format($crewMember['salary_base'] ?? 0, 3) ?> TND</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-8">Avances déduites:</div>
+                                <div class="col-4 text-end text-danger" id="advances_display">0.000 TND</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-8">Chiffre d'affaires période:</div>
+                                <div class="col-4 text-end" id="revenue_display">0.000 TND</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-8">CA éligible bonus (>2000 TND):</div>
+                                <div class="col-4 text-end" id="eligible_bonus_display">0.000 TND</div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-8">Montant bonus (<span id="bonus_rate_display">0</span>%):</div>
+                                <div class="col-4 text-end text-success" id="bonus_amount_display">0.000 TND</div>
+                            </div>
+                            <hr>
+                            <div class="row fw-bold">
+                                <div class="col-8">Total à payer:</div>
+                                <div class="col-4 text-end text-primary" id="total_payment_display">0.000 TND</div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="bonus_percentage" class="form-label">Pourcentage Bonus</label>
+                        <label for="bonus_percentage" class="form-label">Pourcentage Bonus (%)</label>
                         <input type="number" class="form-control" id="bonus_percentage" name="bonus_percentage" 
-                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?? 0 ?>">
+                               step="0.1" min="0" max="100" value="<?= $crewMember['bonus_percentage'] ?? 0 ?>"
+                               oninput="calculateSalary()">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="payment_date" class="form-label">Date</label>
-                        <input type="datetime-local" class="form-control" id="payment_date" name="date" 
-                               value="<?= date('Y-m-d\TH:i') ?>">
+                        <label for="payment_amount" class="form-label">Montant Final (TND) *</label>
+                        <input type="number" class="form-control" id="payment_amount" name="amount" 
+                               step="0.001" min="0" required readonly>
+                        <small class="text-muted">Calculé automatiquement</small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="payment_date" class="form-label">Date de Paiement</label>
+                        <input type="date" class="form-control" id="payment_date" name="payment_date" 
+                               value="<?= date('Y-m-d') ?>">
                     </div>
                     
                     <div class="mb-3">
@@ -497,5 +547,75 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+// Store crew data for JavaScript calculations
+const crewData = <?= json_encode($crewMember) ?>;
+const workData = <?= json_encode(array_values($crewWork)) ?>;
+const advancesData = <?= json_encode(array_values($crewAdvances)) ?>;
+
+// Real-time salary calculation
+function calculateSalary() {
+    const periodStart = document.getElementById('period_start').value;
+    const periodEnd = document.getElementById('period_end').value;
+    const bonusPercentage = parseFloat(document.getElementById('bonus_percentage').value) || 0;
+    
+    if (!periodStart || !periodEnd) {
+        return;
+    }
+    
+    // Calculate work revenue for the period
+    let periodRevenue = 0;
+    workData.forEach(work => {
+        const workDate = work.date.substring(0, 10); // Extract date part
+        if (workDate >= periodStart && workDate <= periodEnd) {
+            periodRevenue += parseFloat(work.amount) || 0;
+        }
+    });
+    
+    // Calculate advances for the period
+    let periodAdvances = 0;
+    advancesData.forEach(advance => {
+        if (advance.status === 'pending') {
+            const advanceDate = advance.date.substring(0, 10); // Extract date part
+            if (advanceDate >= periodStart && advanceDate <= periodEnd) {
+                periodAdvances += parseFloat(advance.amount) || 0;
+            }
+        }
+    });
+    
+    // Salary calculation
+    const baseSalary = parseFloat(crewData.salary_base) || 0;
+    const bonusThreshold = 2000;
+    const eligibleBonus = Math.max(0, periodRevenue - bonusThreshold);
+    const bonusAmount = (eligibleBonus * bonusPercentage) / 100;
+    const totalPayment = baseSalary - periodAdvances + bonusAmount;
+    
+    // Update display
+    document.getElementById('base_salary_display').textContent = formatCurrency(baseSalary);
+    document.getElementById('advances_display').textContent = formatCurrency(periodAdvances);
+    document.getElementById('revenue_display').textContent = formatCurrency(periodRevenue);
+    document.getElementById('eligible_bonus_display').textContent = formatCurrency(eligibleBonus);
+    document.getElementById('bonus_rate_display').textContent = bonusPercentage.toFixed(1);
+    document.getElementById('bonus_amount_display').textContent = formatCurrency(bonusAmount);
+    document.getElementById('total_payment_display').textContent = formatCurrency(totalPayment);
+    document.getElementById('payment_amount').value = totalPayment.toFixed(3);
+}
+
+function formatCurrency(amount) {
+    return amount.toFixed(3) + ' TND';
+}
+
+// Initialize calculation when modal opens
+document.getElementById('addPaymentModal').addEventListener('shown.bs.modal', function() {
+    calculateSalary();
+});
+
+// Initialize tabs
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-calculate when page loads
+    setTimeout(calculateSalary, 100);
+});
+</script>
 
 <?php include 'includes/footer.php'; ?>

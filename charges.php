@@ -110,7 +110,6 @@ usort($filteredCharges, function($a, $b) {
 });
 
 $chargeTypes = [
-    'salary' => 'Salaire',
     'rent' => 'Loyer',
     'electricity' => 'Électricité',
     'water' => 'Eau',

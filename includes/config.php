@@ -92,12 +92,7 @@ $navigation = [
 
 // Charge type configurations
 $chargeTypes = [
-    'salary' => [
-        'label' => 'Salaire',
-        'color' => 'primary',
-        'requires_crew' => true,
-        'requires_description' => false
-    ],
+
     'rent' => [
         'label' => 'Loyer',
         'color' => 'warning',

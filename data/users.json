@@ -1,0 +1,11 @@
+[
+    {
+        "id": "admin_default_001",
+        "username": "admin",
+        "password": "$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+        "role": "admin",
+        "permissions": ["view", "edit", "admin"],
+        "created_at": "2024-01-01 12:00:00",
+        "created_by": "system"
+    }
+]

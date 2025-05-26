@@ -33,6 +33,11 @@ $year = $_GET['year'] ?? date('Y');
 $month = $_GET['month'] ?? '';
 $crew_filter = $_GET['crew_filter'] ?? '';
 
+// For crew members, force filter to their own ID
+if ($isCrew) {
+    $crew_filter = $crew_id;
+}
+
 // Generate year options (current year and 2 years back)
 $currentYear = date('Y');
 $yearOptions = [];

@@ -264,17 +264,9 @@ include 'includes/header.php';
                     
                     <div class="mb-3">
                         <label for="type" class="form-label">Type de Service *</label>
-                        <select class="form-control" id="type" name="type" required>
-                            <option value="">Sélectionner un type</option>
-                            <option value="Coupe">Coupe</option>
-                            <option value="Brushing">Brushing</option>
-                            <option value="Coloration">Coloration</option>
-                            <option value="Permanente">Permanente</option>
-                            <option value="Mèches">Mèches</option>
-                            <option value="Soin">Soin</option>
-                            <option value="Barbe">Barbe</option>
-                            <option value="Autre">Autre</option>
-                        </select>
+                        <input type="text" class="form-control" id="type" name="type" 
+                               placeholder="Ex: Coupe, Brushing, Coloration, Barbe..." required>
+                        <small class="text-muted">Décrivez le service effectué</small>
                     </div>
                     
                     <div class="mb-3">
@@ -289,9 +281,36 @@ include 'includes/header.php';
                                value="<?= date('Y-m-d\TH:i') ?>" required>
                     </div>
                     
+                    <hr>
+                    <h6 class="text-primary">Informations Client</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer_name" class="form-label">Nom du Client</label>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                       placeholder="Nom complet du client">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer_phone" class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" 
+                                       placeholder="+216 XX XXX XXX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="customer_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="customer_email" name="customer_email" 
+                               placeholder="client@example.com">
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Notes sur le service ou le client..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

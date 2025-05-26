@@ -19,6 +19,9 @@ if ($_POST) {
         $amount = floatval($_POST['amount'] ?? 0);
         $date = $_POST['date'] ?? date('Y-m-d H:i:s');
         $notes = trim($_POST['notes'] ?? '');
+        $customer_name = trim($_POST['customer_name'] ?? '');
+        $customer_phone = trim($_POST['customer_phone'] ?? '');
+        $customer_email = trim($_POST['customer_email'] ?? '');
         
         if (empty($type) || empty($crew_id) || $amount <= 0) {
             $error = 'Le type de travail, l\'équipe et le montant sont obligatoires.';
@@ -30,6 +33,9 @@ if ($_POST) {
                 'amount' => $amount,
                 'date' => $date,
                 'notes' => $notes,
+                'customer_name' => $customer_name,
+                'customer_phone' => $customer_phone,
+                'customer_email' => $customer_email,
                 'added_by' => 'admin',
                 'added_by_name' => $_SESSION['username'] ?? 'Administrateur',
                 'created_at' => date('Y-m-d H:i:s')
@@ -291,9 +297,36 @@ include 'includes/header.php';
                                value="<?= date('Y-m-d\TH:i') ?>">
                     </div>
                     
+                    <hr>
+                    <h6 class="text-primary">Informations Client</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer_name" class="form-label">Nom du Client</label>
+                                <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                       placeholder="Nom complet du client">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="customer_phone" class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" 
+                                       placeholder="+216 XX XXX XXX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="customer_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="customer_email" name="customer_email" 
+                               placeholder="client@example.com">
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="notes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Notes sur le service ou le client..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">

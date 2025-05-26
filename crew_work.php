@@ -16,6 +16,9 @@ if ($_POST && $_POST['action'] === 'add') {
     $amount = floatval($_POST['amount'] ?? 0);
     $date = $_POST['date'] ?? '';
     $notes = trim($_POST['notes'] ?? '');
+    $customer_name = trim($_POST['customer_name'] ?? '');
+    $customer_phone = trim($_POST['customer_phone'] ?? '');
+    $customer_email = trim($_POST['customer_email'] ?? '');
     
     if (empty($type) || $amount <= 0 || empty($date)) {
         $_SESSION['error'] = 'Tous les champs obligatoires doivent être remplis.';
@@ -29,6 +32,9 @@ if ($_POST && $_POST['action'] === 'add') {
             'amount' => $amount,
             'date' => $date,
             'notes' => $notes,
+            'customer_name' => $customer_name,
+            'customer_phone' => $customer_phone,
+            'customer_email' => $customer_email,
             'added_by' => 'crew',
             'added_by_name' => $crew_name,
             'created_at' => date('Y-m-d H:i:s')

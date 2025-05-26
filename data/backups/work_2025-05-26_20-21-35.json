@@ -61,16 +61,5 @@
         "date": "2025-05-26T16:12",
         "notes": "",
         "created_at": "2025-05-26 16:12:59"
-    },
-    {
-        "id": "6834b12fd12b80.13445225",
-        "type": "Coupe",
-        "crew_id": "6834b110145533.04855884",
-        "amount": 150,
-        "date": "2025-05-26T20:21",
-        "notes": "",
-        "added_by": "crew",
-        "added_by_name": "Morocco",
-        "created_at": "2025-05-26 20:21:35"
     }
 ]

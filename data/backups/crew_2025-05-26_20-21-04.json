@@ -15,14 +15,5 @@
         "phone": "+21695868946",
         "salary_base": 800,
         "created_at": "2025-05-26 16:11:45"
-    },
-    {
-        "id": "6834b110145533.04855884",
-        "name": "Morocco",
-        "position": "Coiffeur",
-        "phone": "+21655261661",
-        "salary_base": 800,
-        "username": "foulenn",
-        "created_at": "2025-05-26 20:21:04"
     }
 ]

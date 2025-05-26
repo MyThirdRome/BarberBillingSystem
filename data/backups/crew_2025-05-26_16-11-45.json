@@ -7,13 +7,5 @@
         "salary_base": 800,
         "created_at": "2025-05-26 14:10:02",
         "updated_at": "2025-05-26 16:09:11"
-    },
-    {
-        "id": "683476a167e3b5.35579880",
-        "name": "SEIFEDDINE KARCHOUD",
-        "position": "Coiffeur",
-        "phone": "+21695868946",
-        "salary_base": 800,
-        "created_at": "2025-05-26 16:11:45"
     }
 ]

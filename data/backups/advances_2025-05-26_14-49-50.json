@@ -14,9 +14,8 @@
         "amount": 80,
         "reason": "Avance salaire",
         "date": "2025-04-10",
-        "status": "deducted",
-        "created_at": "2025-04-10 09:00:00",
-        "deducted_in_payment": "6834636e270df1.32626386"
+        "status": "pending",
+        "created_at": "2025-04-10 09:00:00"
     },
     {
         "id": "advance_april_002",
@@ -24,8 +23,7 @@
         "amount": 100,
         "reason": "Avance urgente",
         "date": "2025-04-20",
-        "status": "deducted",
-        "created_at": "2025-04-20 15:30:00",
-        "deducted_in_payment": "6834636e270df1.32626386"
+        "status": "pending",
+        "created_at": "2025-04-20 15:30:00"
     }
 ]

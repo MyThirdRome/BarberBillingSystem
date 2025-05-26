@@ -17,22 +17,52 @@ if ($_POST) {
         $position = trim($_POST['position'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $salary_base = floatval($_POST['salary_base'] ?? 0);
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
         
-        if (empty($name) || empty($position)) {
-            $error = 'Le nom et le poste sont obligatoires.';
+        if (empty($name) || empty($position) || empty($username) || empty($password)) {
+            $error = 'Le nom, le poste, nom d\'utilisateur et mot de passe sont obligatoires.';
         } else {
-            $newMember = [
-                'id' => generateId(),
-                'name' => $name,
-                'position' => $position,
-                'phone' => $phone,
-                'salary_base' => $salary_base,
-                'created_at' => date('Y-m-d H:i:s')
-            ];
+            // Check if username already exists
+            $users = loadData('users');
+            $usernameExists = false;
+            foreach ($users as $user) {
+                if ($user['username'] === $username) {
+                    $usernameExists = true;
+                    break;
+                }
+            }
             
-            $crew[] = $newMember;
-            saveData('crew', $crew);
-            $message = 'Membre d\'équipe ajouté avec succès.';
+            if ($usernameExists) {
+                $error = 'Ce nom d\'utilisateur existe déjà.';
+            } else {
+                $newMember = [
+                    'id' => generateId(),
+                    'name' => $name,
+                    'position' => $position,
+                    'phone' => $phone,
+                    'salary_base' => $salary_base,
+                    'username' => $username,
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                
+                // Create user account for crew member
+                $newUser = [
+                    'id' => generateId(),
+                    'username' => $username,
+                    'password' => password_hash($password, PASSWORD_DEFAULT),
+                    'role' => 'crew',
+                    'crew_id' => $newMember['id'],
+                    'name' => $name,
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $crew[] = $newMember;
+                $users[] = $newUser;
+                saveData('crew', $crew);
+                saveData('users', $users);
+                $message = 'Membre d\'équipe ajouté avec succès. Identifiants: ' . $username;
+            }
         }
     } elseif ($action === 'edit') {
         $id = $_POST['id'] ?? '';
@@ -181,6 +211,27 @@ include 'includes/header.php';
                         <input type="number" class="form-control" id="salary_base" name="salary_base" 
                                step="0.01" min="0">
                     </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Nom d'utilisateur *</label>
+                                <input type="text" class="form-control" id="username" name="username" required>
+                                <small class="text-muted">Pour se connecter à la plateforme</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Mot de passe *</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" name="password" required>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="generateRandomPassword()">
+                                        <i class="fas fa-random"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -280,6 +331,19 @@ function deleteCrew(id, name) {
     document.getElementById('delete_name').textContent = name;
     
     new bootstrap.Modal(document.getElementById('deleteCrewModal')).show();
+}
+
+function generateRandomPassword() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < 8; i++) {
+        password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    document.getElementById('password').value = password;
+    document.getElementById('password').type = 'text';
+    setTimeout(() => {
+        document.getElementById('password').type = 'password';
+    }, 2000);
 }
 </script>
 

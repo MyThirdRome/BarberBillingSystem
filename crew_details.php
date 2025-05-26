@@ -457,7 +457,7 @@ include 'includes/header.php';
                                     });
                                     
                                     foreach ($crewPayments as $payment): ?>
-                                        <tr>
+                                        <tr style="cursor: pointer;" onclick="showPaymentDetails('<?= $payment['id'] ?>')">
                                             <td><?= date('d/m/Y', strtotime($payment['payment_date'] ?? $payment['created_at'])) ?></td>
                                             <td class="fw-bold text-success"><?= number_format($payment['net_payment'] ?? 0, 3) ?> TND</td>
                                             <td><?= number_format($payment['bonus_percentage'] ?? 0, 1) ?>%</td>
@@ -676,6 +676,146 @@ document.addEventListener('DOMContentLoaded', function() {
     // Auto-calculate when page loads
     setTimeout(calculateSalary, 100);
 });
+
+// Payment data for JavaScript access
+const paymentsData = <?= json_encode($crewPayments) ?>;
+
+function showPaymentDetails(paymentId) {
+    const payment = paymentsData.find(p => p.id === paymentId);
+    if (!payment) return;
+    
+    // Format date
+    const date = new Date(payment.payment_date || payment.created_at);
+    document.getElementById('detail-date').textContent = date.toLocaleDateString('fr-FR');
+    
+    // Format period
+    const period = payment.salary_month || '';
+    if (period) {
+        const [year, month] = period.split('-');
+        const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                           'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+        document.getElementById('detail-period').textContent = 
+            monthNames[parseInt(month) - 1] + ' ' + year;
+    }
+    
+    // Fill calculation details
+    document.getElementById('detail-base-salary').textContent = 
+        (payment.base_salary || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-revenue').textContent = 
+        (payment.total_revenue || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-bonus-revenue').textContent = 
+        (payment.bonus_revenue || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-bonus-percentage').textContent = 
+        (payment.bonus_percentage || 0).toFixed(1);
+    document.getElementById('detail-bonus-amount').textContent = 
+        (payment.bonus_amount || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-subtotal').textContent = 
+        (payment.gross_payment || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-advances').textContent = 
+        (payment.total_advances || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    document.getElementById('detail-net-payment').textContent = 
+        (payment.net_payment || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    
+    // Show/hide notes
+    if (payment.notes && payment.notes.trim()) {
+        document.getElementById('detail-notes').textContent = payment.notes;
+        document.getElementById('detail-notes-section').style.display = 'block';
+    } else {
+        document.getElementById('detail-notes-section').style.display = 'none';
+    }
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
+    modal.show();
+}
 </script>
+
+<!-- Payment Details Modal -->
+<div class="modal fade" id="paymentDetailsModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Détails du Paiement</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Date:</strong> <span id="detail-date"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Période:</strong> <span id="detail-period"></span>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h6 class="mb-0">Calcul du Salaire</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-8">Salaire de base:</div>
+                            <div class="col-4 text-end fw-bold">
+                                <span id="detail-base-salary"></span> TND
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Chiffre d'affaires du mois:</div>
+                            <div class="col-4 text-end">
+                                <span id="detail-revenue"></span> TND
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Chiffre au-dessus de 2000 TND:</div>
+                            <div class="col-4 text-end">
+                                <span id="detail-bonus-revenue"></span> TND
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8">Bonus (<span id="detail-bonus-percentage"></span>%):</div>
+                            <div class="col-4 text-end text-success">
+                                + <span id="detail-bonus-amount"></span> TND
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-2">
+                            <div class="col-8"><strong>Sous-total:</strong></div>
+                            <div class="col-4 text-end fw-bold">
+                                <span id="detail-subtotal"></span> TND
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-8 text-danger">Avances déduites:</div>
+                            <div class="col-4 text-end text-danger">
+                                - <span id="detail-advances"></span> TND
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-8"><strong>Montant Net Payé:</strong></div>
+                            <div class="col-4 text-end fw-bold text-success fs-5">
+                                <span id="detail-net-payment"></span> TND
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-3" id="detail-notes-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Notes</h6>
+                        </div>
+                        <div class="card-body">
+                            <p id="detail-notes"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <?php include 'includes/footer.php'; ?>

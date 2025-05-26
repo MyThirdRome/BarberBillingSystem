@@ -136,12 +136,19 @@ if ($_POST) {
             saveData('advances', $advances);
         }
         
+        // Remove related charge entry
+        $charges = loadData('charges');
+        $charges = array_filter($charges, function($charge) use ($id) {
+            return !isset($charge['payment_id']) || $charge['payment_id'] !== $id;
+        });
+        saveData('charges', $charges);
+        
         $payments = array_filter($payments, function($payment) use ($id) {
             return $payment['id'] !== $id;
         });
         
         saveData('payments', $payments);
-        $message = 'Paiement supprimé avec succès.';
+        $message = 'Paiement supprimé avec succès et retiré des charges.';
     }
 }
 

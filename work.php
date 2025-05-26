@@ -200,13 +200,11 @@ include 'includes/header.php';
             
             <div class="card">
                 <div class="card-body">
-                    <?php if (empty($filteredWork)): ?>
-                        <div class="text-center py-5">
-                            <i class="fas fa-cut fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">Aucun travail trouvé</h5>
-                            <p class="text-muted">Commencez par enregistrer des travaux ou ajustez vos filtres.</p>
-                        </div>
-                    <?php else: ?>
+                    <div class="text-center py-5" id="no-work-message" style="display: none;">
+                        <i class="fas fa-cut fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">Aucun travail trouvé</h5>
+                        <p class="text-muted">Commencez par enregistrer des travaux ou ajustez vos filtres.</p>
+                    </div>
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead>
@@ -241,7 +239,6 @@ include 'includes/header.php';
                                 <h6 id="work-total">Montant total: 0.00 TND</h6>
                             </div>
                         </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -589,6 +586,11 @@ function changeWorkPage(page) {
 document.addEventListener('DOMContentLoaded', function() {
     if (workData.length > 0) {
         displayWorkPage(1);
+        document.getElementById('no-work-message').style.display = 'none';
+    } else {
+        document.getElementById('no-work-message').style.display = 'block';
+        document.getElementById('work-pagination').style.display = 'none';
+        document.getElementById('work-summary').style.display = 'none';
     }
 });
 </script>

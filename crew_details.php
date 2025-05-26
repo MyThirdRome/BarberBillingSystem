@@ -354,30 +354,8 @@ include 'includes/header.php';
                                         <th>Notes</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <?php 
-                                    usort($crewWork, function($a, $b) {
-                                        return strtotime($b['date']) - strtotime($a['date']);
-                                    });
-                                    
-                                    foreach (array_slice($crewWork, 0, 20) as $w): ?>
-                                        <tr>
-                                            <td><?= date('d/m/Y H:i', strtotime($w['date'])) ?></td>
-                                            <td><?= htmlspecialchars($w['type']) ?></td>
-                                            <td>
-                                                <?php if (!empty($w['customer_name'])): ?>
-                                                    <strong><?= htmlspecialchars($w['customer_name']) ?></strong><br>
-                                                    <?php if (!empty($w['customer_phone'])): ?>
-                                                        <small class="text-muted"><?= htmlspecialchars($w['customer_phone']) ?></small>
-                                                    <?php endif; ?>
-                                                <?php else: ?>
-                                                    <span class="text-muted">-</span>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td class="fw-bold text-success"><?= number_format($w['amount'], 3) ?> TND</td>
-                                            <td><?= htmlspecialchars($w['notes']) ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
+                                <tbody id="crew-work-tbody">
+                                    <!-- Work entries will be populated by JavaScript -->
                                 </tbody>
                             </table>
                         </div>
@@ -677,8 +655,88 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(calculateSalary, 100);
 });
 
-// Payment data for JavaScript access
+// Payment and work data for JavaScript access
 const paymentsData = <?= json_encode($crewPayments) ?>;
+const crewWorkData = <?= json_encode($crewWork) ?>;
+
+// Crew work pagination
+let currentCrewWorkPage = 1;
+const crewWorkItemsPerPage = 5;
+
+function displayCrewWork(page = 1) {
+    const sortedWork = crewWorkData.sort((a, b) => new Date(b.date) - new Date(a.date));
+    const totalItems = sortedWork.length;
+    const totalPages = Math.ceil(totalItems / crewWorkItemsPerPage);
+    const startIndex = (page - 1) * crewWorkItemsPerPage;
+    const endIndex = startIndex + crewWorkItemsPerPage;
+    const pageItems = sortedWork.slice(startIndex, endIndex);
+    
+    const tbody = document.getElementById('crew-work-tbody');
+    tbody.innerHTML = '';
+    
+    pageItems.forEach(work => {
+        const row = document.createElement('tr');
+        
+        const customerInfo = work.customer_name ? 
+            `<strong>${work.customer_name}</strong><br>
+             ${work.customer_phone ? `<small class="text-muted">${work.customer_phone}</small>` : ''}` :
+            '<span class="text-muted">-</span>';
+        
+        row.innerHTML = `
+            <td>${new Date(work.date).toLocaleDateString('fr-FR')} ${new Date(work.date).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'})}</td>
+            <td>${work.type}</td>
+            <td>${customerInfo}</td>
+            <td class="fw-bold text-success">${parseFloat(work.amount).toLocaleString('fr-FR', {minimumFractionDigits: 3})} TND</td>
+            <td>${work.notes || ''}</td>
+        `;
+        tbody.appendChild(row);
+    });
+    
+    // Update pagination
+    if (totalPages > 1) {
+        updateCrewWorkPagination(page, totalPages);
+        const pagination = document.getElementById('crew-work-pagination');
+        if (pagination) pagination.style.display = 'block';
+    } else {
+        const pagination = document.getElementById('crew-work-pagination');
+        if (pagination) pagination.style.display = 'none';
+    }
+}
+
+function updateCrewWorkPagination(currentPage, totalPages) {
+    const pagination = document.querySelector('#crew-work-pagination .pagination');
+    if (!pagination) return;
+    
+    pagination.innerHTML = '';
+    
+    // Previous button
+    const prevLi = document.createElement('li');
+    prevLi.className = `page-item ${currentPage === 1 ? 'disabled' : ''}`;
+    prevLi.innerHTML = `<a class="page-link" href="#" onclick="changeCrewWorkPage(${currentPage - 1})">Précédent</a>`;
+    pagination.appendChild(prevLi);
+    
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const li = document.createElement('li');
+        li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+        li.innerHTML = `<a class="page-link" href="#" onclick="changeCrewWorkPage(${i})">${i}</a>`;
+        pagination.appendChild(li);
+    }
+    
+    // Next button
+    const nextLi = document.createElement('li');
+    nextLi.className = `page-item ${currentPage === totalPages ? 'disabled' : ''}`;
+    nextLi.innerHTML = `<a class="page-link" href="#" onclick="changeCrewWorkPage(${currentPage + 1})">Suivant</a>`;
+    pagination.appendChild(nextLi);
+}
+
+function changeCrewWorkPage(page) {
+    const totalPages = Math.ceil(crewWorkData.length / crewWorkItemsPerPage);
+    if (page >= 1 && page <= totalPages) {
+        currentCrewWorkPage = page;
+        displayCrewWork(page);
+    }
+}
 
 function showPaymentDetails(paymentId) {
     const payment = paymentsData.find(p => p.id === paymentId);

@@ -1,0 +1,41 @@
+Date	Type	Client	Montant	Notes
+26/05/2025 21:26	Brushing	Mariem Zorgati
++21655271616	78.000 TND	Done good :)
+30/04/2025 15:45	Barbe Design	Mehdi Nasraoui
++216 55 777 444	35.000 TND	Design barbe avec motifs
+30/04/2025 11:00	Extensions + Coloration + Brushing	Rim Elloumi
++216 98 318 642	350.000 TND	Transformation VIP complète
+29/04/2025 14:00	Défrisage Premium + Brushing	Majda Bouslama
++216 55 975 318	250.000 TND	Défrisage japonais avec finition
+29/04/2025 10:30	Coupe + Soin Hydratant	Meriem Sghir
++216 97 888 222	48.000 TND	Cheveux très secs, soin nécessaire
+28/04/2025 09:45	Permanente + Mèches	Sonia Dridi
++216 24 486 753	170.000 TND	Technique avancée parfaite
+27/04/2025 12:15	Coupe + Coloration + Soin	Aida Hammami
++216 97 153 486	125.000 TND	Package complet satisfaction totale
+26/04/2025 15:30	Balayage + Soin + Brushing	Lobna Kacem
++216 22 864 579	155.000 TND	Balayage doré magnifique
+26/04/2025 11:00	Permanente + Coupe	Samia Khalil
++216 22 444 888	115.000 TND	Permanente volumineuse parfaite
+25/04/2025 16:20	Coupe Homme + Barbe	Fares Touati
++216 98 666 333	42.000 TND	Style moderne, très content
+25/04/2025 10:45	Extensions Premium + Brushing	Jihène Bel Haj
++216 98 579 864	320.000 TND	Extensions européennes de luxe
+24/04/2025 13:20	Défrisage + Coloration	Radhia Gharbi
++216 55 468 279	210.000 TND	Transformation totale spectaculaire
+24/04/2025 09:15	Mèches + Coupe + Brushing	Yasmine Belaid
++216 24 111 666	140.000 TND	Transformation complète, magnifique
+23/04/2025 14:30	Coupe Enfant	Malek Zouari
++216 55 333 777	22.000 TND	Coupe tendance pour ado
+23/04/2025 09:30	Coloration Fantaisie	Sarra Mejri
++216 24 135 792	195.000 TND	Couleur rainbow unique
+22/04/2025 16:00	Mèches + Permanente	Nesrine Bouazza
++216 97 246 135	165.000 TND	Technique mixte exceptionnelle
+22/04/2025 10:45	Coloration Racines	Ines Ferchichi
++216 23 888 111	55.000 TND	Retouche racines blondes
+21/04/2025 11:30	Coupe + Barbe + Soin Premium	Amine Lakhal
++216 23 487 951	90.000 TND	Service homme complet de luxe
+20/04/2025 14:45	Balayage + Brushing + Soin	Emna Trabelsi
++216 98 159 753	190.000 TND	Package complet premium
+19/04/2025 15:10	Coupe + Barbe + Soin	Wassim Jebali
++216 97 222 666	60.000 TND	Package complet homme

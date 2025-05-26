@@ -27,9 +27,10 @@ if ($_POST) {
         foreach ($users as $user) {
             if ($user['username'] === $username && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user'] = $user;
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
-                $_SESSION['permissions'] = $user['permissions'];
+                $_SESSION['permissions'] = $user['permissions'] ?? [];
                 
                 // Redirect based on role
                 if ($user['role'] === 'crew') {

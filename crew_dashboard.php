@@ -11,6 +11,11 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'crew') {
 $crew_id = $_SESSION['user']['crew_id'];
 $crew_name = $_SESSION['user']['name'];
 
+// Handle messages
+$message = $_SESSION['message'] ?? '';
+$error = $_SESSION['error'] ?? '';
+unset($_SESSION['message'], $_SESSION['error']);
+
 // Load data
 $work = loadData('work');
 $advances = loadData('advances');
@@ -57,6 +62,20 @@ include 'includes/header.php';
                     <i class="fas fa-plus"></i> Ajouter Travail
                 </button>
             </div>
+            
+            <?php if ($message): ?>
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <?= htmlspecialchars($message) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+            
+            <?php if ($error): ?>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <?= htmlspecialchars($error) ?>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 

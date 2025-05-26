@@ -52,6 +52,9 @@ if ($_POST) {
         $amount = floatval($_POST['amount'] ?? 0);
         $date = $_POST['date'] ?? '';
         $notes = trim($_POST['notes'] ?? '');
+        $customer_name = trim($_POST['customer_name'] ?? '');
+        $customer_phone = trim($_POST['customer_phone'] ?? '');
+        $customer_email = trim($_POST['customer_email'] ?? '');
         
         if (empty($type) || empty($crew_id) || $amount <= 0) {
             $error = 'Le type de travail, l\'équipe et le montant sont obligatoires.';
@@ -63,6 +66,9 @@ if ($_POST) {
                     $w['amount'] = $amount;
                     $w['date'] = $date;
                     $w['notes'] = $notes;
+                    $w['customer_name'] = $customer_name;
+                    $w['customer_phone'] = $customer_phone;
+                    $w['customer_email'] = $customer_email;
                     $w['updated_at'] = date('Y-m-d H:i:s');
                     break;
                 }
@@ -208,6 +214,7 @@ include 'includes/header.php';
                                         <th>Date</th>
                                         <th>Type de Travail</th>
                                         <th>Équipe</th>
+                                        <th>Client</th>
                                         <th>Montant</th>
                                         <th>Notes</th>
                                         <th>Actions</th>
@@ -224,6 +231,19 @@ include 'includes/header.php';
                                             <td><?= date('d/m/Y H:i', strtotime($w['date'])) ?></td>
                                             <td><?= htmlspecialchars($w['type']) ?></td>
                                             <td><?= $crewMember ? htmlspecialchars($crewMember['name']) : 'N/A' ?></td>
+                                            <td>
+                                                <?php if (!empty($w['customer_name'])): ?>
+                                                    <strong><?= htmlspecialchars($w['customer_name']) ?></strong><br>
+                                                    <?php if (!empty($w['customer_phone'])): ?>
+                                                        <small class="text-muted"><?= htmlspecialchars($w['customer_phone']) ?></small><br>
+                                                    <?php endif; ?>
+                                                    <?php if (!empty($w['customer_email'])): ?>
+                                                        <small class="text-muted"><?= htmlspecialchars($w['customer_email']) ?></small>
+                                                    <?php endif; ?>
+                                                <?php else: ?>
+                                                    <span class="text-muted">-</span>
+                                                <?php endif; ?>
+                                            </td>
                                             <td><?= number_format($w['amount'], 2) ?> TND</td>
                                             <td><?= htmlspecialchars($w['notes']) ?></td>
                                             <td>
@@ -377,9 +397,36 @@ include 'includes/header.php';
                         <input type="datetime-local" class="form-control" id="edit_date" name="date">
                     </div>
                     
+                    <hr>
+                    <h6 class="text-primary">Informations Client</h6>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_customer_name" class="form-label">Nom du Client</label>
+                                <input type="text" class="form-control" id="edit_customer_name" name="customer_name" 
+                                       placeholder="Nom complet du client">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="edit_customer_phone" class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" id="edit_customer_phone" name="customer_phone" 
+                                       placeholder="+216 XX XXX XXX">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_customer_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="edit_customer_email" name="customer_email" 
+                               placeholder="client@example.com">
+                    </div>
+                    
                     <div class="mb-3">
                         <label for="edit_notes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="edit_notes" name="notes" rows="3"></textarea>
+                        <textarea class="form-control" id="edit_notes" name="notes" rows="3" 
+                                  placeholder="Notes sur le service ou le client..."></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -428,6 +475,9 @@ function editWork(id) {
         document.getElementById('edit_amount').value = work.amount;
         document.getElementById('edit_date').value = work.date.substring(0, 16);
         document.getElementById('edit_notes').value = work.notes || '';
+        document.getElementById('edit_customer_name').value = work.customer_name || '';
+        document.getElementById('edit_customer_phone').value = work.customer_phone || '';
+        document.getElementById('edit_customer_email').value = work.customer_email || '';
         
         new bootstrap.Modal(document.getElementById('editWorkModal')).show();
     }

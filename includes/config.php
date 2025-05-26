@@ -75,18 +75,7 @@ $navigation = [
         'url' => 'charges.php',
         'permission' => 'edit'
     ],
-    'advances' => [
-        'title' => 'Avances',
-        'icon' => 'fas fa-hand-holding-usd',
-        'url' => 'advances.php',
-        'permission' => 'edit'
-    ],
-    'payments' => [
-        'title' => 'Paiements',
-        'icon' => 'fas fa-money-check-alt',
-        'url' => 'payments.php',
-        'permission' => 'edit'
-    ],
+
     'statistics' => [
         'title' => 'Statistiques',
         'icon' => 'fas fa-chart-bar',

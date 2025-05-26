@@ -157,6 +157,9 @@ include 'includes/header.php';
                                             <td><?= number_format($member['salary_base'], 2) ?> TND</td>
                                             <td><?= date('d/m/Y', strtotime($member['created_at'])) ?></td>
                                             <td>
+                                                <a href="crew_details.php?id=<?= $member['id'] ?>" class="btn btn-sm btn-outline-info">
+                                                    <i class="fas fa-eye"></i> Détails
+                                                </a>
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
                                                         onclick="editCrew('<?= $member['id'] ?>')">
                                                     <i class="fas fa-edit"></i>

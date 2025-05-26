@@ -205,7 +205,7 @@ include 'includes/header.php';
                         <h5 class="text-muted">Aucun travail trouvé</h5>
                         <p class="text-muted">Commencez par enregistrer des travaux ou ajustez vos filtres.</p>
                     </div>
-                        <div class="table-responsive">
+                    <div class="table-responsive" id="work-table-container">
                             <table class="table table-hover">
                                 <thead>
                                     <tr>
@@ -587,8 +587,10 @@ document.addEventListener('DOMContentLoaded', function() {
     if (workData.length > 0) {
         displayWorkPage(1);
         document.getElementById('no-work-message').style.display = 'none';
+        document.getElementById('work-table-container').style.display = 'block';
     } else {
         document.getElementById('no-work-message').style.display = 'block';
+        document.getElementById('work-table-container').style.display = 'none';
         document.getElementById('work-pagination').style.display = 'none';
         document.getElementById('work-summary').style.display = 'none';
     }

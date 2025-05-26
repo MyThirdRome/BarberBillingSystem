@@ -13,7 +13,9 @@ define('MAX_LOGIN_ATTEMPTS', 5);
 define('LOCKOUT_TIME', 900); // 15 minutes
 
 // File storage settings
-define('JSON_PRETTY_PRINT', true);
+if (!defined('JSON_PRETTY_PRINT')) {
+    define('JSON_PRETTY_PRINT', true);
+}
 define('BACKUP_ENABLED', true);
 define('MAX_BACKUPS', 10);
 
@@ -35,10 +37,12 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // PHP configuration for better security
-ini_set('session.cookie_httponly', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_secure', 0); // Set to 1 if using HTTPS
-ini_set('session.gc_maxlifetime', SESSION_TIMEOUT);
+if (session_status() === PHP_SESSION_NONE) {
+    ini_set('session.cookie_httponly', 1);
+    ini_set('session.use_only_cookies', 1);
+    ini_set('session.cookie_secure', 0); // Set to 1 if using HTTPS
+    ini_set('session.gc_maxlifetime', SESSION_TIMEOUT);
+}
 
 // Application constants
 define('DEFAULT_LANGUAGE', 'fr');

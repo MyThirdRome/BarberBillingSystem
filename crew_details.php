@@ -688,31 +688,34 @@ function showPaymentDetails(paymentId) {
     const date = new Date(payment.payment_date || payment.created_at);
     document.getElementById('detail-date').textContent = date.toLocaleDateString('fr-FR');
     
-    // Format period
-    const period = payment.salary_month || '';
-    if (period) {
-        const [year, month] = period.split('-');
+    // Format period from period_start date
+    if (payment.period_start) {
+        const startDate = new Date(payment.period_start);
         const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
                            'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
         document.getElementById('detail-period').textContent = 
-            monthNames[parseInt(month) - 1] + ' ' + year;
+            monthNames[startDate.getMonth()] + ' ' + startDate.getFullYear();
     }
     
-    // Fill calculation details
+    // Fill calculation details using correct field names
     document.getElementById('detail-base-salary').textContent = 
         (payment.base_salary || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
     document.getElementById('detail-revenue').textContent = 
-        (payment.total_revenue || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+        (payment.work_revenue || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
     document.getElementById('detail-bonus-revenue').textContent = 
-        (payment.bonus_revenue || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+        (payment.eligible_bonus || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
     document.getElementById('detail-bonus-percentage').textContent = 
         (payment.bonus_percentage || 0).toFixed(1);
     document.getElementById('detail-bonus-amount').textContent = 
         (payment.bonus_amount || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    
+    // Calculate subtotal (base + bonus)
+    const subtotal = (payment.base_salary || 0) + (payment.bonus_amount || 0);
     document.getElementById('detail-subtotal').textContent = 
-        (payment.gross_payment || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+        subtotal.toLocaleString('fr-FR', {minimumFractionDigits: 3});
+    
     document.getElementById('detail-advances').textContent = 
-        (payment.total_advances || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
+        (payment.advances_deducted || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
     document.getElementById('detail-net-payment').textContent = 
         (payment.net_payment || 0).toLocaleString('fr-FR', {minimumFractionDigits: 3});
     

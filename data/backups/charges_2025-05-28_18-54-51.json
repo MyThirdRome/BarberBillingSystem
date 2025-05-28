@@ -1,0 +1,67 @@
+[
+    {
+        "id": "6834ca0a06b8d6.64501165",
+        "type": "Avance - Ahmad Ali",
+        "amount": 150,
+        "date": "2025-04-05 14:30:00",
+        "description": "Avance: Frais médicaux urgents",
+        "category": "Salaires et Avances",
+        "created_at": "2025-05-26 22:07:38",
+        "crew_id": "6834be4beb0bd4.07671647",
+        "advance_id": "advance_001"
+    },
+    {
+        "id": "6834ca0a06bb63.40347642",
+        "type": "Avance - Ahmad Ali",
+        "amount": 100,
+        "date": "2025-04-15 10:45:00",
+        "description": "Avance: Achat matériel professionnel",
+        "category": "Salaires et Avances",
+        "created_at": "2025-05-26 22:07:38",
+        "crew_id": "6834be4beb0bd4.07671647",
+        "advance_id": "advance_002"
+    },
+    {
+        "id": "6834ca0a06bc40.84576536",
+        "type": "Avance - Ahmad Ali",
+        "amount": 50,
+        "date": "2025-04-25 16:20:00",
+        "description": "Avance: Transport famille",
+        "category": "Salaires et Avances",
+        "created_at": "2025-05-26 22:07:38",
+        "crew_id": "6834be4beb0bd4.07671647",
+        "advance_id": "advance_003"
+    },
+    {
+        "id": "6834ca0a06bcf8.31546042",
+        "type": "Avance - Ahmad Ali",
+        "amount": 200,
+        "date": "2025-05-26T21:29",
+        "description": "Avance: Sahria",
+        "category": "Salaires et Avances",
+        "created_at": "2025-05-26 22:07:38",
+        "crew_id": "6834be4beb0bd4.07671647",
+        "advance_id": "6834c12a26f140.11109586"
+    },
+    {
+        "id": "6834ca0a06be30.30683686",
+        "type": "Salaire - Ahmad Ali",
+        "amount": 812.2,
+        "date": "2025-04-01",
+        "description": "Salaire pour April 2025 (Base: 800.000 TND, Avances: 300.000 TND, Bonus: 312.200 TND)",
+        "category": "Salaires et Avances",
+        "created_at": "2025-05-26 22:07:38",
+        "crew_id": "6834be4beb0bd4.07671647",
+        "payment_id": "6834c36d3566d6.08222422",
+        "salary_month": "2025-04"
+    },
+    {
+        "id": "6835bf596e2763.97054531",
+        "type": "divers",
+        "crew_id": "",
+        "amount": 165,
+        "description": "Coloration \r\nProduit de nettoyage \r\nProduit machine à laver \r\nMasque",
+        "date": "2025-05-27",
+        "created_at": "2025-05-27 15:34:17"
+    }
+]

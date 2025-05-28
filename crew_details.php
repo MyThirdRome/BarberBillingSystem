@@ -443,7 +443,7 @@ include 'includes/header.php';
     <ul class="nav nav-tabs" id="crewTabs" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active" id="work-tab" data-bs-toggle="tab" data-bs-target="#work" 
-                    type="button" role="tab">Travaux Récents</button>
+                    type="button" role="tab">Prestations Récentes</button>
         </li>
         <li class="nav-item" role="presentation">
             <button class="nav-link" id="advances-tab" data-bs-toggle="tab" data-bs-target="#advances" 

@@ -265,7 +265,7 @@ include 'includes/header.php';
                                                     return $w['crew_id'] === $member['id'];
                                                 });
                                                 echo count($memberWork);
-                                                ?> travaux
+                                                ?> prestations
                                             </span>
                                         </div>
                                     <?php endforeach; ?>

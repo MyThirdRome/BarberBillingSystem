@@ -148,11 +148,11 @@ include 'includes/header.php';
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
-                    <h5 class="mb-0">Mes Travaux Récents</h5>
+                    <h5 class="mb-0">Mes Prestations Récentes</h5>
                 </div>
                 <div class="card-body">
                     <?php if (empty($myWork)): ?>
-                        <p class="text-muted">Aucun travail enregistré.</p>
+                        <p class="text-muted">Aucune prestation enregistrée.</p>
                     <?php else: ?>
                         <div class="table-responsive">
                             <table class="table table-striped">

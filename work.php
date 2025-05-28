@@ -133,9 +133,9 @@ include 'includes/header.php';
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3">Gestion des Travaux</h1>
+                <h1 class="h3">Gestion des Prestations</h1>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addWorkModal">
-                    <i class="fas fa-plus"></i> Ajouter un Travail
+                    <i class="fas fa-plus"></i> Ajouter une Prestation
                 </button>
             </div>
             
@@ -250,7 +250,7 @@ include 'includes/header.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Ajouter un Travail</h5>
+                <h5 class="modal-title">Ajouter une Prestation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
@@ -258,7 +258,7 @@ include 'includes/header.php';
                     <input type="hidden" name="action" value="add">
                     
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type de Travail *</label>
+                        <label for="type" class="form-label">Type de Prestation *</label>
                         <input type="text" class="form-control" id="type" name="type" 
                                placeholder="Ex: Coupe, Barbe, Coloration..." required>
                     </div>
@@ -331,7 +331,7 @@ include 'includes/header.php';
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Modifier le Travail</h5>
+                <h5 class="modal-title">Modifier la Prestation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST">
@@ -340,7 +340,7 @@ include 'includes/header.php';
                     <input type="hidden" name="id" id="edit_id">
                     
                     <div class="mb-3">
-                        <label for="edit_type" class="form-label">Type de Travail *</label>
+                        <label for="edit_type" class="form-label">Type de Prestation *</label>
                         <input type="text" class="form-control" id="edit_type" name="type" required>
                     </div>
                     

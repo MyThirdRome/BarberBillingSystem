@@ -64,7 +64,7 @@ $navigation = [
         'permission' => 'edit'
     ],
     'work' => [
-        'title' => 'Travaux',
+        'title' => 'Prestations',
         'icon' => 'fas fa-cut',
         'url' => 'work.php',
         'permission' => 'edit'

@@ -54,14 +54,5 @@
         "crew_id": "6834be4beb0bd4.07671647",
         "payment_id": "6834c36d3566d6.08222422",
         "salary_month": "2025-04"
-    },
-    {
-        "id": "6835bf596e2763.97054531",
-        "type": "divers",
-        "crew_id": "",
-        "amount": 165,
-        "description": "Coloration \r\nProduit de nettoyage \r\nProduit machine à laver \r\nMasque",
-        "date": "2025-05-27",
-        "created_at": "2025-05-27 15:34:17"
     }
 ]

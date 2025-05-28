@@ -8,6 +8,9 @@ $charges = loadData('charges');
 $advances = loadData('advances');
 $payments = loadData('payments');
 
+// Get selected month from query parameter, default to current month
+$selectedMonth = $_GET['month'] ?? date('Y-m');
+
 // Calculate today's statistics
 $today = date('Y-m-d');
 $todayWork = array_filter($work, function($w) use ($today) {
@@ -17,19 +20,28 @@ $todayWork = array_filter($work, function($w) use ($today) {
 $todayRevenue = array_sum(array_column($todayWork, 'amount'));
 $todayWorkCount = count($todayWork);
 
-// Calculate this month's statistics
-$thisMonth = date('Y-m');
-$monthWork = array_filter($work, function($w) use ($thisMonth) {
-    return substr($w['date'], 0, 7) === $thisMonth;
+// Calculate selected month's statistics
+$monthWork = array_filter($work, function($w) use ($selectedMonth) {
+    return substr($w['date'], 0, 7) === $selectedMonth;
 });
 
 $monthRevenue = array_sum(array_column($monthWork, 'amount'));
 $monthWorkCount = count($monthWork);
 
-// Calculate total advances
-$totalAdvances = array_sum(array_filter(array_column($advances, 'amount'), function($a) {
-    return $a > 0;
-}));
+// Calculate month's charges (spendings)
+$monthCharges = array_filter($charges, function($c) use ($selectedMonth) {
+    return substr($c['date'], 0, 7) === $selectedMonth;
+});
+$monthSpendings = array_sum(array_column($monthCharges, 'amount'));
+
+// Calculate unpaid advances (pending advances)
+$pendingAdvances = array_filter($advances, function($a) {
+    return $a['status'] === 'pending';
+});
+$totalPendingAdvances = array_sum(array_column($pendingAdvances, 'amount'));
+
+// Calculate net result for the month (revenue - spendings)
+$monthNetResult = $monthRevenue - $monthSpendings;
 
 include 'includes/header.php';
 ?>
@@ -39,15 +51,93 @@ include 'includes/header.php';
         <div class="col-12">
             <h1 class="h3 mb-4">Tableau de Bord</h1>
             
-            <!-- Statistics Cards -->
+            <!-- Month Selector -->
             <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h5 class="card-title mb-0">Statistiques Mensuelles</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <form method="GET" class="d-flex">
+                                        <select name="month" class="form-select me-2" onchange="this.form.submit()">
+                                            <?php
+                                            // Generate last 12 months
+                                            for ($i = 0; $i < 12; $i++) {
+                                                $month = date('Y-m', strtotime("-$i months"));
+                                                $monthName = date('F Y', strtotime($month . '-01'));
+                                                $selected = ($month === $selectedMonth) ? 'selected' : '';
+                                                echo "<option value='$month' $selected>$monthName</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Statistics Cards -->
+            <div class="row mb-4">
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="card bg-success text-white">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= $todayWorkCount ?></h4>
-                                    <p class="card-text">Travaux Aujourd'hui</p>
+                                    <h4 class="card-title"><?= number_format($monthRevenue, 2) ?> TND</h4>
+                                    <p class="card-text">Revenus</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-money-bill-wave fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="card bg-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title"><?= number_format($monthSpendings, 2) ?> TND</h4>
+                                    <p class="card-text">Charges</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-credit-card fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title"><?= number_format($totalPendingAdvances, 2) ?> TND</h4>
+                                    <p class="card-text">Avances Impayées</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-hand-holding-usd fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title"><?= $monthWorkCount ?></h4>
+                                    <p class="card-text">Travaux</p>
                                 </div>
                                 <div class="align-self-center">
                                     <i class="fas fa-cut fa-2x"></i>
@@ -57,48 +147,61 @@ include 'includes/header.php';
                     </div>
                 </div>
                 
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
+                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                    <div class="card <?= $monthNetResult >= 0 ? 'bg-success' : 'bg-danger' ?> text-white">
                         <div class="card-body">
                             <div class="d-flex justify-content-between">
                                 <div>
-                                    <h4 class="card-title"><?= number_format($todayRevenue, 3) ?> TND</h4>
-                                    <p class="card-text">Revenus Aujourd'hui</p>
+                                    <h4 class="card-title"><?= number_format($monthNetResult, 2) ?> TND</h4>
+                                    <p class="card-text">Résultat Net</p>
                                 </div>
                                 <div class="align-self-center">
-                                    <i class="fas fa-euro-sign fa-2x"></i>
+                                    <i class="fas fa-chart-line fa-2x"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= $monthWorkCount ?></h4>
-                                    <p class="card-text">Travaux ce Mois</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-calendar fa-2x"></i>
-                                </div>
-                            </div>
+            </div>
+
+            <!-- Today's Quick Stats -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Statistiques d'Aujourd'hui</h5>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= number_format($totalAdvances, 3) ?> TND</h4>
-                                    <p class="card-text">Avances Totales</p>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card bg-primary text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 class="card-title"><?= $todayWorkCount ?></h4>
+                                                    <p class="card-text">Travaux Effectués</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-cut fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-hand-holding-usd fa-2x"></i>
+                                
+                                <div class="col-md-6">
+                                    <div class="card bg-success text-white">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div>
+                                                    <h4 class="card-title"><?= number_format($todayRevenue, 2) ?> TND</h4>
+                                                    <p class="card-text">Revenus du Jour</p>
+                                                </div>
+                                                <div class="align-self-center">
+                                                    <i class="fas fa-money-bill-wave fa-2x"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

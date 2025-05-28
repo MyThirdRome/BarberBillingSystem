@@ -18,5 +18,14 @@
         "created_at": "2025-05-28 19:01:34",
         "last_activity": "2025-05-28 19:01:54",
         "login_count": 0
+    },
+    {
+        "id": "683741f7bb8ba3.18737855",
+        "username": "foulenn",
+        "password": "$2y$10$O6PTJVbMSLMkPrX1bm6JZuvix6h0r\/ckoIWEh3ziUUV5wbp\/sW2HS",
+        "role": "crew",
+        "crew_id": "683741f7bb8af2.18218834",
+        "name": "hanen mbarki",
+        "created_at": "2025-05-28 19:03:51"
     }
 ]

@@ -103,6 +103,18 @@ $totalOtherCharges = array_sum(array_column($otherCharges, 'amount'));
 // Total spending this month (advances + other charges, NOT salaries)
 $totalMonthlySpending = $totalAdvancesPaid + $totalOtherCharges;
 
+// Today's spending
+$today = date('Y-m-d');
+$todayAdvances = array_filter($advances, function($a) use ($today) {
+    return date('Y-m-d', strtotime($a['date'])) === $today;
+});
+$todayOtherCharges = array_filter($charges, function($c) use ($today) {
+    return date('Y-m-d', strtotime($c['date'])) === $today && 
+           strpos($c['type'], 'Salaire') === false && 
+           strpos($c['type'], 'Avance') === false;
+});
+$todaySpending = array_sum(array_column($todayAdvances, 'amount')) + array_sum(array_column($todayOtherCharges, 'amount'));
+
 // Filter charges
 $type_filter = $_GET['type_filter'] ?? '';
 $date_from = $_GET['date_from'] ?? '';
@@ -198,7 +210,7 @@ include 'includes/header.php';
 
             <!-- Monthly Statistics Cards -->
             <div class="row mb-4 g-3">
-                <div class="col-xl-4 col-lg-4 col-md-6">
+                <div class="col-xl-6 col-lg-6 col-md-6">
                     <div class="card bg-danger text-white h-100">
                         <div class="card-body d-flex align-items-center">
                             <div class="flex-grow-1">
@@ -214,33 +226,17 @@ include 'includes/header.php';
                     </div>
                 </div>
                 
-                <div class="col-xl-4 col-lg-4 col-md-6">
-                    <div class="card bg-warning text-white h-100">
+                <div class="col-xl-6 col-lg-6 col-md-6">
+                    <div class="card bg-info text-white h-100">
                         <div class="card-body d-flex align-items-center">
                             <div class="flex-grow-1">
-                                <h4 class="card-title mb-1"><?= number_format($totalAdvancesPaid, 2) ?></h4>
+                                <h4 class="card-title mb-1"><?= number_format($todaySpending, 2) ?></h4>
                                 <small class="text-white-50">TND</small>
-                                <p class="card-text mb-0 mt-1">Avances Payées</p>
-                                <small class="text-white-50"><?= count($monthlyAdvances) ?> avances</small>
+                                <p class="card-text mb-0 mt-1">Aujourd'hui</p>
+                                <small class="text-white-50"><?= date('d/m/Y') ?></small>
                             </div>
                             <div class="ms-3">
-                                <i class="fas fa-hand-holding-usd fa-3x opacity-75"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-xl-4 col-lg-4 col-md-6">
-                    <div class="card bg-secondary text-white h-100">
-                        <div class="card-body d-flex align-items-center">
-                            <div class="flex-grow-1">
-                                <h4 class="card-title mb-1"><?= number_format($totalOtherCharges, 2) ?></h4>
-                                <small class="text-white-50">TND</small>
-                                <p class="card-text mb-0 mt-1">Autres Charges</p>
-                                <small class="text-white-50"><?= count($otherCharges) ?> charges</small>
-                            </div>
-                            <div class="ms-3">
-                                <i class="fas fa-receipt fa-3x opacity-75"></i>
+                                <i class="fas fa-calendar-day fa-3x opacity-75"></i>
                             </div>
                         </div>
                     </div>

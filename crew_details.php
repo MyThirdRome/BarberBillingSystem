@@ -200,20 +200,64 @@ if ($_POST) {
     }
 }
 
+// Get selected month for statistics (default to current month)
+$selectedMonth = $_GET['stats_month'] ?? date('Y-m');
+
 // Calculate statistics
 $totalWork = array_sum(array_column($crewWork, 'amount'));
-$pendingAdvances = array_sum(array_column(array_filter($crewAdvances, function($a) {
-    return $a['status'] === 'pending';
-}), 'amount'));
-$totalAdvances = array_sum(array_column($crewAdvances, 'amount'));
-$totalPayments = array_sum(array_column($crewPayments, 'net_payment'));
 
-// This month statistics
+// Today's revenue
+$today = date('Y-m-d');
+$todayWork = array_filter($crewWork, function($w) use ($today) {
+    return date('Y-m-d', strtotime($w['date'])) === $today;
+});
+$todayRevenue = array_sum(array_column($todayWork, 'amount'));
+
+// Current month revenue
 $thisMonth = date('Y-m');
 $thisMonthWork = array_filter($crewWork, function($w) use ($thisMonth) {
     return date('Y-m', strtotime($w['date'])) === $thisMonth;
 });
-$thisMonthEarnings = array_sum(array_column($thisMonthWork, 'amount'));
+$thisMonthRevenue = array_sum(array_column($thisMonthWork, 'amount'));
+
+// Selected month revenue
+$selectedMonthWork = array_filter($crewWork, function($w) use ($selectedMonth) {
+    return date('Y-m', strtotime($w['date'])) === $selectedMonth;
+});
+$selectedMonthRevenue = array_sum(array_column($selectedMonthWork, 'amount'));
+
+// This month's advances only (not total)
+$thisMonthAdvances = array_filter($crewAdvances, function($a) use ($thisMonth) {
+    return date('Y-m', strtotime($a['date'])) === $thisMonth;
+});
+$thisMonthAdvancesAmount = array_sum(array_column($thisMonthAdvances, 'amount'));
+
+// Check which months have already been paid
+$paidMonths = [];
+foreach ($crewPayments as $payment) {
+    if (isset($payment['period_start'])) {
+        $paidMonth = date('Y-m', strtotime($payment['period_start']));
+        $paidMonths[] = $paidMonth;
+    }
+}
+
+// Determine available months for payment
+$currentMonth = date('Y-m');
+$lastMonth = date('Y-m', strtotime('-1 month'));
+$availableForPayment = [];
+
+// Can pay for last month if not already paid
+if (!in_array($lastMonth, $paidMonths)) {
+    $availableForPayment[] = $lastMonth;
+}
+
+// Can pay for months before last month if not already paid
+for ($i = 2; $i <= 12; $i++) {
+    $month = date('Y-m', strtotime("-$i month"));
+    if (!in_array($month, $paidMonths)) {
+        $availableForPayment[] = $month;
+    }
+}
 
 include 'includes/header.php';
 ?>
@@ -235,7 +279,12 @@ include 'includes/header.php';
                     <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#addAdvanceModal">
                         <i class="fas fa-hand-holding-usd"></i> Nouvelle Avance
                     </button>
-                    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
+                    <button type="button" class="btn btn-success" 
+                            <?php if (empty($availableForPayment)): ?>
+                                disabled title="Aucun mois disponible pour paiement"
+                            <?php else: ?>
+                                data-bs-toggle="modal" data-bs-target="#addPaymentModal"
+                            <?php endif; ?>>
                         <i class="fas fa-money-bill-wave"></i> Nouveau Paiement
                     </button>
                 </div>
@@ -257,15 +306,61 @@ include 'includes/header.php';
         </div>
     </div>
 
+    <!-- Month Selector for Statistics -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h5 class="card-title mb-0">Statistiques de Revenus</h5>
+                        </div>
+                        <div class="col-md-6">
+                            <form method="GET" class="d-flex">
+                                <input type="hidden" name="id" value="<?= $crew_id ?>">
+                                <select name="stats_month" class="form-select me-2" onchange="this.form.submit()">
+                                    <?php
+                                    for ($i = 0; $i < 12; $i++) {
+                                        $month = date('Y-m', strtotime("-$i months"));
+                                        $monthName = date('F Y', strtotime($month . '-01'));
+                                        $selected = ($month === $selectedMonth) ? 'selected' : '';
+                                        echo "<option value='$month' $selected>$monthName</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Statistics Cards -->
     <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h4 class="card-title"><?= number_format($todayRevenue, 2) ?> TND</h4>
+                            <p class="card-text">Aujourd'hui</p>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-clock fa-2x"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="col-md-3">
             <div class="card bg-primary text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($thisMonthEarnings, 3) ?> TND</h4>
-                            <p class="card-text">Ce Mois</p>
+                            <h4 class="card-title"><?= number_format($selectedMonthRevenue, 2) ?> TND</h4>
+                            <p class="card-text"><?= date('F Y', strtotime($selectedMonth . '-01')) ?></p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-calendar-check fa-2x"></i>
@@ -274,28 +369,30 @@ include 'includes/header.php';
                 </div>
             </div>
         </div>
+        
         <div class="col-md-3">
             <div class="card bg-success text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($totalWork, 3) ?> TND</h4>
-                            <p class="card-text">Total Travaux</p>
+                            <h4 class="card-title"><?= number_format($totalWork, 2) ?> TND</h4>
+                            <p class="card-text">Total Revenus</p>
                         </div>
                         <div class="align-self-center">
-                            <i class="fas fa-cut fa-2x"></i>
+                            <i class="fas fa-chart-line fa-2x"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         <div class="col-md-3">
             <div class="card bg-warning text-white">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($pendingAdvances, 3) ?> TND</h4>
-                            <p class="card-text">Avances Pending</p>
+                            <h4 class="card-title"><?= number_format($thisMonthAdvancesAmount, 2) ?> TND</h4>
+                            <p class="card-text">Avances ce Mois</p>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-hand-holding-usd fa-2x"></i>
@@ -461,7 +558,8 @@ include 'includes/header.php';
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
+                                        <th>Mois Payé</th>
+                                        <th>Date Paiement</th>
                                         <th>Montant</th>
                                         <th>% Bonus</th>
                                         <th>Notes</th>
@@ -477,6 +575,15 @@ include 'includes/header.php';
                                     
                                     foreach ($crewPayments as $payment): ?>
                                         <tr style="cursor: pointer;" onclick="showPaymentDetails('<?= $payment['id'] ?>')">
+                                            <td class="fw-bold">
+                                                <?php 
+                                                if (isset($payment['period_start'])) {
+                                                    echo date('F Y', strtotime($payment['period_start']));
+                                                } else {
+                                                    echo '<span class="text-muted">Non spécifié</span>';
+                                                }
+                                                ?>
+                                            </td>
                                             <td><?= date('d/m/Y', strtotime($payment['payment_date'] ?? $payment['created_at'])) ?></td>
                                             <td class="fw-bold text-success"><?= number_format($payment['net_payment'] ?? 0, 3) ?> TND</td>
                                             <td><?= number_format($payment['bonus_percentage'] ?? 0, 1) ?>%</td>
@@ -547,9 +654,23 @@ include 'includes/header.php';
                     <!-- Period Selection -->
                     <div class="mb-3">
                         <label for="salary_month" class="form-label">Mois de Salaire *</label>
-                        <input type="month" class="form-control" id="salary_month" name="salary_month" 
-                               value="<?= date('Y-m', strtotime('last month')) ?>" required onchange="calculateSalary()">
-                        <small class="text-muted">Par défaut: mois précédent</small>
+                        <?php if (empty($availableForPayment)): ?>
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Aucun mois disponible pour paiement. Tous les mois éligibles ont déjà été payés.
+                            </div>
+                            <select class="form-control" disabled>
+                                <option>Aucun mois disponible</option>
+                            </select>
+                        <?php else: ?>
+                            <select class="form-control" id="salary_month" name="salary_month" required onchange="calculateSalary()">
+                                <option value="">Sélectionner un mois</option>
+                                <?php foreach ($availableForPayment as $month): ?>
+                                    <option value="<?= $month ?>"><?= date('F Y', strtotime($month . '-01')) ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <small class="text-muted">Seuls les mois non payés sont disponibles (pas le mois actuel)</small>
+                        <?php endif; ?>
                     </div>
                     
                     <div class="mb-3">

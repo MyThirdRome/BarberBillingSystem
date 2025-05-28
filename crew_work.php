@@ -42,7 +42,7 @@ if ($_POST && $_POST['action'] === 'add') {
         
         $work[] = $newWork;
         saveData('work', $work);
-        $_SESSION['message'] = 'Travail ajouté avec succès.';
+        $_SESSION['message'] = 'Prestation ajoutée avec succès.';
     }
 }
 

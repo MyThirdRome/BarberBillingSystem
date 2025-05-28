@@ -306,7 +306,7 @@ include 'includes/header.php';
                                 <tbody>
                                     <?php foreach ($filteredCharges as $charge): 
                                         $crewMember = null;
-                                        if ($charge['crew_id']) {
+                                        if (isset($charge['crew_id']) && $charge['crew_id']) {
                                             $crewMember = array_filter($crew, function($c) use ($charge) {
                                                 return $c['id'] === $charge['crew_id'];
                                             });

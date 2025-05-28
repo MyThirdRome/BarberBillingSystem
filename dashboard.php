@@ -82,85 +82,82 @@ include 'includes/header.php';
             </div>
 
             <!-- Monthly Statistics Cards -->
-            <div class="row mb-4">
-                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= number_format($monthRevenue, 2) ?> TND</h4>
-                                    <p class="card-text">Revenus</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-money-bill-wave fa-2x"></i>
-                                </div>
+            <div class="row mb-4 g-3">
+                <div class="col-xl-2 col-lg-4 col-md-6">
+                    <div class="card bg-success text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($monthRevenue, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Revenus</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-money-bill-wave fa-2x opacity-75"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                    <div class="card bg-danger text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= number_format($monthSpendings, 2) ?> TND</h4>
-                                    <p class="card-text">Charges</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-credit-card fa-2x"></i>
-                                </div>
+                <div class="col-xl-2 col-lg-4 col-md-6">
+                    <div class="card bg-danger text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($monthSpendings, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Charges</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-credit-card fa-2x opacity-75"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= number_format($totalPendingAdvances, 2) ?> TND</h4>
-                                    <p class="card-text">Avances Impayées</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-hand-holding-usd fa-2x"></i>
-                                </div>
+                <div class="col-xl-2 col-lg-4 col-md-6">
+                    <div class="card bg-warning text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($totalPendingAdvances, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Avances Impayées</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-hand-holding-usd fa-2x opacity-75"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= $monthWorkCount ?></h4>
-                                    <p class="card-text">Travaux</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-cut fa-2x"></i>
-                                </div>
+                <div class="col-xl-2 col-lg-4 col-md-6">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= $monthWorkCount ?></h5>
+                                <small class="text-white-50">Nombre</small>
+                                <p class="card-text mb-0 mt-1 small">Travaux</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-cut fa-2x opacity-75"></i>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                    <div class="card <?= $monthNetResult >= 0 ? 'bg-success' : 'bg-danger' ?> text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="card-title"><?= number_format($monthNetResult, 2) ?> TND</h4>
-                                    <p class="card-text">Résultat Net</p>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-chart-line fa-2x"></i>
-                                </div>
+                <div class="col-xl-4 col-lg-8 col-md-12">
+                    <div class="card <?= $monthNetResult >= 0 ? 'bg-success' : 'bg-danger' ?> text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h4 class="card-title mb-1"><?= number_format($monthNetResult, 2) ?></h4>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1">Résultat Net</p>
+                                <small class="text-white-50">(Revenus - Charges)</small>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-chart-line fa-3x opacity-75"></i>
                             </div>
                         </div>
                     </div>
+                </div>
             </div>
 
             <!-- Today's Quick Stats -->

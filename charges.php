@@ -6,8 +6,12 @@ checkPermission('edit');
 
 $charges = loadData('charges');
 $crew = loadData('crew');
+$advances = loadData('advances');
 $message = '';
 $error = '';
+
+// Get selected month from query parameter, default to current month
+$selectedMonth = $_GET['month'] ?? date('Y-m');
 
 // Handle form submissions
 if ($_POST) {
@@ -79,6 +83,46 @@ if ($_POST) {
     }
 }
 
+// Calculate monthly statistics for selected month
+$currentMonth = date('Y-m');
+$isCurrentMonth = ($selectedMonth === $currentMonth);
+
+// Monthly charges for selected month
+$monthlyCharges = array_filter($charges, function($c) use ($selectedMonth) {
+    return date('Y-m', strtotime($c['date'])) === $selectedMonth;
+});
+
+// Monthly advances for selected month (if current month, include pending advances)
+if ($isCurrentMonth) {
+    // For current month, include all advances from this month
+    $monthlyAdvances = array_filter($advances, function($a) use ($selectedMonth) {
+        return date('Y-m', strtotime($a['date'])) === $selectedMonth;
+    });
+} else {
+    // For past months, only count advances that were part of charges
+    $monthlyAdvances = array_filter($monthlyCharges, function($c) {
+        return isset($c['advance_id']);
+    });
+}
+
+// Calculate totals
+$totalMonthlyCharges = array_sum(array_column($monthlyCharges, 'amount'));
+$totalMonthlyAdvances = $isCurrentMonth ? 
+    array_sum(array_column($monthlyAdvances, 'amount')) : 
+    array_sum(array_column($monthlyAdvances, 'amount'));
+
+// Separate salary payments from other charges
+$salaryCharges = array_filter($monthlyCharges, function($c) {
+    return strpos($c['type'], 'Salaire') !== false;
+});
+$totalSalaries = array_sum(array_column($salaryCharges, 'amount'));
+
+// Other charges (non-salary, non-advance)
+$otherCharges = array_filter($monthlyCharges, function($c) {
+    return strpos($c['type'], 'Salaire') === false && strpos($c['type'], 'Avance') === false;
+});
+$totalOtherCharges = array_sum(array_column($otherCharges, 'amount'));
+
 // Filter charges
 $type_filter = $_GET['type_filter'] ?? '';
 $date_from = $_GET['date_from'] ?? '';
@@ -142,6 +186,98 @@ include 'includes/header.php';
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
             <?php endif; ?>
+            
+            <!-- Month Selector -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-6">
+                                    <h5 class="card-title mb-0">Statistiques des Charges</h5>
+                                </div>
+                                <div class="col-md-6">
+                                    <form method="GET" class="d-flex">
+                                        <select name="month" class="form-select me-2" onchange="this.form.submit()">
+                                            <?php
+                                            for ($i = 0; $i < 12; $i++) {
+                                                $month = date('Y-m', strtotime("-$i months"));
+                                                $monthName = date('F Y', strtotime($month . '-01'));
+                                                $selected = ($month === $selectedMonth) ? 'selected' : '';
+                                                echo "<option value='$month' $selected>$monthName</option>";
+                                            }
+                                            ?>
+                                        </select>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monthly Statistics Cards -->
+            <div class="row mb-4 g-3">
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="card bg-danger text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($totalMonthlyCharges, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Total Charges</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-credit-card fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($totalSalaries, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Salaires</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-money-bill-wave fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="card bg-warning text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($totalMonthlyAdvances, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small"><?= $isCurrentMonth ? 'Avances ce Mois' : 'Avances Payées' ?></p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-hand-holding-usd fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="card bg-secondary text-white h-100">
+                        <div class="card-body d-flex align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="card-title mb-1"><?= number_format($totalOtherCharges, 2) ?></h5>
+                                <small class="text-white-50">TND</small>
+                                <p class="card-text mb-0 mt-1 small">Autres Charges</p>
+                            </div>
+                            <div class="ms-3">
+                                <i class="fas fa-receipt fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <!-- Filters -->
             <div class="card mb-4">

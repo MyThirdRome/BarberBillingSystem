@@ -44,6 +44,9 @@ $crewPayments = array_filter($payments, function($p) use ($crew_id) {
     return $p['crew_id'] === $crew_id;
 });
 
+// Calculate total payments for statistics
+$totalPayments = array_sum(array_column($crewPayments, 'net_payment'));
+
 // Handle form submissions
 $message = '';
 $error = '';
@@ -406,7 +409,7 @@ include 'includes/header.php';
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div>
-                            <h4 class="card-title"><?= number_format($totalPayments, 3) ?> TND</h4>
+                            <h4 class="card-title"><?= number_format($totalPayments ?? 0, 2) ?> TND</h4>
                             <p class="card-text">Total Paiements</p>
                         </div>
                         <div class="align-self-center">

@@ -404,21 +404,6 @@ include 'includes/header.php';
                 </div>
             </div>
         </div>
-        <div class="col-md-3">
-            <div class="card bg-info text-white">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h4 class="card-title"><?= number_format($totalPayments ?? 0, 2) ?> TND</h4>
-                            <p class="card-text">Total Paiements</p>
-                        </div>
-                        <div class="align-self-center">
-                            <i class="fas fa-money-bill-wave fa-2x"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Personal Information -->

@@ -138,57 +138,7 @@ function sendBackupEmail($to, $subject, $message) {
     $username = 'helloborislav@gmail.com';
     
     try {
-        // Create socket connection
-        $socket = fsockopen($smtp_host, $smtp_port, $errno, $errstr, 30);
-        if (!$socket) {
-            throw new Exception("Cannot connect to SMTP server: $errstr ($errno)");
-        }
-        
-        // Read initial response
-        $response = fgets($socket, 512);
-        
-        // Send EHLO
-        fwrite($socket, "EHLO localhost\r\n");
-        $response = fgets($socket, 512);
-        
-        // Start TLS
-        fwrite($socket, "STARTTLS\r\n");
-        $response = fgets($socket, 512);
-        
-        // Enable crypto
-        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
-            throw new Exception("Failed to enable TLS encryption");
-        }
-        
-        // Send EHLO again after TLS
-        fwrite($socket, "EHLO localhost\r\n");
-        $response = fgets($socket, 512);
-        
-        // Authenticate
-        fwrite($socket, "AUTH LOGIN\r\n");
-        $response = fgets($socket, 512);
-        
-        fwrite($socket, base64_encode($username) . "\r\n");
-        $response = fgets($socket, 512);
-        
-        fwrite($socket, base64_encode($app_password) . "\r\n");
-        $auth_response = fgets($socket, 512);
-        
-        if (strpos($auth_response, '235') === false) {
-            throw new Exception("Authentication failed");
-        }
-        
-        // Send email
-        fwrite($socket, "MAIL FROM: <$username>\r\n");
-        $response = fgets($socket, 512);
-        
-        fwrite($socket, "RCPT TO: <$to>\r\n");
-        $response = fgets($socket, 512);
-        
-        fwrite($socket, "DATA\r\n");
-        $response = fgets($socket, 512);
-        
-        // Email content
+        // Prepare email with proper headers
         $email_content = "From: Barbershop Management <$username>\r\n";
         $email_content .= "To: $to\r\n";
         $email_content .= "Subject: $subject\r\n";
@@ -196,14 +146,41 @@ function sendBackupEmail($to, $subject, $message) {
         $email_content .= "Content-Type: text/plain; charset=UTF-8\r\n";
         $email_content .= "Date: " . date('r') . "\r\n";
         $email_content .= "\r\n";
-        $email_content .= $message . "\r\n";
-        $email_content .= ".\r\n";
+        $email_content .= $message;
         
-        fwrite($socket, $email_content);
-        $response = fgets($socket, 512);
+        // Create temporary file for cURL
+        $temp_file = tempnam(sys_get_temp_dir(), 'email_');
+        file_put_contents($temp_file, $email_content);
         
-        fwrite($socket, "QUIT\r\n");
-        fclose($socket);
+        // Use cURL for SMTP with proper SSL handling
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "smtp://{$smtp_host}:{$smtp_port}",
+            CURLOPT_USE_SSL => CURLUSESSL_TRY,
+            CURLOPT_USERNAME => $username,
+            CURLOPT_PASSWORD => $app_password,
+            CURLOPT_MAIL_FROM => $username,
+            CURLOPT_MAIL_RCPT => [$to],
+            CURLOPT_READFILE => fopen($temp_file, 'r'),
+            CURLOPT_UPLOAD => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_VERBOSE => false,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_RETURNTRANSFER => true
+        ]);
+        
+        $result = curl_exec($curl);
+        $error = curl_error($curl);
+        $info = curl_getinfo($curl);
+        curl_close($curl);
+        
+        // Clean up temp file
+        unlink($temp_file);
+        
+        if ($result === false || !empty($error)) {
+            throw new Exception("cURL SMTP failed: " . $error);
+        }
         
         return logEmailNotification($to, $subject, $message, null, 'sent');
         

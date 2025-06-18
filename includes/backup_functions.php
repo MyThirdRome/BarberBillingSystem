@@ -161,7 +161,7 @@ function sendBackupEmail($to, $subject, $message) {
             CURLOPT_PASSWORD => $app_password,
             CURLOPT_MAIL_FROM => $username,
             CURLOPT_MAIL_RCPT => [$to],
-            CURLOPT_READFILE => fopen($temp_file, 'r'),
+            CURLOPT_INFILE => fopen($temp_file, 'r'),
             CURLOPT_UPLOAD => true,
             CURLOPT_SSL_VERIFYPEER => false,
             CURLOPT_SSL_VERIFYHOST => false,

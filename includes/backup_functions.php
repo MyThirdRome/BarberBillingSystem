@@ -115,8 +115,9 @@ Le fichier de sauvegarde est stocké sur le serveur et peut être téléchargé 
 Cordialement,
 Système de Gestion Salon de Coiffure";
         
-        // Send email via Gmail SMTP
-        return sendGmailSMTPEmail($recipientEmail, $subject, $message);
+        // Include email helper and send email
+        require_once 'email_helper.php';
+        return sendGmailEmail($recipientEmail, $subject, $message);
         
     } catch (Exception $e) {
         return false;
@@ -176,7 +177,6 @@ function sendGmailSMTPEmail($to, $subject, $message) {
     
     try {
         // Create socket connection
-        $errno = $errstr = null;
         $socket = fsockopen($smtp_host, $smtp_port, $errno, $errstr, 30);
         if (!$socket) {
             throw new Exception("Cannot connect to SMTP server: $errstr ($errno)");

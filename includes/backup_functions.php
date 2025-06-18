@@ -98,6 +98,13 @@ Cette sauvegarde contient toutes vos données importantes:
 - Avances et paiements
 - Configuration du système
 
+Pour télécharger le fichier de sauvegarde:
+1. Connectez-vous à votre système de gestion
+2. Allez dans la section \"Sauvegarde\"
+3. Cliquez sur \"Télécharger\" à côté du fichier {$backupName}
+
+Le fichier de sauvegarde est stocké de manière sécurisée sur votre serveur et sera automatiquement supprimé après 5 sauvegardes pour économiser l'espace.
+
 Cordialement,
 Système de Gestion Salon de Coiffure";
             

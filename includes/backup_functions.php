@@ -115,13 +115,123 @@ Le fichier de sauvegarde est stocké sur le serveur et peut être téléchargé 
 Cordialement,
 Système de Gestion Salon de Coiffure";
         
-        // Log email notification (since SMTP may not be configured)
-        $email_log = [
-            'to' => $recipientEmail,
+        // Send email via Gmail SMTP
+        return sendGmailSMTPEmail($recipientEmail, $subject, $message);
+        
+    } catch (Exception $e) {
+        return false;
+    }
+}
+
+/**
+ * Send email via Gmail SMTP using proper TLS authentication
+ */
+function sendGmailSMTPEmail($to, $subject, $message) {
+    $smtp_host = 'smtp.gmail.com';
+    $smtp_port = 587;
+    $username = 'helloborislav@gmail.com';
+    $password = 'kingsm22';
+    $from_name = 'Barbershop Management System';
+    
+    try {
+        // Create SSL context
+        $context = stream_context_create([
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true
+            ]
+        ]);
+        
+        // Connect to Gmail SMTP server
+        $socket = stream_socket_client(
+            "tcp://{$smtp_host}:{$smtp_port}",
+            $errno,
+            $errstr,
+            30,
+            STREAM_CLIENT_CONNECT,
+            $context
+        );
+        
+        if (!$socket) {
+            throw new Exception("Cannot connect to SMTP server: $errstr ($errno)");
+        }
+        
+        // Get initial response
+        $response = fgets($socket, 512);
+        
+        // Send EHLO
+        fwrite($socket, "EHLO localhost\r\n");
+        $response = fgets($socket, 512);
+        
+        // Start TLS
+        fwrite($socket, "STARTTLS\r\n");
+        $response = fgets($socket, 512);
+        
+        // Enable TLS encryption
+        if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+            throw new Exception("Failed to enable TLS encryption");
+        }
+        
+        // Send EHLO again after TLS
+        fwrite($socket, "EHLO localhost\r\n");
+        $response = fgets($socket, 512);
+        
+        // Authenticate
+        fwrite($socket, "AUTH LOGIN\r\n");
+        $response = fgets($socket, 512);
+        
+        fwrite($socket, base64_encode($username) . "\r\n");
+        $response = fgets($socket, 512);
+        
+        fwrite($socket, base64_encode($password) . "\r\n");
+        $response = fgets($socket, 512);
+        
+        // Check if authentication was successful
+        if (strpos($response, '235') === false) {
+            throw new Exception("SMTP authentication failed: $response");
+        }
+        
+        // Send MAIL FROM
+        fwrite($socket, "MAIL FROM: <$username>\r\n");
+        $response = fgets($socket, 512);
+        
+        // Send RCPT TO
+        fwrite($socket, "RCPT TO: <$to>\r\n");
+        $response = fgets($socket, 512);
+        
+        // Send DATA command
+        fwrite($socket, "DATA\r\n");
+        $response = fgets($socket, 512);
+        
+        // Build email content
+        $email_content = "From: $from_name <$username>\r\n";
+        $email_content .= "To: $to\r\n";
+        $email_content .= "Subject: $subject\r\n";
+        $email_content .= "MIME-Version: 1.0\r\n";
+        $email_content .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        $email_content .= "Date: " . date('r') . "\r\n";
+        $email_content .= "\r\n";
+        $email_content .= $message . "\r\n";
+        $email_content .= ".\r\n";
+        
+        // Send email content
+        fwrite($socket, $email_content);
+        $response = fgets($socket, 512);
+        
+        // Send QUIT
+        fwrite($socket, "QUIT\r\n");
+        $response = fgets($socket, 512);
+        
+        fclose($socket);
+        
+        // Log successful email attempt
+        $log_data = [
+            'to' => $to,
             'subject' => $subject,
-            'message' => $message,
             'timestamp' => date('Y-m-d H:i:s'),
-            'backup_file' => $backupName
+            'status' => 'sent',
+            'method' => 'Gmail SMTP'
         ];
         
         $log_file = DATA_DIR . '/email_notifications.json';
@@ -129,22 +239,34 @@ Système de Gestion Salon de Coiffure";
         if (file_exists($log_file)) {
             $logs = json_decode(file_get_contents($log_file), true) ?: [];
         }
-        $logs[] = $email_log;
+        $logs[] = $log_data;
         file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
         
-        // Try to send email using PHP mail function
-        $headers = "From: Barbershop Management <helloborislav@gmail.com>\r\n";
-        $headers .= "Reply-To: helloborislav@gmail.com\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        
-        return mail($recipientEmail, $subject, $message, $headers);
+        return true;
         
     } catch (Exception $e) {
+        // Log failed email attempt
+        $log_data = [
+            'to' => $to,
+            'subject' => $subject,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'status' => 'failed',
+            'error' => $e->getMessage(),
+            'method' => 'Gmail SMTP'
+        ];
+        
+        $log_file = DATA_DIR . '/email_notifications.json';
+        $logs = [];
+        if (file_exists($log_file)) {
+            $logs = json_decode(file_get_contents($log_file), true) ?: [];
+        }
+        $logs[] = $log_data;
+        file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
+        
+        error_log("Gmail SMTP Error: " . $e->getMessage());
         return false;
     }
 }
-
-
 
 /**
  * Clean up old backup files

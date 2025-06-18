@@ -24,6 +24,7 @@ class SMTPMailer {
     }
     
     private function connect() {
+        $errno = $errstr = null;
         $this->socket = fsockopen($this->smtp_host, $this->smtp_port, $errno, $errstr, 30);
         if (!$this->socket) {
             throw new Exception("Cannot connect to SMTP server: $errstr ($errno)");

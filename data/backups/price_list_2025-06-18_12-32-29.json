@@ -2,7 +2,7 @@
     {
         "id": "service_001",
         "name": "Coupe Homme",
-        "price": 15,
+        "price": 15.000,
         "category": "Coupe",
         "description": "Coupe classique pour homme",
         "created_at": "2025-04-01 10:00:00",
@@ -11,7 +11,7 @@
     {
         "id": "service_002",
         "name": "Coupe Femme",
-        "price": 25,
+        "price": 25.000,
         "category": "Coupe",
         "description": "Coupe et mise en forme pour femme",
         "created_at": "2025-04-01 10:00:00",
@@ -20,7 +20,7 @@
     {
         "id": "service_003",
         "name": "Brushing",
-        "price": 20,
+        "price": 20.000,
         "category": "Coiffure",
         "description": "Brushing et mise en forme",
         "created_at": "2025-04-01 10:00:00",
@@ -29,7 +29,7 @@
     {
         "id": "service_004",
         "name": "Coloration",
-        "price": 80,
+        "price": 80.000,
         "category": "Coloration",
         "description": "Coloration complète",
         "created_at": "2025-04-01 10:00:00",
@@ -38,7 +38,7 @@
     {
         "id": "service_005",
         "name": "Mèches",
-        "price": 120,
+        "price": 120.000,
         "category": "Coloration",
         "description": "Mèches et balayage",
         "created_at": "2025-04-01 10:00:00",
@@ -47,7 +47,7 @@
     {
         "id": "service_006",
         "name": "Soin Capillaire",
-        "price": 35,
+        "price": 35.000,
         "category": "Soin",
         "description": "Masque et soin nourrissant",
         "created_at": "2025-04-01 10:00:00",
@@ -56,7 +56,7 @@
     {
         "id": "service_007",
         "name": "Permanente",
-        "price": 90,
+        "price": 90.000,
         "category": "Coiffure",
         "description": "Permanente complète",
         "created_at": "2025-04-01 10:00:00",
@@ -65,28 +65,10 @@
     {
         "id": "service_008",
         "name": "Défrisage",
-        "price": 100,
+        "price": 100.000,
         "category": "Coiffure",
         "description": "Défrisage et lissage",
         "created_at": "2025-04-01 10:00:00",
-        "created_by": "admin"
-    },
-    {
-        "id": "685295bd638e62.59655584",
-        "name": "Yes 1",
-        "price": 100,
-        "category": "Yes 2",
-        "description": "Oui c ca",
-        "created_at": "2025-06-18 12:32:29",
-        "created_by": "admin"
-    },
-    {
-        "id": "68529603c64618.62380335",
-        "name": "Yes11",
-        "price": 110,
-        "category": "Coloration",
-        "description": "ouiiii",
-        "created_at": "2025-06-18 12:33:39",
         "created_by": "admin"
     }
 ]

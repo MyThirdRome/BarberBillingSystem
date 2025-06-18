@@ -16,6 +16,11 @@ $priceList = loadData('price_list');
 $message = '';
 $error = '';
 
+// Debug: Check if price list is loaded
+if (empty($priceList)) {
+    error_log("Price list is empty for crew member: " . $crew_name);
+}
+
 // Filter work for current crew member
 $myWork = array_filter($work, function($w) use ($crew_id) {
     return $w['crew_id'] === $crew_id;
@@ -206,35 +211,42 @@ include 'includes/header.php';
                     <div class="mb-3">
                         <label class="form-label">Prestations *</label>
                         <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
-                            <?php 
-                            // Group services by category
-                            $servicesByCategory = [];
-                            foreach ($priceList as $service) {
-                                $category = $service['category'] ?: 'Autres';
-                                $servicesByCategory[$category][] = $service;
-                            }
-                            
-                            foreach ($servicesByCategory as $category => $services): ?>
-                                <h6 class="text-primary mt-2 mb-2"><?= htmlspecialchars($category) ?></h6>
-                                <?php foreach ($services as $service): ?>
-                                    <div class="form-check">
-                                        <input class="form-check-input service-checkbox" type="checkbox" 
-                                               name="services[]" value="<?= $service['id'] ?>" 
-                                               id="service_<?= $service['id'] ?>"
-                                               data-price="<?= $service['price'] ?>"
-                                               onchange="updateTotal()">
-                                        <label class="form-check-label d-flex justify-content-between w-100" for="service_<?= $service['id'] ?>">
-                                            <span>
-                                                <strong><?= htmlspecialchars($service['name']) ?></strong>
-                                                <?php if (!empty($service['description'])): ?>
-                                                    <br><small class="text-muted"><?= htmlspecialchars($service['description']) ?></small>
-                                                <?php endif; ?>
-                                            </span>
-                                            <span class="text-success fw-bold"><?= number_format($service['price'], 3) ?> TND</span>
-                                        </label>
-                                    </div>
+                            <?php if (empty($priceList)): ?>
+                                <div class="text-center py-3">
+                                    <p class="text-muted">Aucune prestation disponible dans la liste de prix.</p>
+                                    <p class="text-muted small">Contactez l'administrateur pour ajouter des prestations.</p>
+                                </div>
+                            <?php else: ?>
+                                <?php 
+                                // Group services by category
+                                $servicesByCategory = [];
+                                foreach ($priceList as $service) {
+                                    $category = $service['category'] ?: 'Autres';
+                                    $servicesByCategory[$category][] = $service;
+                                }
+                                
+                                foreach ($servicesByCategory as $category => $services): ?>
+                                    <h6 class="text-primary mt-2 mb-2"><?= htmlspecialchars($category) ?></h6>
+                                    <?php foreach ($services as $service): ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input service-checkbox" type="checkbox" 
+                                                   name="services[]" value="<?= $service['id'] ?>" 
+                                                   id="service_<?= $service['id'] ?>"
+                                                   data-price="<?= $service['price'] ?>"
+                                                   onchange="updateTotal()">
+                                            <label class="form-check-label d-flex justify-content-between w-100" for="service_<?= $service['id'] ?>">
+                                                <span>
+                                                    <strong><?= htmlspecialchars($service['name']) ?></strong>
+                                                    <?php if (!empty($service['description'])): ?>
+                                                        <br><small class="text-muted"><?= htmlspecialchars($service['description']) ?></small>
+                                                    <?php endif; ?>
+                                                </span>
+                                                <span class="text-success fw-bold"><?= number_format($service['price'], 3) ?> TND</span>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
                                 <?php endforeach; ?>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                         <div class="mt-2">
                             <strong>Total: <span id="service-total" class="text-success">0.000 TND</span></strong>

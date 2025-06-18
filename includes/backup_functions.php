@@ -124,42 +124,159 @@ Système de Gestion Salon de Coiffure";
 }
 
 /**
- * Send email notification using webhook service
+ * Log email notification attempts
+ */
+function logEmailNotification($to, $subject, $message, $error = null, $status = 'logged') {
+    $log_data = [
+        'to' => $to,
+        'subject' => $subject,
+        'message' => substr($message, 0, 200) . '...',
+        'timestamp' => date('Y-m-d H:i:s'),
+        'status' => $status,
+        'method' => $status === 'sent' ? 'Gmail SMTP' : 'Local logging',
+        'error' => $error
+    ];
+    
+    $log_file = DATA_DIR . '/email_notifications.json';
+    $logs = [];
+    if (file_exists($log_file)) {
+        $logs = json_decode(file_get_contents($log_file), true) ?: [];
+    }
+    
+    // Keep only last 50 log entries
+    if (count($logs) > 50) {
+        $logs = array_slice($logs, -50);
+    }
+    
+    $logs[] = $log_data;
+    file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
+    
+    return $status === 'sent';
+}
+
+/**
+ * Send email via Gmail SMTP with app password
  */
 function sendGmailSMTPEmail($to, $subject, $message) {
+    $smtp_host = 'smtp.gmail.com';
+    $smtp_port = 587;
+    $username = 'helloborislav@gmail.com';
+    
+    // Check if app password is configured
+    $app_password_file = DATA_DIR . '/gmail_app_password.txt';
+    if (!file_exists($app_password_file)) {
+        // Fall back to logging if no app password is set
+        return logEmailNotification($to, $subject, $message, 'No app password configured');
+    }
+    
+    $app_password = trim(file_get_contents($app_password_file));
+    if (empty($app_password)) {
+        return logEmailNotification($to, $subject, $message, 'Empty app password');
+    }
+    
     try {
-        // For now, just log the email notification since SMTP has SSL issues
-        // The backup system will work, but email notifications need proper SMTP setup
-        $log_data = [
-            'to' => $to,
-            'subject' => $subject,
-            'message' => substr($message, 0, 200) . '...',
-            'timestamp' => date('Y-m-d H:i:s'),
-            'status' => 'logged',
-            'method' => 'Local logging (SMTP requires app password)'
-        ];
-        
-        $log_file = DATA_DIR . '/email_notifications.json';
-        $logs = [];
-        if (file_exists($log_file)) {
-            $logs = json_decode(file_get_contents($log_file), true) ?: [];
+        // Create socket connection
+        $errno = $errstr = null;
+        $socket = fsockopen($smtp_host, $smtp_port, $errno, $errstr, 30);
+        if (!$socket) {
+            throw new Exception("Cannot connect to SMTP server: $errstr ($errno)");
         }
         
-        // Keep only last 50 log entries
-        if (count($logs) > 50) {
-            $logs = array_slice($logs, -50);
+        // Read initial response
+        fgets($socket, 512);
+        
+        // Send EHLO
+        fwrite($socket, "EHLO " . $_SERVER['HTTP_HOST'] . "\r\n");
+        fgets($socket, 512);
+        
+        // Start TLS
+        fwrite($socket, "STARTTLS\r\n");
+        fgets($socket, 512);
+        
+        // Enable crypto
+        stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+        
+        // Send EHLO again
+        fwrite($socket, "EHLO " . $_SERVER['HTTP_HOST'] . "\r\n");
+        fgets($socket, 512);
+        
+        // Login
+        fwrite($socket, "AUTH LOGIN\r\n");
+        fgets($socket, 512);
+        
+        fwrite($socket, base64_encode($username) . "\r\n");
+        fgets($socket, 512);
+        
+        fwrite($socket, base64_encode($app_password) . "\r\n");
+        $auth_response = fgets($socket, 512);
+        
+        if (strpos($auth_response, '235') === false) {
+            throw new Exception("Authentication failed: " . $auth_response);
         }
         
-        $logs[] = $log_data;
-        file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
+        // Send email
+        fwrite($socket, "MAIL FROM: <$username>\r\n");
+        fgets($socket, 512);
         
-        // Return true so backup continues to work
-        return true;
+        fwrite($socket, "RCPT TO: <$to>\r\n");
+        fgets($socket, 512);
+        
+        fwrite($socket, "DATA\r\n");
+        fgets($socket, 512);
+        
+        // Email content
+        $email_content = "From: Barbershop Management <$username>\r\n";
+        $email_content .= "To: $to\r\n";
+        $email_content .= "Subject: $subject\r\n";
+        $email_content .= "MIME-Version: 1.0\r\n";
+        $email_content .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        $email_content .= "Date: " . date('r') . "\r\n";
+        $email_content .= "\r\n";
+        $email_content .= $message . "\r\n";
+        $email_content .= ".\r\n";
+        
+        fwrite($socket, $email_content);
+        fgets($socket, 512);
+        
+        fwrite($socket, "QUIT\r\n");
+        fclose($socket);
+        
+        return logEmailNotification($to, $subject, $message, 'Successfully sent via Gmail SMTP', 'sent');
         
     } catch (Exception $e) {
-        error_log("Email logging error: " . $e->getMessage());
-        return false;
+        return logEmailNotification($to, $subject, $message, 'SMTP Error: ' . $e->getMessage(), 'failed');
     }
+}
+
+/**
+ * Log email notification attempts
+ */
+function logEmailNotification($to, $subject, $message, $error = null, $status = 'logged') {
+    $log_data = [
+        'to' => $to,
+        'subject' => $subject,
+        'message' => substr($message, 0, 200) . '...',
+        'timestamp' => date('Y-m-d H:i:s'),
+        'status' => $status,
+        'method' => $status === 'sent' ? 'Gmail SMTP' : 'Local logging',
+        'error' => $error
+    ];
+    
+    $log_file = DATA_DIR . '/email_notifications.json';
+    $logs = [];
+    if (file_exists($log_file)) {
+        $logs = json_decode(file_get_contents($log_file), true) ?: [];
+    }
+    
+    // Keep only last 50 log entries
+    if (count($logs) > 50) {
+        $logs = array_slice($logs, -50);
+    }
+    
+    $logs[] = $log_data;
+    file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
+    
+    return $status === 'sent';
 }
 
 /**

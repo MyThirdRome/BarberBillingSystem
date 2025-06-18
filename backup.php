@@ -55,6 +55,25 @@ if ($_POST) {
         } else {
             $error = 'Erreur lors de la création de la sauvegarde: ' . $result['error'];
         }
+    } elseif ($action === 'update_gmail_password') {
+        $app_password = trim($_POST['app_password'] ?? '');
+        
+        if (empty($app_password)) {
+            // Remove app password file if empty
+            $app_password_file = DATA_DIR . '/gmail_app_password.txt';
+            if (file_exists($app_password_file)) {
+                unlink($app_password_file);
+            }
+            $message = 'Mot de passe d\'application Gmail supprimé.';
+        } else {
+            // Save app password
+            $app_password_file = DATA_DIR . '/gmail_app_password.txt';
+            if (file_put_contents($app_password_file, $app_password)) {
+                $message = 'Mot de passe d\'application Gmail configuré avec succès.';
+            } else {
+                $error = 'Erreur lors de la sauvegarde du mot de passe d\'application.';
+            }
+        }
     }
 }
 
@@ -196,6 +215,64 @@ include 'includes/header.php';
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save me-1"></i>
                                     Sauvegarder la Configuration
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gmail Configuration -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fab fa-google me-2"></i>
+                                Configuration Gmail
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <?php
+                            $app_password_file = DATA_DIR . '/gmail_app_password.txt';
+                            $has_app_password = file_exists($app_password_file) && !empty(trim(file_get_contents($app_password_file)));
+                            ?>
+                            
+                            <div class="alert alert-info">
+                                <h6><i class="fas fa-info-circle me-2"></i>Configuration requise pour les emails</h6>
+                                <p class="mb-2">Pour recevoir les emails de sauvegarde, vous devez:</p>
+                                <ol class="mb-0">
+                                    <li>Activer l'authentification à deux facteurs sur votre compte Gmail</li>
+                                    <li>Générer un "mot de passe d'application" depuis les paramètres de sécurité Google</li>
+                                    <li>Entrer ce mot de passe ci-dessous (format: xxxx xxxx xxxx xxxx)</li>
+                                </ol>
+                            </div>
+                            
+                            <form method="POST">
+                                <input type="hidden" name="action" value="update_gmail_password">
+                                
+                                <div class="mb-3">
+                                    <label for="app_password" class="form-label">
+                                        Mot de passe d'application Gmail
+                                        <?php if ($has_app_password): ?>
+                                            <span class="badge bg-success ms-2">Configuré</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-warning ms-2">Non configuré</span>
+                                        <?php endif; ?>
+                                    </label>
+                                    <input type="password" class="form-control" id="app_password" name="app_password" 
+                                           placeholder="xxxx xxxx xxxx xxxx" maxlength="19">
+                                    <div class="form-text">
+                                        Laissez vide pour supprimer le mot de passe configuré. 
+                                        <a href="https://support.google.com/accounts/answer/185833" target="_blank">
+                                            Guide de configuration Google
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-key me-1"></i>
+                                    <?php echo $has_app_password ? 'Mettre à jour' : 'Configurer'; ?> le mot de passe
                                 </button>
                             </form>
                         </div>

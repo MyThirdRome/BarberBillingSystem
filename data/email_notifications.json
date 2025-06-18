@@ -44,5 +44,13 @@
         "timestamp": "2025-06-18 13:39:22",
         "status": "logged",
         "method": "Local logging (SMTP requires app password)"
+    },
+    {
+        "to": "helloborislav@gmail.com",
+        "subject": "Sauvegarde Salon de Coiffure - 18\/06\/2025 13:39",
+        "message": "Bonjour,\n\nUne sauvegarde de votre syst\u00e8me de gestion de salon de coiffure a \u00e9t\u00e9 cr\u00e9\u00e9e avec succ\u00e8s.\n\nD\u00e9tails de la sauvegarde:\n- Date et heure: 18\/06\/2025 \u00e0 13:39\n- Nom du fichier: barbershop_b...",
+        "timestamp": "2025-06-18 13:39:59",
+        "status": "logged",
+        "method": "Local logging (SMTP requires app password)"
     }
 ]

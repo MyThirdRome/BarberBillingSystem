@@ -49,7 +49,7 @@ define('DEFAULT_LANGUAGE', 'fr');
 define('DEFAULT_CURRENCY', 'TND');
 define('DECIMAL_PLACES', 3);
 
-// Navigation menu structure
+// Admin navigation menu structure
 $navigation = [
     'dashboard' => [
         'title' => 'Tableau de Bord',
@@ -75,7 +75,6 @@ $navigation = [
         'url' => 'charges.php',
         'permission' => 'edit'
     ],
-
     'statistics' => [
         'title' => 'Statistiques',
         'icon' => 'fas fa-chart-bar',
@@ -87,6 +86,15 @@ $navigation = [
         'icon' => 'fas fa-user-cog',
         'url' => 'users.php',
         'permission' => 'admin'
+    ]
+];
+
+// Crew navigation menu structure (only personal features)
+$crew_navigation = [
+    'crew_dashboard' => [
+        'title' => 'Mon Tableau de Bord',
+        'icon' => 'fas fa-tachometer-alt',
+        'url' => 'crew_dashboard.php'
     ]
 ];
 

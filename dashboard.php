@@ -2,6 +2,12 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
+// Redirect crew members to their own dashboard
+if (isset($_SESSION['role']) && $_SESSION['role'] === 'crew') {
+    header('Location: crew_dashboard.php');
+    exit;
+}
+
 $crew = loadData('crew');
 $work = loadData('work');
 $charges = loadData('charges');

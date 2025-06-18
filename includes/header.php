@@ -32,17 +32,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <?php
-                    global $navigation;
+                    global $navigation, $crew_navigation;
                     $current_page = basename($_SERVER['PHP_SELF']);
                     
-                    foreach ($navigation as $key => $nav_item):
-                        // Check if user has permission to see this menu item
-                        if ($nav_item['permission'] === 'admin' && $_SESSION['role'] !== 'admin') {
-                            continue;
-                        }
-                        
-                        if ($nav_item['permission'] === 'edit' && !hasPermission('edit') && $_SESSION['role'] !== 'admin') {
-                            continue;
+                    // Use crew navigation for crew members, admin navigation for admins
+                    $nav_menu = ($_SESSION['role'] === 'crew') ? $crew_navigation : $navigation;
+                    
+                    foreach ($nav_menu as $key => $nav_item):
+                        // For admin navigation, check permissions
+                        if ($_SESSION['role'] !== 'crew' && isset($nav_item['permission'])) {
+                            if ($nav_item['permission'] === 'admin' && $_SESSION['role'] !== 'admin') {
+                                continue;
+                            }
+                            
+                            if ($nav_item['permission'] === 'edit' && !hasPermission('edit') && $_SESSION['role'] !== 'admin') {
+                                continue;
+                            }
                         }
                         
                         $active_class = (basename($nav_item['url']) === $current_page) ? 'active' : '';

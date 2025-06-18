@@ -34,23 +34,5 @@
         "notes": "Hello",
         "payment_date": "2025-05-28",
         "created_at": "2025-05-28 19:36:40"
-    },
-    {
-        "id": "685292a4333843.25714218",
-        "crew_id": "6837416e5d2929.01722472",
-        "period_start": "2025-02-01",
-        "period_end": "2025-02-28",
-        "base_salary": 800,
-        "work_revenue": 0,
-        "bonus_percentage": 10,
-        "bonus_threshold": 2000,
-        "eligible_bonus": 0,
-        "bonus_amount": 0,
-        "remaining_salary": 800,
-        "advances_deducted": 0,
-        "net_payment": 800,
-        "notes": "tttt",
-        "payment_date": "2025-06-18",
-        "created_at": "2025-06-18 12:19:16"
     }
 ]

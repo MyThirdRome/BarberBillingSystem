@@ -35,28 +35,7 @@ if ($_POST) {
             $advances[] = $newAdvance;
             saveData('advances', $advances);
             
-            // Automatically add to charges
-            $charges = loadData('charges');
-            $crewMember = array_filter($crew, function($c) use ($crew_id) {
-                return $c['id'] === $crew_id;
-            });
-            $crewMember = reset($crewMember);
-            
-            $newCharge = [
-                'id' => generateId(),
-                'type' => 'Avance - ' . htmlspecialchars($crewMember['name']),
-                'amount' => $amount,
-                'date' => $date,
-                'description' => 'Avance: ' . $reason,
-                'category' => 'Salaires et Avances',
-                'created_at' => date('Y-m-d H:i:s'),
-                'crew_id' => $crew_id,
-                'advance_id' => $newAdvance['id']
-            ];
-            $charges[] = $newCharge;
-            saveData('charges', $charges);
-            
-            $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
+            $message = 'Avance ajoutée avec succès.';
         }
     } elseif ($action === 'edit') {
         $id = $_POST['id'] ?? '';

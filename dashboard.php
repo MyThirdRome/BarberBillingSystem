@@ -34,11 +34,26 @@ $monthWork = array_filter($work, function($w) use ($selectedMonth) {
 $monthRevenue = array_sum(array_column($monthWork, 'amount'));
 $monthWorkCount = count($monthWork);
 
-// Calculate month's charges (spendings)
+// Calculate month's charges (spendings) - excluding duplicated advances/payments
 $monthCharges = array_filter($charges, function($c) use ($selectedMonth) {
     return substr($c['date'], 0, 7) === $selectedMonth;
 });
-$monthSpendings = array_sum(array_column($monthCharges, 'amount'));
+$monthChargesTotal = array_sum(array_column($monthCharges, 'amount'));
+
+// Calculate month's advances
+$monthAdvances = array_filter($advances, function($a) use ($selectedMonth) {
+    return substr($a['date'], 0, 7) === $selectedMonth;
+});
+$monthAdvancesTotal = array_sum(array_column($monthAdvances, 'amount'));
+
+// Calculate month's salary payments
+$monthPayments = array_filter($payments, function($p) use ($selectedMonth) {
+    return substr($p['payment_date'], 0, 7) === $selectedMonth;
+});
+$monthPaymentsTotal = array_sum(array_column($monthPayments, 'net_payment'));
+
+// Total monthly spendings = charges + advances + payments
+$monthSpendings = $monthChargesTotal + $monthAdvancesTotal + $monthPaymentsTotal;
 
 // Calculate unpaid advances (pending advances)
 $pendingAdvances = array_filter($advances, function($a) {

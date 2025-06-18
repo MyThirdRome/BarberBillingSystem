@@ -85,22 +85,6 @@ if ($_POST) {
             $payments[] = $newPayment;
             saveData('payments', $payments);
             
-            // Automatically add salary to charges for the salary period month
-            $charges = loadData('charges');
-            $salaryCharge = [
-                'id' => generateId(),
-                'type' => 'Salaire - ' . htmlspecialchars($crewMember['name']),
-                'amount' => $netPayment,
-                'date' => $period_start, // Use salary period start date
-                'description' => 'Salaire pour ' . date('d/m/Y', strtotime($period_start)) . ' - ' . date('d/m/Y', strtotime($period_end)) . ' (Base: ' . number_format($baseSalary, 3) . ' TND, Avances: ' . number_format($totalAdvances, 3) . ' TND, Bonus: ' . number_format($bonusAmount, 3) . ' TND)',
-                'category' => 'Salaires et Avances',
-                'created_at' => date('Y-m-d H:i:s'),
-                'crew_id' => $crew_id,
-                'payment_id' => $newPayment['id']
-            ];
-            $charges[] = $salaryCharge;
-            saveData('charges', $charges);
-            
             // Mark advances as deducted (only those in the period)
             foreach ($advances as &$advance) {
                 $advanceDate = substr($advance['date'], 0, 10);

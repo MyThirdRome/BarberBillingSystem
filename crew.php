@@ -87,11 +87,22 @@ if ($_POST) {
                     $member['phone'] = $phone;
                     $member['salary_base'] = $salary_base;
                     $member['updated_at'] = date('Y-m-d H:i:s');
+                    
+                    // Also update corresponding user account name
+                    foreach ($users as &$user) {
+                        if ($user['crew_id'] === $id) {
+                            $user['name'] = $name;
+                            $user['updated_at'] = date('Y-m-d H:i:s');
+                            $user['updated_by'] = $_SESSION['username'];
+                            break;
+                        }
+                    }
                     break;
                 }
             }
             
             saveData('crew', $crew);
+            saveData('users', $users);
             $message = 'Membre d\'équipe modifié avec succès.';
         }
     } elseif ($action === 'delete') {
@@ -101,7 +112,13 @@ if ($_POST) {
             return $member['id'] !== $id;
         });
         
+        // Also remove corresponding user account
+        $users = array_filter($users, function($user) use ($id) {
+            return $user['crew_id'] !== $id;
+        });
+        
         saveData('crew', $crew);
+        saveData('users', $users);
         $message = 'Membre d\'équipe supprimé avec succès.';
     }
 }

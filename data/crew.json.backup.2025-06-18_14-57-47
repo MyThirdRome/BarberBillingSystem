@@ -1,0 +1,20 @@
+[
+    {
+        "id": "6837416e5d2929.01722472",
+        "name": "mouhaned bouzaien",
+        "position": "Coiffeur",
+        "phone": "0627716626",
+        "salary_base": 800,
+        "username": "mouhaned",
+        "created_at": "2025-05-28 19:01:34"
+    },
+    {
+        "id": "683741f7bb8af2.18218834",
+        "name": "hanen mbarki",
+        "position": "coiffeur femme",
+        "phone": "52900261",
+        "salary_base": 800,
+        "username": "foulenn",
+        "created_at": "2025-05-28 19:03:51"
+    }
+]

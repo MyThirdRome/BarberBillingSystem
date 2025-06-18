@@ -381,6 +381,8 @@ function calculateAge($birthdate) {
     }
 }
 
+
+
 // Run data structure validation on include
 validateDataStructure();
 ?>

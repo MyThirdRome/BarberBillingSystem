@@ -92,6 +92,12 @@ $navigation = [
         'icon' => 'fas fa-user-cog',
         'url' => 'users.php',
         'permission' => 'admin'
+    ],
+    'backup' => [
+        'title' => 'Sauvegarde',
+        'icon' => 'fas fa-database',
+        'url' => 'backup.php',
+        'permission' => 'admin'
     ]
 ];
 

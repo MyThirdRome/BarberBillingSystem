@@ -241,6 +241,73 @@ include 'includes/header.php';
                     </div>
                 </div>
             </div>
+
+            <!-- Email Notifications Log -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-envelope me-2"></i>
+                                Notifications Email
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <?php
+                            $email_log_file = DATA_DIR . '/email_notifications.json';
+                            $email_logs = [];
+                            if (file_exists($email_log_file)) {
+                                $email_logs = json_decode(file_get_contents($email_log_file), true) ?: [];
+                                $email_logs = array_reverse(array_slice($email_logs, -10)); // Last 10 entries
+                            }
+                            ?>
+                            
+                            <?php if (empty($email_logs)): ?>
+                                <p class="text-muted">Aucune notification email trouvée.</p>
+                            <?php else: ?>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-sm">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Destinataire</th>
+                                                <th>Sujet</th>
+                                                <th>Statut</th>
+                                                <th>Méthode</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($email_logs as $log): ?>
+                                                <tr>
+                                                    <td><?php echo htmlspecialchars($log['timestamp']); ?></td>
+                                                    <td><?php echo htmlspecialchars($log['to']); ?></td>
+                                                    <td><?php echo htmlspecialchars($log['subject']); ?></td>
+                                                    <td>
+                                                        <?php if ($log['status'] === 'sent'): ?>
+                                                            <span class="badge bg-success">Envoyé</span>
+                                                        <?php elseif ($log['status'] === 'logged'): ?>
+                                                            <span class="badge bg-info">Enregistré</span>
+                                                        <?php else: ?>
+                                                            <span class="badge bg-danger">Échec</span>
+                                                        <?php endif; ?>
+                                                    </td>
+                                                    <td class="small"><?php echo htmlspecialchars($log['method'] ?? 'N/A'); ?></td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Note:</strong> Les notifications email sont actuellement enregistrées localement. 
+                                    Pour recevoir les emails, vous devez configurer Gmail avec un mot de passe d'application au lieu du mot de passe habituel.
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

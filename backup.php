@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
+require_once 'includes/backup_functions.php';
 
 // Only admins can access backup management
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -9,8 +10,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 // Load backup configuration
-$backupConfig = loadData('backup_config');
-if (empty($backupConfig)) {
+$configFile = DATA_DIR . '/backup_config.json';
+if (!file_exists($configFile)) {
     $backupConfig = [
         'email' => 'helloborislav@gmail.com',
         'enabled' => true,
@@ -18,7 +19,9 @@ if (empty($backupConfig)) {
         'backup_count' => 0,
         'created_at' => date('Y-m-d H:i:s')
     ];
-    saveData('backup_config', $backupConfig);
+    file_put_contents($configFile, json_encode($backupConfig, JSON_PRETTY_PRINT));
+} else {
+    $backupConfig = json_decode(file_get_contents($configFile), true);
 }
 
 $message = '';
@@ -40,15 +43,15 @@ if ($_POST) {
             $backupConfig['updated_at'] = date('Y-m-d H:i:s');
             $backupConfig['updated_by'] = $_SESSION['username'];
             
-            saveData('backup_config', $backupConfig);
+            file_put_contents($configFile, json_encode($backupConfig, JSON_PRETTY_PRINT));
             $message = 'Configuration de sauvegarde mise à jour avec succès.';
         }
     } elseif ($action === 'manual_backup') {
-        $result = createBackup(true);
+        $result = createBackupSystem(true);
         if ($result['success']) {
             $message = 'Sauvegarde manuelle créée et envoyée avec succès.';
             // Reload config to get updated backup info
-            $backupConfig = loadData('backup_config');
+            $backupConfig = json_decode(file_get_contents($configFile), true);
         } else {
             $error = 'Erreur lors de la création de la sauvegarde: ' . $result['error'];
         }

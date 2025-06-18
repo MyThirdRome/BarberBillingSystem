@@ -12,6 +12,7 @@ checkPermission('edit');
 
 $work = loadData('work');
 $crew = loadData('crew');
+$priceList = loadData('price_list');
 $message = '';
 $error = '';
 
@@ -20,23 +21,37 @@ if ($_POST) {
     $action = $_POST['action'] ?? '';
     
     if ($action === 'add') {
-        $type = trim($_POST['type'] ?? '');
         $crew_id = $_POST['crew_id'] ?? '';
-        $amount = floatval($_POST['amount'] ?? 0);
+        $selected_services = $_POST['services'] ?? [];
         $date = $_POST['date'] ?? date('Y-m-d H:i:s');
         $notes = trim($_POST['notes'] ?? '');
         $customer_name = trim($_POST['customer_name'] ?? '');
         $customer_phone = trim($_POST['customer_phone'] ?? '');
         $customer_email = trim($_POST['customer_email'] ?? '');
         
-        if (empty($type) || empty($crew_id) || $amount <= 0) {
-            $error = 'Le type de travail, l\'équipe et le montant sont obligatoires.';
+        if (empty($crew_id) || empty($selected_services)) {
+            $error = 'Veuillez sélectionner un membre d\'équipe et au moins une prestation.';
         } else {
+            // Calculate total amount and service details
+            $total_amount = 0;
+            $service_names = [];
+            
+            foreach ($selected_services as $service_id) {
+                foreach ($priceList as $service) {
+                    if ($service['id'] === $service_id) {
+                        $total_amount += $service['price'];
+                        $service_names[] = $service['name'];
+                        break;
+                    }
+                }
+            }
+            
             $newWork = [
                 'id' => generateId(),
-                'type' => $type,
+                'type' => implode(', ', $service_names),
+                'services' => $selected_services,
                 'crew_id' => $crew_id,
-                'amount' => $amount,
+                'amount' => $total_amount,
                 'date' => $date,
                 'notes' => $notes,
                 'customer_name' => $customer_name,
@@ -264,12 +279,6 @@ include 'includes/header.php';
                     <input type="hidden" name="action" value="add">
                     
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type de Prestation *</label>
-                        <input type="text" class="form-control" id="type" name="type" 
-                               placeholder="Ex: Coupe, Barbe, Coloration..." required>
-                    </div>
-                    
-                    <div class="mb-3">
                         <label for="crew_id" class="form-label">Équipe *</label>
                         <select class="form-control" id="crew_id" name="crew_id" required>
                             <option value="">Sélectionner un membre</option>
@@ -280,9 +289,41 @@ include 'includes/header.php';
                     </div>
                     
                     <div class="mb-3">
-                        <label for="amount" class="form-label">Montant (TND) *</label>
-                        <input type="number" class="form-control" id="amount" name="amount" 
-                               step="0.01" min="0" required>
+                        <label class="form-label">Prestations *</label>
+                        <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                            <?php 
+                            // Group services by category
+                            $servicesByCategory = [];
+                            foreach ($priceList as $service) {
+                                $category = $service['category'] ?: 'Autres';
+                                $servicesByCategory[$category][] = $service;
+                            }
+                            
+                            foreach ($servicesByCategory as $category => $services): ?>
+                                <h6 class="text-primary mt-2 mb-2"><?= htmlspecialchars($category) ?></h6>
+                                <?php foreach ($services as $service): ?>
+                                    <div class="form-check">
+                                        <input class="form-check-input service-checkbox" type="checkbox" 
+                                               name="services[]" value="<?= $service['id'] ?>" 
+                                               id="service_<?= $service['id'] ?>"
+                                               data-price="<?= $service['price'] ?>"
+                                               onchange="updateTotal()">
+                                        <label class="form-check-label d-flex justify-content-between w-100" for="service_<?= $service['id'] ?>">
+                                            <span>
+                                                <strong><?= htmlspecialchars($service['name']) ?></strong>
+                                                <?php if (!empty($service['description'])): ?>
+                                                    <br><small class="text-muted"><?= htmlspecialchars($service['description']) ?></small>
+                                                <?php endif; ?>
+                                            </span>
+                                            <span class="text-success fw-bold"><?= number_format($service['price'], 3) ?> TND</span>
+                                        </label>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Total: <span id="service-total" class="text-success">0.000 TND</span></strong>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
@@ -439,6 +480,18 @@ include 'includes/header.php';
 <script>
 // Store work data for JavaScript access
 const workData = <?= json_encode($work) ?>;
+
+// Function to update total price when services are selected
+function updateTotal() {
+    const checkboxes = document.querySelectorAll('.service-checkbox:checked');
+    let total = 0;
+    
+    checkboxes.forEach(checkbox => {
+        total += parseFloat(checkbox.dataset.price);
+    });
+    
+    document.getElementById('service-total').textContent = total.toFixed(3) + ' TND';
+}
 
 function editWork(id) {
     const work = workData.find(w => w.id === id);

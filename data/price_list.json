@@ -1,0 +1,74 @@
+[
+    {
+        "id": "service_001",
+        "name": "Coupe Homme",
+        "price": 15.000,
+        "category": "Coupe",
+        "description": "Coupe classique pour homme",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_002",
+        "name": "Coupe Femme",
+        "price": 25.000,
+        "category": "Coupe",
+        "description": "Coupe et mise en forme pour femme",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_003",
+        "name": "Brushing",
+        "price": 20.000,
+        "category": "Coiffure",
+        "description": "Brushing et mise en forme",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_004",
+        "name": "Coloration",
+        "price": 80.000,
+        "category": "Coloration",
+        "description": "Coloration complète",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_005",
+        "name": "Mèches",
+        "price": 120.000,
+        "category": "Coloration",
+        "description": "Mèches et balayage",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_006",
+        "name": "Soin Capillaire",
+        "price": 35.000,
+        "category": "Soin",
+        "description": "Masque et soin nourrissant",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_007",
+        "name": "Permanente",
+        "price": 90.000,
+        "category": "Coiffure",
+        "description": "Permanente complète",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    {
+        "id": "service_008",
+        "name": "Défrisage",
+        "price": 100.000,
+        "category": "Coiffure",
+        "description": "Défrisage et lissage",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    }
+]

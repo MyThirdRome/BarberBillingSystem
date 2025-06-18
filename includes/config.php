@@ -69,6 +69,12 @@ $navigation = [
         'url' => 'work.php',
         'permission' => 'edit'
     ],
+    'price_list' => [
+        'title' => 'Liste de Prix',
+        'icon' => 'fas fa-tags',
+        'url' => 'price_list.php',
+        'permission' => 'admin'
+    ],
     'charges' => [
         'title' => 'Charges',
         'icon' => 'fas fa-file-invoice-dollar',

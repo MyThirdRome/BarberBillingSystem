@@ -34,41 +34,5 @@
         "notes": "Hello",
         "payment_date": "2025-05-28",
         "created_at": "2025-05-28 19:36:40"
-    },
-    {
-        "id": "68375f7f783037.10369880",
-        "crew_id": "683741f7bb8af2.18218834",
-        "period_start": "2025-04-01",
-        "period_end": "2025-04-30",
-        "base_salary": 800,
-        "work_revenue": 3595,
-        "bonus_percentage": 10,
-        "bonus_threshold": 2000,
-        "eligible_bonus": 1595,
-        "bonus_amount": 159.5,
-        "remaining_salary": 800,
-        "advances_deducted": 0,
-        "net_payment": 959.5,
-        "notes": "",
-        "payment_date": "2025-05-28",
-        "created_at": "2025-05-28 21:09:51"
-    },
-    {
-        "id": "68375f8c1806f0.05149183",
-        "crew_id": "683741f7bb8af2.18218834",
-        "period_start": "2025-04-01",
-        "period_end": "2025-04-30",
-        "base_salary": 800,
-        "work_revenue": 3595,
-        "bonus_percentage": 10,
-        "bonus_threshold": 2000,
-        "eligible_bonus": 1595,
-        "bonus_amount": 159.5,
-        "remaining_salary": 800,
-        "advances_deducted": 0,
-        "net_payment": 959.5,
-        "notes": "",
-        "payment_date": "2025-05-28",
-        "created_at": "2025-05-28 21:10:04"
     }
 ]

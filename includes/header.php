@@ -66,8 +66,8 @@
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
                             <i class="fas fa-user me-1"></i>
                             <?= htmlspecialchars($_SESSION['username']) ?>
-                            <span class="badge bg-<?= $_SESSION['role'] === 'admin' ? 'danger' : 'secondary' ?> ms-1">
-                                <?= $_SESSION['role'] === 'admin' ? 'Admin' : 'User' ?>
+                            <span class="badge bg-<?= $_SESSION['role'] === 'admin' ? 'danger' : 'primary' ?> ms-1">
+                                <?= $_SESSION['role'] === 'admin' ? 'Admin' : 'Équipe' ?>
                             </span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">

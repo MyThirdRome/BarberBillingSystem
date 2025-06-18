@@ -2,6 +2,12 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
+// Only admins can access work management
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header('Location: crew_dashboard.php');
+    exit;
+}
+
 checkPermission('edit');
 
 $work = loadData('work');

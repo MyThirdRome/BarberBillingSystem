@@ -2,6 +2,12 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
+// Only admins can access statistics
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header('Location: crew_dashboard.php');
+    exit;
+}
+
 // Check user role and set permissions
 $isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
 $isCrew = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'crew';

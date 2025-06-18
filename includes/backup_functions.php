@@ -77,7 +77,7 @@ function createBackupSystem($manual = false) {
         // Clean up old backups
         cleanupOldBackupFiles($backupDir, 5);
         
-        // Send email notification
+        // Send email notification with attachment
         $config = json_decode(file_get_contents(DATA_DIR . '/backup_config.json'), true);
         if ($config && !empty($config['email'])) {
             $subject = "Sauvegarde Salon de Coiffure - " . date('d/m/Y H:i');
@@ -98,17 +98,14 @@ Cette sauvegarde contient toutes vos données importantes:
 - Avances et paiements
 - Configuration du système
 
-Pour télécharger le fichier de sauvegarde:
-1. Connectez-vous à votre système de gestion
-2. Allez dans la section \"Sauvegarde\"
-3. Cliquez sur \"Télécharger\" à côté du fichier {$backupName}
+Le fichier de sauvegarde est joint à cet email pour votre commodité. Vous pouvez également le télécharger depuis l'interface d'administration.
 
-Le fichier de sauvegarde est stocké de manière sécurisée sur votre serveur et sera automatiquement supprimé après 5 sauvegardes pour économiser l'espace.
+Important: Conservez ce fichier en lieu sûr. Il contient toutes vos données sensibles.
 
 Cordialement,
 Système de Gestion Salon de Coiffure";
             
-            sendBackupEmail($config['email'], $subject, $message);
+            sendBackupEmailWithAttachment($config['email'], $subject, $message, $backupPath, $backupName);
         }
         
         return [
@@ -122,6 +119,95 @@ Système de Gestion Salon de Coiffure";
             'success' => false,
             'error' => $e->getMessage()
         ];
+    }
+}
+
+/**
+ * Send backup email with ZIP file attachment
+ */
+function sendBackupEmailWithAttachment($to, $subject, $message, $attachmentPath, $attachmentName) {
+    $app_password_file = DATA_DIR . '/gmail_app_password.txt';
+    
+    if (!file_exists($app_password_file)) {
+        return logEmailNotification($to, $subject, $message, 'No app password configured');
+    }
+    
+    $app_password = trim(file_get_contents($app_password_file));
+    if (empty($app_password)) {
+        return logEmailNotification($to, $subject, $message, 'Empty app password');
+    }
+    
+    $smtp_host = 'smtp.gmail.com';
+    $smtp_port = 587;
+    $username = 'helloborislav@gmail.com';
+    
+    try {
+        // Read and encode attachment
+        $attachment_data = base64_encode(file_get_contents($attachmentPath));
+        $boundary = uniqid('boundary_');
+        
+        // Create email with attachment
+        $email_content = "From: Barbershop Management <$username>\r\n";
+        $email_content .= "To: $to\r\n";
+        $email_content .= "Subject: $subject\r\n";
+        $email_content .= "MIME-Version: 1.0\r\n";
+        $email_content .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
+        $email_content .= "Date: " . date('r') . "\r\n";
+        $email_content .= "\r\n";
+        
+        // Message body
+        $email_content .= "--$boundary\r\n";
+        $email_content .= "Content-Type: text/plain; charset=UTF-8\r\n";
+        $email_content .= "Content-Transfer-Encoding: 7bit\r\n";
+        $email_content .= "\r\n";
+        $email_content .= $message . "\r\n";
+        
+        // Attachment
+        $email_content .= "--$boundary\r\n";
+        $email_content .= "Content-Type: application/zip\r\n";
+        $email_content .= "Content-Transfer-Encoding: base64\r\n";
+        $email_content .= "Content-Disposition: attachment; filename=\"$attachmentName\"\r\n";
+        $email_content .= "\r\n";
+        $email_content .= chunk_split($attachment_data) . "\r\n";
+        $email_content .= "--$boundary--\r\n";
+        
+        // Create temporary file for cURL
+        $temp_file = tempnam(sys_get_temp_dir(), 'email_');
+        file_put_contents($temp_file, $email_content);
+        
+        // Use cURL for SMTP
+        $curl = curl_init();
+        curl_setopt_array($curl, [
+            CURLOPT_URL => "smtp://{$smtp_host}:{$smtp_port}",
+            CURLOPT_USE_SSL => CURLUSESSL_TRY,
+            CURLOPT_USERNAME => $username,
+            CURLOPT_PASSWORD => $app_password,
+            CURLOPT_MAIL_FROM => $username,
+            CURLOPT_MAIL_RCPT => [$to],
+            CURLOPT_INFILE => fopen($temp_file, 'r'),
+            CURLOPT_UPLOAD => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYHOST => false,
+            CURLOPT_VERBOSE => false,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_RETURNTRANSFER => true
+        ]);
+        
+        $result = curl_exec($curl);
+        $error = curl_error($curl);
+        curl_close($curl);
+        
+        // Clean up temp file
+        unlink($temp_file);
+        
+        if ($result === false || !empty($error)) {
+            throw new Exception("cURL SMTP failed: " . $error);
+        }
+        
+        return logEmailNotification($to, $subject, $message, "Sent with attachment: $attachmentName", 'sent');
+        
+    } catch (Exception $e) {
+        return logEmailNotification($to, $subject, $message, 'SMTP Error: ' . $e->getMessage(), 'failed');
     }
 }
 

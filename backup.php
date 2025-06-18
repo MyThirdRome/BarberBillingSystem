@@ -74,6 +74,28 @@ if ($_POST) {
                 $error = 'Erreur lors de la sauvegarde du mot de passe d\'application.';
             }
         }
+    } elseif ($action === 'import_backup') {
+        if (isset($_FILES['backup_file']) && $_FILES['backup_file']['error'] === UPLOAD_ERR_OK) {
+            $uploadedFile = $_FILES['backup_file'];
+            $fileName = $uploadedFile['name'];
+            $tempPath = $uploadedFile['tmp_name'];
+            
+            // Validate file type
+            if (pathinfo($fileName, PATHINFO_EXTENSION) !== 'zip') {
+                $error = 'Veuillez sélectionner un fichier ZIP valide.';
+            } else {
+                require_once 'includes/backup_functions.php';
+                $result = importBackupFromZip($tempPath);
+                
+                if ($result['success']) {
+                    $message = 'Sauvegarde importée avec succès. ' . $result['imported_files'] . ' fichiers restaurés.';
+                } else {
+                    $error = 'Erreur lors de l\'importation: ' . $result['error'];
+                }
+            }
+        } else {
+            $error = 'Aucun fichier sélectionné ou erreur lors du téléchargement.';
+        }
     }
 }
 
@@ -86,10 +108,16 @@ include 'includes/header.php';
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h1 class="h3 mb-0">Système de Sauvegarde</h1>
-                <button type="button" class="btn btn-success" onclick="manualBackup()">
-                    <i class="fas fa-download me-1"></i>
-                    Sauvegarde Manuelle
-                </button>
+                <div>
+                    <button type="button" class="btn btn-success me-2" onclick="manualBackup()">
+                        <i class="fas fa-download me-1"></i>
+                        Sauvegarde Manuelle
+                    </button>
+                    <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fas fa-upload me-1"></i>
+                        Importer Sauvegarde
+                    </button>
+                </div>
             </div>
             
             <?php if ($message): ?>
@@ -414,5 +442,62 @@ function manualBackup() {
     }
 }
 </script>
+
+<!-- Import Backup Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importModalLabel">
+                    <i class="fas fa-upload me-2"></i>
+                    Importer une Sauvegarde
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="import_backup">
+                    
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Attention:</strong> L'importation remplacera toutes les données actuelles par celles du fichier de sauvegarde.
+                        Une copie de sauvegarde de vos données actuelles sera créée automatiquement.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="backup_file" class="form-label">
+                            <i class="fas fa-file-archive me-2"></i>
+                            Fichier de sauvegarde ZIP
+                        </label>
+                        <input type="file" class="form-control" id="backup_file" name="backup_file" 
+                               accept=".zip" required>
+                        <div class="form-text">
+                            Sélectionnez un fichier ZIP de sauvegarde créé par ce système.
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="confirm_import" required>
+                            <label class="form-check-label" for="confirm_import">
+                                Je comprends que cette action remplacera toutes les données actuelles
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>
+                        Annuler
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        <i class="fas fa-upload me-1"></i>
+                        Importer la Sauvegarde
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <?php include 'includes/footer.php'; ?>

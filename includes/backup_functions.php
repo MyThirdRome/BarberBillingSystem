@@ -302,6 +302,101 @@ function cleanupOldBackupFiles($backupDir, $keepCount = 5) {
 }
 
 /**
+ * Import backup from ZIP file
+ */
+function importBackupFromZip($zipPath) {
+    try {
+        $zip = new ZipArchive();
+        if ($zip->open($zipPath) !== TRUE) {
+            throw new Exception("Cannot open ZIP file");
+        }
+        
+        $imported_files = 0;
+        $temp_dir = sys_get_temp_dir() . '/backup_import_' . uniqid();
+        
+        // Extract ZIP to temporary directory
+        if (!$zip->extractTo($temp_dir)) {
+            throw new Exception("Cannot extract ZIP file");
+        }
+        $zip->close();
+        
+        // List of expected data files
+        $dataFiles = [
+            'crew.json',
+            'work.json', 
+            'charges.json',
+            'advances.json',
+            'payments.json',
+            'users.json',
+            'price_list.json',
+            'backup_config.json'
+        ];
+        
+        // Import each file
+        foreach ($dataFiles as $file) {
+            $extracted_file = $temp_dir . '/data/' . $file;
+            $target_file = DATA_DIR . '/' . $file;
+            
+            if (file_exists($extracted_file)) {
+                // Validate JSON before importing
+                $json_data = file_get_contents($extracted_file);
+                $decoded = json_decode($json_data, true);
+                
+                if ($decoded !== null) {
+                    // Create backup of existing file
+                    if (file_exists($target_file)) {
+                        copy($target_file, $target_file . '.backup.' . date('Y-m-d_H-i-s'));
+                    }
+                    
+                    // Import new file
+                    if (copy($extracted_file, $target_file)) {
+                        $imported_files++;
+                    }
+                }
+            }
+        }
+        
+        // Clean up temporary directory
+        removeDirectory($temp_dir);
+        
+        if ($imported_files === 0) {
+            throw new Exception("No valid data files found in backup");
+        }
+        
+        return [
+            'success' => true,
+            'imported_files' => $imported_files
+        ];
+        
+    } catch (Exception $e) {
+        return [
+            'success' => false,
+            'error' => $e->getMessage()
+        ];
+    }
+}
+
+/**
+ * Recursively remove directory
+ */
+function removeDirectory($dir) {
+    if (!is_dir($dir)) {
+        return;
+    }
+    
+    $files = array_diff(scandir($dir), ['.', '..']);
+    foreach ($files as $file) {
+        $path = $dir . '/' . $file;
+        if (is_dir($path)) {
+            removeDirectory($path);
+        } else {
+            unlink($path);
+        }
+    }
+    rmdir($dir);
+}
+
+/**
  * Format file size for display
  */
 function formatFileSize($bytes) {

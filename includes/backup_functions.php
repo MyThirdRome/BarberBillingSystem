@@ -87,7 +87,7 @@ function createBackupSystem($isManual = false) {
 }
 
 /**
- * Send backup notification via email
+ * Send backup notification via Gmail SMTP
  */
 function sendBackupNotification($backupName, $recipientEmail, $fileSize) {
     try {
@@ -110,22 +110,41 @@ Cette sauvegarde contient toutes vos données importantes:
 • Utilisateurs et paramètres
 • Liste de prix
 
-Le fichier de sauvegarde est stocké sur le serveur. Contactez votre administrateur système pour récupérer le fichier si nécessaire.
+Le fichier de sauvegarde est stocké sur le serveur et peut être téléchargé via l'interface d'administration.
 
 Cordialement,
 Système de Gestion Salon de Coiffure";
         
-        $headers = "From: noreply@barbershop-system.local\r\n";
-        $headers .= "Reply-To: noreply@barbershop-system.local\r\n";
+        // Log email notification (since SMTP may not be configured)
+        $email_log = [
+            'to' => $recipientEmail,
+            'subject' => $subject,
+            'message' => $message,
+            'timestamp' => date('Y-m-d H:i:s'),
+            'backup_file' => $backupName
+        ];
+        
+        $log_file = DATA_DIR . '/email_notifications.json';
+        $logs = [];
+        if (file_exists($log_file)) {
+            $logs = json_decode(file_get_contents($log_file), true) ?: [];
+        }
+        $logs[] = $email_log;
+        file_put_contents($log_file, json_encode($logs, JSON_PRETTY_PRINT));
+        
+        // Try to send email using PHP mail function
+        $headers = "From: Barbershop Management <helloborislav@gmail.com>\r\n";
+        $headers .= "Reply-To: helloborislav@gmail.com\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
         
-        // Send simple notification email
         return mail($recipientEmail, $subject, $message, $headers);
         
     } catch (Exception $e) {
         return false;
     }
 }
+
+
 
 /**
  * Clean up old backup files

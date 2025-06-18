@@ -101,6 +101,11 @@ $crew_navigation = [
         'title' => 'Mon Tableau de Bord',
         'icon' => 'fas fa-tachometer-alt',
         'url' => 'crew_dashboard.php'
+    ],
+    'crew_work' => [
+        'title' => 'Mes Prestations',
+        'icon' => 'fas fa-cut',
+        'url' => 'crew_work.php'
     ]
 ];
 

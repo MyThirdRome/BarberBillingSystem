@@ -210,8 +210,6 @@ include 'includes/header.php';
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Prestations *</label>
-                        <!-- Debug: Price list count -->
-                        <div class="small text-muted mb-2">Services disponibles: <?= count($priceList) ?></div>
                         <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
                             <?php if (empty($priceList)): ?>
                                 <div class="text-center py-3">

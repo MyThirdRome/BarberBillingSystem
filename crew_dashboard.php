@@ -20,6 +20,7 @@ unset($_SESSION['message'], $_SESSION['error']);
 $work = loadData('work');
 $advances = loadData('advances');
 $payments = loadData('payments');
+$priceList = loadData('price_list');
 
 // Filter data for current crew member
 $myWork = array_filter($work, function($w) use ($crew_id) {
@@ -251,34 +252,64 @@ include 'includes/header.php';
 
 <!-- Add Work Modal -->
 <div class="modal fade" id="addWorkModal" tabindex="-1">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Ajouter un Travail</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
             <form method="POST" action="crew_work.php">
+                <input type="hidden" name="action" value="add">
+                <div class="modal-header">
+                    <h5 class="modal-title">Ajouter une Prestation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
                 <div class="modal-body">
-                    <input type="hidden" name="action" value="add">
-                    <input type="hidden" name="crew_id" value="<?= $crew_id ?>">
-                    
                     <div class="mb-3">
-                        <label for="type" class="form-label">Type de Service *</label>
-                        <input type="text" class="form-control" id="type" name="type" 
-                               placeholder="Ex: Coupe, Brushing, Coloration, Barbe..." required>
-                        <small class="text-muted">Décrivez le service effectué</small>
+                        <label class="form-label">Prestations *</label>
+                        <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+                            <?php if (empty($priceList)): ?>
+                                <div class="text-center py-3">
+                                    <p class="text-muted">Aucune prestation disponible dans la liste de prix.</p>
+                                    <p class="text-muted small">Contactez l'administrateur pour ajouter des prestations.</p>
+                                </div>
+                            <?php else: ?>
+                                <?php 
+                                // Group services by category
+                                $servicesByCategory = [];
+                                foreach ($priceList as $service) {
+                                    $category = $service['category'] ?: 'Autres';
+                                    $servicesByCategory[$category][] = $service;
+                                }
+                                
+                                foreach ($servicesByCategory as $category => $services): ?>
+                                    <h6 class="text-primary mt-2 mb-2"><?= htmlspecialchars($category) ?></h6>
+                                    <?php foreach ($services as $service): ?>
+                                        <div class="form-check">
+                                            <input class="form-check-input service-checkbox" type="checkbox" 
+                                                   name="services[]" value="<?= $service['id'] ?>" 
+                                                   id="dashboard_service_<?= $service['id'] ?>"
+                                                   data-price="<?= $service['price'] ?>"
+                                                   onchange="updateDashboardTotal()">
+                                            <label class="form-check-label d-flex justify-content-between w-100" for="dashboard_service_<?= $service['id'] ?>">
+                                                <span>
+                                                    <strong><?= htmlspecialchars($service['name']) ?></strong>
+                                                    <?php if (!empty($service['description'])): ?>
+                                                        <br><small class="text-muted"><?= htmlspecialchars($service['description']) ?></small>
+                                                    <?php endif; ?>
+                                                </span>
+                                                <span class="text-success fw-bold"><?= number_format($service['price'], 3) ?> TND</span>
+                                            </label>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Total: <span id="dashboard-service-total" class="text-success">0.000 TND</span></strong>
+                        </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="amount" class="form-label">Montant (TND) *</label>
-                        <input type="number" class="form-control" id="amount" name="amount" 
-                               step="0.001" min="0" required>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="date" class="form-label">Date et Heure *</label>
-                        <input type="datetime-local" class="form-control" id="date" name="date" 
-                               value="<?= date('Y-m-d\TH:i') ?>" required>
+                        <label for="dashboard_date" class="form-label">Date et Heure</label>
+                        <input type="datetime-local" class="form-control" id="dashboard_date" name="date" 
+                               value="<?= date('Y-m-d\TH:i') ?>">
                     </div>
                     
                     <hr>
@@ -287,29 +318,29 @@ include 'includes/header.php';
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="customer_name" class="form-label">Nom du Client</label>
-                                <input type="text" class="form-control" id="customer_name" name="customer_name" 
+                                <label for="dashboard_customer_name" class="form-label">Nom du Client</label>
+                                <input type="text" class="form-control" id="dashboard_customer_name" name="customer_name" 
                                        placeholder="Nom complet du client">
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label for="customer_phone" class="form-label">Téléphone</label>
-                                <input type="tel" class="form-control" id="customer_phone" name="customer_phone" 
+                                <label for="dashboard_customer_phone" class="form-label">Téléphone</label>
+                                <input type="tel" class="form-control" id="dashboard_customer_phone" name="customer_phone" 
                                        placeholder="+216 XX XXX XXX">
                             </div>
                         </div>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="customer_email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="customer_email" name="customer_email" 
+                        <label for="dashboard_customer_email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="dashboard_customer_email" name="customer_email" 
                                placeholder="client@example.com">
                     </div>
                     
                     <div class="mb-3">
-                        <label for="notes" class="form-label">Notes</label>
-                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                        <label for="dashboard_notes" class="form-label">Notes</label>
+                        <textarea class="form-control" id="dashboard_notes" name="notes" rows="3" 
                                   placeholder="Notes sur le service ou le client..."></textarea>
                     </div>
                 </div>
@@ -321,5 +352,19 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
+
+<script>
+// Dashboard-specific total calculation to avoid conflicts with other modals
+function updateDashboardTotal() {
+    const checkboxes = document.querySelectorAll('.service-checkbox:checked');
+    let total = 0;
+    
+    checkboxes.forEach(checkbox => {
+        total += parseFloat(checkbox.dataset.price);
+    });
+    
+    document.getElementById('dashboard-service-total').textContent = total.toFixed(3) + ' TND';
+}
+</script>
 
 <?php include 'includes/footer.php'; ?>

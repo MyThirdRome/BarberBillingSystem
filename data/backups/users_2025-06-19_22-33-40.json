@@ -11,7 +11,7 @@
         ],
         "created_at": "2025-06-12 16:11:31",
         "created_by": "system",
-        "last_activity": "2025-06-19 22:25:41",
+        "last_activity": "2025-06-19 22:33:22",
         "login_count": 0,
         "password_changed_at": "2025-06-19 22:16:39"
     },
@@ -61,13 +61,17 @@
     "5": {
         "id": "684daa3b252f13.70304433",
         "username": "Ines",
-        "password": "$2y$10$Pa.xe8jLRRCBH9elI1M0uOTGpZyTR\/AXVCrXNiesL42uMKtapjVaq",
+        "password": "$2y$10$.ynlQzJx2qYCQKZ5hWKRtOLoMojsLv57Ug8dsN8TCgnBqOAYe8RPa",
         "role": "crew",
         "crew_id": "684daa3b252e44.15516497",
         "name": "Ines saidi",
         "created_at": "2025-06-14 18:58:35",
         "password_changed_at": "2025-06-19 22:16:40",
-        "updated_at": "2025-06-19 22:19:48"
+        "updated_at": "2025-06-19 22:33:22",
+        "last_activity": "2025-06-19 22:32:55",
+        "login_count": 0,
+        "permissions": [],
+        "updated_by": "684ae013a8f0b8.04596364"
     },
     "6": {
         "id": "684eba10a39327.48780095",

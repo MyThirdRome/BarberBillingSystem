@@ -91,6 +91,21 @@
     
     <main class="main-content">
         <?php
+        // Show impersonation alert if admin is logged in as another user
+        if (isset($_SESSION['impersonated_by_admin'])): ?>
+            <div class="container-fluid mt-3">
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-user-secret me-2"></i>
+                    <strong>Mode Administrateur:</strong> Vous naviguez en tant que <?= htmlspecialchars($_SESSION['username']) ?>
+                    <a href="admin_return.php" class="btn btn-sm btn-outline-primary ms-3">
+                        <i class="fas fa-arrow-left me-1"></i>Retour Admin
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <?php
         // Show system alerts if any
         if (isset($_GET['timeout']) && $_GET['timeout'] == 1): ?>
             <div class="container-fluid mt-3">

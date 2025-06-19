@@ -151,6 +151,14 @@ include 'includes/header.php';
                 </div>
             <?php endif; ?>
             
+            <?php if (isset($_GET['returned']) && $_GET['returned'] == 1): ?>
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                    <i class="fas fa-arrow-left me-2"></i>
+                    Vous êtes revenu à votre session administrateur.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            <?php endif; ?>
+            
             <div class="card">
                 <div class="card-body">
                     <?php if (empty($users)): ?>
@@ -216,6 +224,11 @@ include 'includes/header.php';
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <?php if ($user['id'] !== $_SESSION['user_id']): ?>
+                                                    <button type="button" class="btn btn-sm btn-outline-success" 
+                                                            onclick="loginAsUser('<?= $user['id'] ?>', '<?= htmlspecialchars($user['username']) ?>')"
+                                                            title="Se connecter en tant que <?= htmlspecialchars($user['username']) ?>">
+                                                        <i class="fas fa-sign-in-alt"></i>
+                                                    </button>
                                                     <button type="button" class="btn btn-sm btn-outline-danger" 
                                                             onclick="deleteUser('<?= $user['id'] ?>', '<?= htmlspecialchars($user['username']) ?>')">
                                                         <i class="fas fa-trash"></i>
@@ -433,6 +446,33 @@ window.editUser = function(id) {
     } catch (error) {
         console.error('Error in editUser:', error);
         alert('Erreur lors de l\'ouverture du formulaire d\'édition');
+    }
+};
+
+window.loginAsUser = function(userId, username) {
+    if (confirm(`Voulez-vous vous connecter en tant que ${username} dans un nouvel onglet ?`)) {
+        // Create a form to submit the login request
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = 'admin_login_as.php';
+        form.target = '_blank';
+        
+        const userIdInput = document.createElement('input');
+        userIdInput.type = 'hidden';
+        userIdInput.name = 'user_id';
+        userIdInput.value = userId;
+        
+        const tokenInput = document.createElement('input');
+        tokenInput.type = 'hidden';
+        tokenInput.name = 'csrf_token';
+        tokenInput.value = window.csrfToken || '';
+        
+        form.appendChild(userIdInput);
+        form.appendChild(tokenInput);
+        document.body.appendChild(form);
+        
+        form.submit();
+        document.body.removeChild(form);
     }
 };
 

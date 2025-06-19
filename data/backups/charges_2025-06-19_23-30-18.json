@@ -354,17 +354,6 @@
         "advance_id": "6853e343267441.28242929"
     },
     {
-        "id": "6853e34bd58d99.18757278",
-        "type": "Avance - Seifeddine karchoud",
-        "amount": 50,
-        "date": "2025-06-09T12:14",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:15:39",
-        "crew_id": "684ae12942c189.56153227",
-        "advance_id": "6853e34bd51843.77135139"
-    },
-    {
         "id": "6853e418d2a2d2.18272707",
         "type": "Avance - Hanen mbarki",
         "amount": 10,
@@ -374,17 +363,6 @@
         "created_at": "2025-06-19 12:19:04",
         "crew_id": "684ae2127070a1.27531058",
         "advance_id": "6853e418d21dc5.81025682"
-    },
-    {
-        "id": "6853e41e575c72.62184850",
-        "type": "Avance - Hanen mbarki",
-        "amount": 10,
-        "date": "2025-06-13T12:18",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:19:10",
-        "crew_id": "684ae2127070a1.27531058",
-        "advance_id": "6853e41e56df88.76322299"
     },
     {
         "id": "68544e94819d21.09529438",
@@ -414,14 +392,14 @@
         "created_at": "2025-06-19 21:22:35"
     },
     {
-        "id": "68547fc9b9c483.80515047",
+        "id": "68548159ba3ed4.39127221",
         "type": "Avance - Mohaned bouzaien",
-        "amount": 16,
-        "date": "2025-06-19T23:22",
-        "description": "Avance: Test",
+        "amount": 15,
+        "date": "2025-06-19T23:29",
+        "description": "Avance: Hello",
         "category": "Salaires et Avances",
-        "created_at": "2025-06-19 23:23:21",
+        "created_at": "2025-06-19 23:30:01",
         "crew_id": "684ae0dd37be06.94756449",
-        "advance_id": "68547fc9b9aa95.15379375"
+        "advance_id": "68548159ba2769.13330579"
     }
 ]

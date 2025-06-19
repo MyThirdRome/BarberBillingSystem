@@ -361,6 +361,25 @@ include 'includes/header.php';
                 </div>
             </div>
             
+            <!-- Real-time Search Bar -->
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="search_input" class="form-label">Recherche en temps réel</label>
+                            <input type="text" class="form-control" id="search_input" 
+                                   placeholder="Tapez pour rechercher dans toutes les colonnes..." 
+                                   onkeyup="filterChargesTable()">
+                        </div>
+                        <div class="col-md-6 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-secondary" onclick="clearSearch()">
+                                <i class="fas fa-times"></i> Effacer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="card">
                 <div class="card-body">
                     <?php if (empty($filteredCharges)): ?>
@@ -371,7 +390,7 @@ include 'includes/header.php';
                         </div>
                     <?php else: ?>
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover" id="charges-table">
                                 <thead>
                                     <tr>
                                         <th>Date</th>
@@ -637,6 +656,47 @@ function deleteCharge(id, type) {
     document.getElementById('delete_charge_type').textContent = type;
     
     new bootstrap.Modal(document.getElementById('deleteChargeModal')).show();
+}
+
+// Real-time search functionality
+function filterChargesTable() {
+    const searchInput = document.getElementById('search_input').value.toLowerCase();
+    const table = document.querySelector('#charges-table tbody');
+    const rows = table.querySelectorAll('tr');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        let found = false;
+        
+        // Search through all cell contents
+        cells.forEach(cell => {
+            const cellText = cell.textContent.toLowerCase().trim();
+            if (cellText.includes(searchInput)) {
+                found = true;
+            }
+        });
+        
+        if (found || searchInput === '') {
+            row.style.display = '';
+            visibleCount++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+    
+    // Update table info if needed
+    updateTableInfo(visibleCount);
+}
+
+function clearSearch() {
+    document.getElementById('search_input').value = '';
+    filterChargesTable();
+}
+
+function updateTableInfo(visibleCount) {
+    const totalRows = document.querySelectorAll('#charges-table tbody tr').length;
+    // Could add a counter display here if needed
 }
 </script>
 

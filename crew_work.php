@@ -16,8 +16,7 @@ $priceList = loadData('price_list');
 $message = '';
 $error = '';
 
-// Debug: Check crew_id and session data
-error_log("Crew login - User ID: " . ($_SESSION['user_id'] ?? 'none') . ", Crew ID: " . ($crew_id ?? 'none') . ", Name: " . $crew_name);
+
 
 // If crew_id is missing, try to find it from the crew data
 if (empty($crew_id)) {

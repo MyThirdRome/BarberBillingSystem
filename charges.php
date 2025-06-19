@@ -2,8 +2,45 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
-// Load charge types from config
-require_once 'includes/config.php';
+// Define charge types
+$chargeTypes = [
+    'rent' => [
+        'label' => 'Loyer',
+        'color' => 'warning',
+        'requires_crew' => false,
+        'requires_description' => false
+    ],
+    'electricity' => [
+        'label' => 'Électricité',
+        'color' => 'info',
+        'requires_crew' => false,
+        'requires_description' => false
+    ],
+    'water' => [
+        'label' => 'Eau',
+        'color' => 'success',
+        'requires_crew' => false,
+        'requires_description' => false
+    ],
+    'divers' => [
+        'label' => 'Divers',
+        'color' => 'secondary',
+        'requires_crew' => false,
+        'requires_description' => true
+    ],
+    'advance_manager' => [
+        'label' => 'Avance Gérant',
+        'color' => 'danger',
+        'requires_crew' => false,
+        'requires_description' => false
+    ],
+    'salon_products' => [
+        'label' => 'Produits Salon',
+        'color' => 'purple',
+        'requires_crew' => false,
+        'requires_description' => false
+    ]
+];
 
 // Only admins can access charges management
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -371,7 +408,7 @@ include 'includes/header.php';
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <button type="button" class="btn btn-sm btn-outline-danger" 
-                                                        onclick="deleteCharge('<?= $charge['id'] ?>', '<?= htmlspecialchars($chargeTypes[$charge['type']] ?? $charge['type']) ?>')">
+                                                        onclick="deleteCharge('<?= $charge['id'] ?>', '<?= htmlspecialchars($chargeTypes[$charge['type']]['label'] ?? $charge['type']) ?>')">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                             </td>

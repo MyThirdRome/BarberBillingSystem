@@ -98,12 +98,31 @@ if ($_POST) {
     } elseif ($action === 'delete') {
         $id = $_POST['id'] ?? '';
         
+        // Find the charge to be deleted to check if it's advance-related
+        $chargeToDelete = null;
+        foreach ($charges as $charge) {
+            if ($charge['id'] === $id) {
+                $chargeToDelete = $charge;
+                break;
+            }
+        }
+        
         $charges = array_filter($charges, function($charge) use ($id) {
             return $charge['id'] !== $id;
         });
         
         saveData('charges', $charges);
-        $message = 'Charge supprimée avec succès.';
+        
+        // If this was an advance-related charge, also delete the corresponding advance
+        if ($chargeToDelete && isset($chargeToDelete['advance_id'])) {
+            $advances = array_filter($advances, function($advance) use ($chargeToDelete) {
+                return $advance['id'] !== $chargeToDelete['advance_id'];
+            });
+            saveData('advances', $advances);
+            $message = 'Charge et avance correspondante supprimées avec succès.';
+        } else {
+            $message = 'Charge supprimée avec succès.';
+        }
     }
 }
 

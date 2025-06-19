@@ -22,10 +22,7 @@ $advances = loadData('advances');
 $payments = loadData('payments');
 $priceList = loadData('price_list');
 
-// Debug: Check crew_id and session data
-error_log("Crew dashboard - User ID: " . ($_SESSION['user_id'] ?? 'none') . ", Crew ID: " . ($crew_id ?? 'none') . ", Name: " . $crew_name);
-error_log("Total work records loaded: " . count($work));
-error_log("Username: " . ($_SESSION['username'] ?? 'none'));
+
 
 // If crew_id is missing, try to find it from the crew data
 if (empty($crew_id)) {
@@ -58,16 +55,8 @@ if (!empty($crew_id)) {
         return isset($p['crew_id']) && $p['crew_id'] === $crew_id;
     });
     
-    // Debug filtering results
-    error_log("Filtered work for " . $_SESSION['username'] . " (crew_id: $crew_id): " . count($myWork) . " out of " . count($work) . " total records");
-    
-    // Debug for all users to verify filtering
-    error_log("FILTERING DEBUG for " . $_SESSION['username'] . " - Role: " . $_SESSION['role'] . ", Total earnings: " . array_sum(array_column($myWork, 'amount')) . " TND");
-    if (count($myWork) <= 3) {
-        error_log("Work records for " . $_SESSION['username'] . ": " . json_encode(array_values($myWork)));
-    }
+
 } else {
-    error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter data properly");
     // If crew_id is missing, use empty arrays instead of showing all data
     $myWork = [];
     $myAdvances = [];

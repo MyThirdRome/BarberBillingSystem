@@ -1,6 +1,8 @@
 <?php
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
+
+// Load charge types from config
 require_once 'includes/config.php';
 
 // Only admins can access charges management
@@ -410,8 +412,8 @@ include 'includes/header.php';
                         <label for="type" class="form-label">Type de Charge *</label>
                         <select class="form-control" id="type" name="type" required onchange="toggleChargeFields()">
                             <option value="">Sélectionner un type</option>
-                            <?php foreach ($chargeTypes as $key => $label): ?>
-                                <option value="<?= $key ?>"><?= htmlspecialchars($label) ?></option>
+                            <?php foreach ($chargeTypes as $key => $config): ?>
+                                <option value="<?= $key ?>"><?= htmlspecialchars($config['label']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -469,8 +471,8 @@ include 'includes/header.php';
                         <label for="edit_type" class="form-label">Type de Charge *</label>
                         <select class="form-control" id="edit_type" name="type" required onchange="toggleEditChargeFields()">
                             <option value="">Sélectionner un type</option>
-                            <?php foreach ($chargeTypes as $key => $label): ?>
-                                <option value="<?= $key ?>"><?= htmlspecialchars($label) ?></option>
+                            <?php foreach ($chargeTypes as $key => $config): ?>
+                                <option value="<?= $key ?>"><?= htmlspecialchars($config['label']) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

@@ -2,8 +2,10 @@
 require_once 'includes/config.php';
 require_once 'includes/auth.php';
 
-// Start session
-session_start();
+// Start session only if not already started
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 // Check if user is currently impersonating
 if (!isset($_SESSION['impersonated_by_admin'])) {

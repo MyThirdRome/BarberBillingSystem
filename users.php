@@ -70,8 +70,24 @@ if ($_POST) {
         } else {
             foreach ($users as &$user) {
                 if ($user['id'] === $id) {
+                    // Find the original user to preserve their crew status
+                    $originalUser = null;
+                    foreach ($users as $origUser) {
+                        if ($origUser['id'] === $id) {
+                            $originalUser = $origUser;
+                            break;
+                        }
+                    }
+                    
                     $user['username'] = $username;
-                    $user['role'] = $role;
+                    
+                    // If user has crew_id, keep them as crew member regardless of form selection
+                    if (!empty($originalUser['crew_id'])) {
+                        $user['role'] = 'crew';
+                    } else {
+                        $user['role'] = $role;
+                    }
+                    
                     $user['permissions'] = $permissions;
                     if (!empty($new_password)) {
                         $user['password'] = password_hash($new_password, PASSWORD_DEFAULT);
@@ -370,18 +386,28 @@ include 'includes/header.php';
 const userData = <?= json_encode($users) ?>;
 
 function editUser(id) {
+    console.log('Edit user called with ID:', id);
     const user = userData.find(u => u.id === id);
+    console.log('Found user:', user);
+    
     if (user) {
-        document.getElementById('edit_id').value = user.id;
-        document.getElementById('edit_username').value = user.username;
-        document.getElementById('edit_role').value = user.role;
+        // Set form values
+        const editIdEl = document.getElementById('edit_id');
+        const editUsernameEl = document.getElementById('edit_username');
+        const editRoleEl = document.getElementById('edit_role');
+        
+        if (editIdEl) editIdEl.value = user.id;
+        if (editUsernameEl) editUsernameEl.value = user.username;
+        if (editRoleEl) editRoleEl.value = user.role || 'viewer';
         
         // Clear permission checkboxes
-        document.getElementById('edit_perm_view').checked = false;
-        document.getElementById('edit_perm_edit').checked = false;
+        const viewCheckbox = document.getElementById('edit_perm_view');
+        const editCheckbox = document.getElementById('edit_perm_edit');
+        if (viewCheckbox) viewCheckbox.checked = false;
+        if (editCheckbox) editCheckbox.checked = false;
         
         // Set permissions
-        if (user.permissions) {
+        if (user.permissions && Array.isArray(user.permissions)) {
             user.permissions.forEach(perm => {
                 const checkbox = document.getElementById('edit_perm_' + perm);
                 if (checkbox) {
@@ -391,10 +417,21 @@ function editUser(id) {
         }
         
         // Clear password fields
-        document.getElementById('new_password').value = '';
-        document.getElementById('edit_confirm_password').value = '';
+        const newPasswordEl = document.getElementById('new_password');
+        const confirmPasswordEl = document.getElementById('edit_confirm_password');
+        if (newPasswordEl) newPasswordEl.value = '';
+        if (confirmPasswordEl) confirmPasswordEl.value = '';
         
-        new bootstrap.Modal(document.getElementById('editUserModal')).show();
+        // Show modal
+        const modalEl = document.getElementById('editUserModal');
+        if (modalEl) {
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        } else {
+            console.error('Edit modal not found');
+        }
+    } else {
+        console.error('User not found with ID:', id);
     }
 }
 

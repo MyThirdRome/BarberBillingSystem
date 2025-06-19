@@ -2,8 +2,8 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
-// Check if user is crew member
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'crew') {
+// Check if user has crew_id (crew members, viewers, or users with crew association)
+if (!isset($_SESSION['user']) || empty($_SESSION['user']['crew_id'])) {
     header('Location: login.php');
     exit;
 }
@@ -61,10 +61,10 @@ if (!empty($crew_id)) {
     // Debug filtering results
     error_log("Filtered work for " . $_SESSION['username'] . " (crew_id: $crew_id): " . count($myWork) . " out of " . count($work) . " total records");
     
-    // Special debug for Ines
-    if ($_SESSION['username'] === 'Ines') {
-        error_log("INES DEBUG - Total earnings: " . array_sum(array_column($myWork, 'amount')));
-        error_log("INES DEBUG - First 3 work records: " . json_encode(array_slice($myWork, 0, 3)));
+    // Debug for all users to verify filtering
+    error_log("FILTERING DEBUG for " . $_SESSION['username'] . " - Role: " . $_SESSION['role'] . ", Total earnings: " . array_sum(array_column($myWork, 'amount')) . " TND");
+    if (count($myWork) <= 3) {
+        error_log("Work records for " . $_SESSION['username'] . ": " . json_encode(array_values($myWork)));
     }
 } else {
     error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter data properly");

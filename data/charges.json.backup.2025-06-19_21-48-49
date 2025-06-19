@@ -8,17 +8,6 @@
         "date": "2025-06-12",
         "created_at": "2025-06-12 16:26:42"
     },
-    "1": {
-        "id": "684b2c2aee5ba1.54805791",
-        "type": "Avance - Mohaned bouzaien",
-        "amount": 10,
-        "date": "2025-06-12T21:34",
-        "description": "Avance: RNE REGISTRE",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-12 21:36:10",
-        "crew_id": "684ae0dd37be06.94756449",
-        "advance_id": "684b2c2aedf0f8.87143634"
-    },
     "2": {
         "id": "684b2fa40ae759.95161049",
         "type": "Avance - Hanen mbarki",
@@ -335,6 +324,17 @@
         "date": "2025-06-13",
         "created_at": "2025-06-16 19:24:17"
     },
+    "37": {
+        "id": "6851f175753d32.12562336",
+        "type": "Avance - Hanen mbarki",
+        "amount": 100,
+        "date": "2025-06-18T23:50",
+        "description": "Avance: PERSONNEL DENTISTE",
+        "category": "Salaires et Avances",
+        "created_at": "2025-06-18 00:51:33",
+        "crew_id": "684ae2127070a1.27531058",
+        "advance_id": "6851f17574cb14.76456901"
+    },
     "39": {
         "id": "685280953f6c84.11551691",
         "type": "divers",
@@ -361,76 +361,5 @@
         "description": "Chargeur pc hp \r\nFacture n° : 25125296",
         "date": "2025-06-18",
         "created_at": "2025-06-18 17:21:57"
-    },
-    "42": {
-        "id": "6853e343275846.58784081",
-        "type": "Avance - Seifeddine karchoud",
-        "amount": 50,
-        "date": "2025-06-09T12:14",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:15:31",
-        "crew_id": "684ae12942c189.56153227",
-        "advance_id": "6853e343267441.28242929"
-    },
-    "43": {
-        "id": "6853e34bd58d99.18757278",
-        "type": "Avance - Seifeddine karchoud",
-        "amount": 50,
-        "date": "2025-06-09T12:14",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:15:39",
-        "crew_id": "684ae12942c189.56153227",
-        "advance_id": "6853e34bd51843.77135139"
-    },
-    "45": {
-        "id": "6853e418d2a2d2.18272707",
-        "type": "Avance - Hanen mbarki",
-        "amount": 10,
-        "date": "2025-06-13T12:18",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:19:04",
-        "crew_id": "684ae2127070a1.27531058",
-        "advance_id": "6853e418d21dc5.81025682"
-    },
-    "46": {
-        "id": "6853e41e575c72.62184850",
-        "type": "Avance - Hanen mbarki",
-        "amount": 10,
-        "date": "2025-06-13T12:18",
-        "description": "Avance: PERSONNEL",
-        "category": "Salaires et Avances",
-        "created_at": "2025-06-19 12:19:10",
-        "crew_id": "684ae2127070a1.27531058",
-        "advance_id": "6853e41e56df88.76322299"
-    },
-    "47": {
-        "id": "68544e94819d21.09529438",
-        "type": "divers",
-        "crew_id": "",
-        "amount": 15,
-        "description": "Tube Coloration 12 \r\n3 eau",
-        "date": "2025-06-19",
-        "created_at": "2025-06-19 19:53:24"
-    },
-    "48": {
-        "id": "68546247599558.69965171",
-        "type": "divers",
-        "crew_id": "",
-        "amount": 43,
-        "description": "Vaporisateur a eau × 3 brossé barber boîte poubelle",
-        "date": "2025-06-19",
-        "created_at": "2025-06-19 21:17:27"
-    },
-    "49": {
-        "id": "6854637be9bdf2.59630068",
-        "type": "divers",
-        "crew_id": "",
-        "amount": 14.5,
-        "description": "6 taxi aller retour abc coif\r\n8.5 allé retour centre ville",
-        "date": "2025-06-19",
-        "created_at": "2025-06-19 21:22:35"
     }
 }

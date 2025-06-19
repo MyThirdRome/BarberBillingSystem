@@ -1,0 +1,57 @@
+[
+    {
+        "id": "684ae0dd37be06.94756449",
+        "name": "Mohaned bouzaien",
+        "position": "Coiffeur",
+        "phone": "27771121",
+        "salary_base": 800,
+        "username": "Mohaned",
+        "created_at": "2025-06-12 16:14:53"
+    },
+    {
+        "id": "684ae12942c189.56153227",
+        "name": "Seifeddine karchoud",
+        "position": "Coiffeur",
+        "phone": "95868946",
+        "salary_base": 800,
+        "username": "Seif",
+        "created_at": "2025-06-12 16:16:09"
+    },
+    {
+        "id": "684ae1a5c98fb8.48230325",
+        "name": "Hatem zaidi",
+        "position": "Coiffeur",
+        "phone": "27199152",
+        "salary_base": 700,
+        "username": "Hatem",
+        "created_at": "2025-06-12 16:18:13"
+    },
+    {
+        "id": "684ae2127070a1.27531058",
+        "name": "Hanen mbarki",
+        "position": "Coiffeuse",
+        "phone": "52900261",
+        "salary_base": 800,
+        "username": "Hanen",
+        "created_at": "2025-06-12 16:20:02",
+        "updated_at": "2025-06-18 00:49:58"
+    },
+    {
+        "id": "684daa3b252e44.15516497",
+        "name": "Ines saidi",
+        "position": "Visagiste",
+        "phone": "20161987",
+        "salary_base": 500,
+        "username": "Ines",
+        "created_at": "2025-06-14 18:58:35"
+    },
+    {
+        "id": "684ebaf43cf312.43069723",
+        "name": "Aida chebil",
+        "position": "Coiffeuse",
+        "phone": "25405412",
+        "salary_base": 800,
+        "username": "Aida",
+        "created_at": "2025-06-15 14:22:12"
+    }
+]

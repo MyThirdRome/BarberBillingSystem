@@ -32,8 +32,8 @@ if ($_POST) {
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['permissions'] = $user['permissions'] ?? [];
                 
-                // For crew members, ensure crew_id is properly set
-                if ($user['role'] === 'crew') {
+                // For users with crew_id (crew, viewer, user roles), ensure crew_id is properly set
+                if (!empty($user['crew_id']) || $user['role'] === 'crew') {
                     // If crew_id is missing from user data, find it from crew records
                     if (empty($user['crew_id'])) {
                         $crew = loadData('crew');

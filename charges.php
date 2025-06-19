@@ -1,6 +1,7 @@
 <?php
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
+require_once 'includes/config.php';
 
 // Only admins can access charges management
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
@@ -188,12 +189,8 @@ usort($filteredCharges, function($a, $b) {
     return strtotime($b['date']) - strtotime($a['date']);
 });
 
-$chargeTypes = [
-    'rent' => 'Loyer',
-    'electricity' => 'Électricité',
-    'water' => 'Eau',
-    'divers' => 'Divers'
-];
+// Use charge types from config
+// $chargeTypes is already available from config.php
 
 include 'includes/header.php';
 ?>
@@ -294,9 +291,9 @@ include 'includes/header.php';
                             <label for="type_filter" class="form-label">Type de Charge</label>
                             <select class="form-control" id="type_filter" name="type_filter">
                                 <option value="">Tous les types</option>
-                                <?php foreach ($chargeTypes as $key => $label): ?>
+                                <?php foreach ($chargeTypes as $key => $config): ?>
                                     <option value="<?= $key ?>" <?= $type_filter === $key ? 'selected' : '' ?>>
-                                        <?= htmlspecialchars($label) ?>
+                                        <?= htmlspecialchars($config['label']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -360,7 +357,7 @@ include 'includes/header.php';
                                             <td><?= date('d/m/Y', strtotime($charge['date'])) ?></td>
                                             <td>
                                                 <span class="badge bg-<?= getChargeTypeBadgeColor($charge['type']) ?>">
-                                                    <?= htmlspecialchars($chargeTypes[$charge['type']] ?? $charge['type']) ?>
+                                                    <?= htmlspecialchars($chargeTypes[$charge['type']]['label'] ?? $charge['type']) ?>
                                                 </span>
                                             </td>
                                             <td><?= htmlspecialchars($charge['description']) ?></td>

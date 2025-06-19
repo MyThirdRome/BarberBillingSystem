@@ -62,8 +62,10 @@ if ($_POST) {
         if (empty($type) || $amount <= 0) {
             $error = 'Le type de charge et le montant sont obligatoires.';
         } else {
+            $chargeToEdit = null;
             foreach ($charges as &$charge) {
                 if ($charge['id'] === $id) {
+                    $chargeToEdit = $charge;
                     $charge['type'] = $type;
                     $charge['crew_id'] = $crew_id;
                     $charge['amount'] = $amount;
@@ -75,6 +77,22 @@ if ($_POST) {
             }
             
             saveData('charges', $charges);
+            
+            // If this is an advance-related charge, update the corresponding advance
+            if ($chargeToEdit && isset($chargeToEdit['advance_id'])) {
+                foreach ($advances as &$advance) {
+                    if ($advance['id'] === $chargeToEdit['advance_id']) {
+                        $advance['amount'] = $amount;
+                        $advance['date'] = $date;
+                        // Extract reason from description (remove "Avance: " prefix)
+                        $advance['reason'] = str_replace('Avance: ', '', $description);
+                        $advance['updated_at'] = date('Y-m-d H:i:s');
+                        break;
+                    }
+                }
+                saveData('advances', $advances);
+            }
+            
             $message = 'Charge modifiée avec succès.';
         }
     } elseif ($action === 'delete') {

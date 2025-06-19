@@ -198,7 +198,90 @@ if ($_POST) {
             
             // Reload data
             $payments = loadData('payments');
-            $advances = loadData('advances');
+        }
+    } elseif ($action === 'edit_advance') {
+        $advance_id = $_POST['advance_id'] ?? '';
+        $amount = floatval($_POST['amount'] ?? 0);
+        $reason = trim($_POST['reason'] ?? '');
+        $date = $_POST['date'] ?? '';
+        
+        if (empty($advance_id) || $amount <= 0) {
+            $error = 'Données invalides pour la modification.';
+        } else {
+            // Update advance
+            $updated = false;
+            foreach ($advances as &$advance) {
+                if ($advance['id'] === $advance_id && $advance['crew_id'] === $crew_id) {
+                    $advance['amount'] = $amount;
+                    $advance['reason'] = $reason;
+                    $advance['date'] = $date;
+                    $advance['updated_at'] = date('Y-m-d H:i:s');
+                    $updated = true;
+                    break;
+                }
+            }
+            
+            if ($updated) {
+                saveData('advances', $advances);
+                
+                // Update corresponding charge
+                $charges = loadData('charges');
+                foreach ($charges as &$charge) {
+                    if (isset($charge['advance_id']) && $charge['advance_id'] === $advance_id) {
+                        $charge['type'] = 'Avance - ' . htmlspecialchars($crewMember['name']);
+                        $charge['amount'] = $amount;
+                        $charge['date'] = $date;
+                        $charge['description'] = 'Avance: ' . $reason;
+                        $charge['updated_at'] = date('Y-m-d H:i:s');
+                        break;
+                    }
+                }
+                saveData('charges', $charges);
+                
+                $message = 'Avance modifiée avec succès.';
+                $advances = loadData('advances');
+            } else {
+                $error = 'Avance non trouvée.';
+            }
+        }
+    } elseif ($action === 'delete_advance') {
+        $advance_id = $_POST['advance_id'] ?? '';
+        
+        if (empty($advance_id)) {
+            $error = 'ID d\'avance manquant.';
+        } else {
+            // Check if advance can be deleted (not deducted)
+            $canDelete = false;
+            $advanceToDelete = null;
+            foreach ($advances as $advance) {
+                if ($advance['id'] === $advance_id && $advance['crew_id'] === $crew_id) {
+                    $advanceToDelete = $advance;
+                    $canDelete = ($advance['status'] === 'pending');
+                    break;
+                }
+            }
+            
+            if (!$advanceToDelete) {
+                $error = 'Avance non trouvée.';
+            } elseif (!$canDelete) {
+                $error = 'Impossible de supprimer une avance déjà déduite.';
+            } else {
+                // Delete advance
+                $advances = array_filter($advances, function($advance) use ($advance_id) {
+                    return $advance['id'] !== $advance_id;
+                });
+                saveData('advances', $advances);
+                
+                // Delete corresponding charge
+                $charges = loadData('charges');
+                $charges = array_filter($charges, function($charge) use ($advance_id) {
+                    return !isset($charge['advance_id']) || $charge['advance_id'] !== $advance_id;
+                });
+                saveData('charges', $charges);
+                
+                $message = 'Avance supprimée avec succès.';
+                $advances = loadData('advances');
+            }
         }
     }
 }
@@ -505,6 +588,7 @@ include 'includes/header.php';
                                         <th>Montant</th>
                                         <th>Motif</th>
                                         <th>Statut</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -523,6 +607,20 @@ include 'includes/header.php';
                                                     <span class="badge bg-warning">En Attente</span>
                                                 <?php else: ?>
                                                     <span class="badge bg-success">Déduite</span>
+                                                <?php endif; ?>
+                                            </td>
+                                            <td>
+                                                <?php if ($advance['status'] === 'pending'): ?>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary me-1" 
+                                                            onclick="editAdvance('<?= $advance['id'] ?>', '<?= $advance['amount'] ?>', '<?= htmlspecialchars($advance['reason'], ENT_QUOTES) ?>', '<?= date('Y-m-d\TH:i', strtotime($advance['date'])) ?>')">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                            onclick="deleteAdvance('<?= $advance['id'] ?>', '<?= htmlspecialchars($advance['reason'], ENT_QUOTES) ?>')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                <?php else: ?>
+                                                    <span class="text-muted small">Déduite</span>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -623,6 +721,74 @@ include 'includes/header.php';
                     <button type="submit" class="btn btn-warning">Ajouter Avance</button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Advance Modal -->
+<div class="modal fade" id="editAdvanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier l'Avance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="action" value="edit_advance">
+                    <input type="hidden" name="advance_id" id="edit_advance_id">
+                    
+                    <div class="mb-3">
+                        <label for="edit_amount" class="form-label">Montant (TND) *</label>
+                        <input type="number" class="form-control" id="edit_amount" name="amount" 
+                               step="0.001" min="0" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_reason" class="form-label">Motif *</label>
+                        <input type="text" class="form-control" id="edit_reason" name="reason" 
+                               placeholder="Motif de l'avance" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="edit_date" class="form-label">Date</label>
+                        <input type="datetime-local" class="form-control" id="edit_date" name="date">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Advance Modal -->
+<div class="modal fade" id="deleteAdvanceModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger">Supprimer l'Avance</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <strong>Attention !</strong> Cette action est irréversible.
+                </div>
+                <p>Êtes-vous sûr de vouloir supprimer cette avance ?</p>
+                <p><strong>Motif :</strong> <span id="delete_advance_reason"></span></p>
+                <p><small class="text-muted">La charge correspondante sera également supprimée automatiquement.</small></p>
+            </div>
+            <div class="modal-footer">
+                <form method="POST" style="display: inline;">
+                    <input type="hidden" name="action" value="delete_advance">
+                    <input type="hidden" name="advance_id" id="delete_advance_id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -943,6 +1109,24 @@ function showPaymentDetails(paymentId) {
     // Show modal
     const modal = new bootstrap.Modal(document.getElementById('paymentDetailsModal'));
     modal.show();
+}
+
+// Edit advance function
+function editAdvance(id, amount, reason, date) {
+    document.getElementById('edit_advance_id').value = id;
+    document.getElementById('edit_amount').value = amount;
+    document.getElementById('edit_reason').value = reason;
+    document.getElementById('edit_date').value = date;
+    
+    new bootstrap.Modal(document.getElementById('editAdvanceModal')).show();
+}
+
+// Delete advance function
+function deleteAdvance(id, reason) {
+    document.getElementById('delete_advance_id').value = id;
+    document.getElementById('delete_advance_reason').textContent = reason;
+    
+    new bootstrap.Modal(document.getElementById('deleteAdvanceModal')).show();
 }
 </script>
 

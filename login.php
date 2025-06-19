@@ -19,19 +19,13 @@ if ($_POST) {
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
     
-    error_log("LOGIN ATTEMPT - Username: " . $username . ", Password length: " . strlen($password));
-    
     if (empty($username) || empty($password)) {
-        error_log("LOGIN FAILED - Empty username or password");
         $error = 'Veuillez saisir votre nom d\'utilisateur et mot de passe.';
     } else {
         $users = loadData('users');
         
         foreach ($users as $user) {
-            if ($user['username'] === $username) {
-                error_log("FOUND USER: " . $username . " - Testing password");
-                if (password_verify($password, $user['password'])) {
-                    error_log("LOGIN SUCCESS for: " . $username . " (role: " . $user['role'] . ")");
+            if ($user['username'] === $username && password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['user'] = $user;
                 $_SESSION['username'] = $user['username'];
@@ -61,16 +55,11 @@ if ($_POST) {
                             }
                         }
                     }
-                    error_log("REDIRECTING to crew_dashboard.php for: " . $username);
                     header('Location: crew_dashboard.php');
                 } else {
-                    error_log("REDIRECTING to dashboard.php for: " . $username);
                     header('Location: dashboard.php');
                 }
                 exit;
-                } else {
-                    error_log("PASSWORD FAILED for: " . $username);
-                }
             }
         }
         

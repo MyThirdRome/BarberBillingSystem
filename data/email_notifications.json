@@ -88,5 +88,14 @@
         "status": "sent",
         "method": "Gmail SMTP",
         "error": "Sent with attachment: barbershop_backup_2025-06-18_14-01-04.zip"
+    },
+    {
+        "to": "helloborislav@gmail.com",
+        "subject": "Sauvegarde Salon de Coiffure - 18\/06\/2025 17:28",
+        "message": "Bonjour,\n\nUne nouvelle sauvegarde de votre syst\u00e8me de gestion de salon de coiffure a \u00e9t\u00e9 cr\u00e9\u00e9e avec succ\u00e8s.\n\nD\u00e9tails de la sauvegarde:\n- Nom du fichier: barbershop_backup_2025-06-18_17-28-09.zi...",
+        "timestamp": "2025-06-18 17:28:10",
+        "status": "sent",
+        "method": "Gmail SMTP",
+        "error": "Sent with attachment: barbershop_backup_2025-06-18_17-28-09.zip"
     }
 ]

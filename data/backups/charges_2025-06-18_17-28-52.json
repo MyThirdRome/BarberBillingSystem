@@ -1,0 +1,80 @@
+[
+    {
+        "id": "charge_001",
+        "type": "Loyer",
+        "description": "Loyer du salon - Avril 2025",
+        "amount": 1200,
+        "date": "2025-04-01 00:00:00",
+        "notes": "Paiement mensuel",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-01 10:00:00"
+    },
+    {
+        "id": "charge_002",
+        "type": "Eau",
+        "description": "Facture d'eau - Avril 2025",
+        "amount": 200,
+        "date": "2025-04-05 00:00:00",
+        "notes": "SONEDE",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-05 14:30:00"
+    },
+    {
+        "id": "charge_003",
+        "type": "Électricité",
+        "description": "Facture d'électricité - Avril 2025",
+        "amount": 300,
+        "date": "2025-04-08 00:00:00",
+        "notes": "STEG",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-08 11:15:00"
+    },
+    {
+        "id": "charge_004",
+        "type": "Divers",
+        "description": "Shampoings et après-shampoings",
+        "amount": 250,
+        "date": "2025-04-10 00:00:00",
+        "notes": "Produits capillaires professionnels",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-10 16:45:00"
+    },
+    {
+        "id": "charge_005",
+        "type": "Divers",
+        "description": "Colorations et décolorants",
+        "amount": 320,
+        "date": "2025-04-15 00:00:00",
+        "notes": "Stock couleurs variées",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-15 09:20:00"
+    },
+    {
+        "id": "charge_006",
+        "type": "Divers",
+        "description": "Produits de soins et masques",
+        "amount": 130,
+        "date": "2025-04-20 00:00:00",
+        "notes": "Masques réparateurs et huiles",
+        "added_by": "admin",
+        "added_by_name": "Administrateur",
+        "created_at": "2025-04-20 13:10:00"
+    },
+    {
+        "id": "685293d9b11672.62261042",
+        "type": "Salaire - mouhaned bouzaien",
+        "amount": 800,
+        "date": "2024-09-01",
+        "description": "Salaire pour September 2024 (Base: 800.000 TND, Avances: 0.000 TND, Bonus: 0.000 TND)",
+        "category": "Salaires et Avances",
+        "created_at": "2025-06-18 12:24:25",
+        "crew_id": "6837416e5d2929.01722472",
+        "payment_id": "685293d9b0fb00.54053278",
+        "salary_month": "2024-09"
+    }
+]

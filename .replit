@@ -2,7 +2,7 @@ modules = ["php", "php-8.2"]
 
 [nix]
 channel = "stable-24_05"
-packages = ["curl", "openssl"]
+packages = ["curl", "openssl", "unzip"]
 
 [workflows]
 runButton = "Project"

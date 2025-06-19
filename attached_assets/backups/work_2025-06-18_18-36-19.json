@@ -1553,19 +1553,5 @@
         "added_by": "crew",
         "added_by_name": "Hatem zaidi",
         "created_at": "2025-06-18 18:16:51"
-    },
-    "119": {
-        "id": "6852eb03a3ca11.33629586",
-        "type": "Coupe +barbe",
-        "crew_id": "684ae0dd37be06.94756449",
-        "amount": 15,
-        "date": "2025-06-18T18:35",
-        "notes": "Client fidèle",
-        "customer_name": "Abdou city watch",
-        "customer_phone": "",
-        "customer_email": "",
-        "added_by": "crew",
-        "added_by_name": "Mohaned bouzaien",
-        "created_at": "2025-06-18 18:36:19"
     }
 }

@@ -2,8 +2,8 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
-// Check if user is crew member
-if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'crew') {
+// Check if user has crew_id (crew members, viewers, or users with crew association)
+if (!isset($_SESSION['user']) || empty($_SESSION['user']['crew_id'])) {
     header('Location: login.php');
     exit;
 }

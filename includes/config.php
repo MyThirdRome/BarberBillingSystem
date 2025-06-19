@@ -112,6 +112,11 @@ $crew_navigation = [
         'title' => 'Mes Prestations',
         'icon' => 'fas fa-cut',
         'url' => 'crew_work.php'
+    ],
+    'crew_statistics' => [
+        'title' => 'Mes Statistiques',
+        'icon' => 'fas fa-chart-bar',
+        'url' => 'statistics.php'
     ]
 ];
 

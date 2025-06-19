@@ -35,12 +35,12 @@
                     global $navigation, $crew_navigation;
                     $current_page = basename($_SERVER['PHP_SELF']);
                     
-                    // Use crew navigation for crew members, admin navigation for admins
-                    $nav_menu = ($_SESSION['role'] === 'crew') ? $crew_navigation : $navigation;
+                    // Use crew navigation for users with crew_id, admin navigation for admins
+                    $nav_menu = (!empty($_SESSION['user']['crew_id'])) ? $crew_navigation : $navigation;
                     
                     foreach ($nav_menu as $key => $nav_item):
                         // For admin navigation, check permissions
-                        if ($_SESSION['role'] !== 'crew' && isset($nav_item['permission'])) {
+                        if (empty($_SESSION['user']['crew_id']) && isset($nav_item['permission'])) {
                             if ($nav_item['permission'] === 'admin' && $_SESSION['role'] !== 'admin') {
                                 continue;
                             }

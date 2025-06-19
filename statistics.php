@@ -2,17 +2,18 @@
 require_once 'includes/auth.php';
 require_once 'includes/functions.php';
 
-// Only admins can access statistics
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header('Location: crew_dashboard.php');
+// Check access - admins see all data, crew members see their own data
+$hasCrewId = !empty($_SESSION['user']['crew_id']);
+$isAdmin = $_SESSION['role'] === 'admin';
+
+if (!$isAdmin && !$hasCrewId) {
+    header('Location: login.php');
     exit;
 }
 
-// Check user role and set permissions
-$isAdmin = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'admin';
-$isCrew = isset($_SESSION['user']) && $_SESSION['user']['role'] === 'crew';
-
-if ($isCrew) {
+// Set crew filtering based on user access level
+$crew_id = null;
+if ($hasCrewId) {
     $crew_id = $_SESSION['user']['crew_id'];
 }
 
@@ -22,12 +23,12 @@ $payments = loadData('payments');
 $charges = loadData('charges');
 
 // Filter data for crew members
-if ($isCrew) {
+if ($crew_id) {
     $work = array_filter($work, function($w) use ($crew_id) {
-        return $w['crew_id'] === $crew_id;
+        return isset($w['crew_id']) && $w['crew_id'] === $crew_id;
     });
     $payments = array_filter($payments, function($p) use ($crew_id) {
-        return $p['crew_id'] === $crew_id;
+        return isset($p['crew_id']) && $p['crew_id'] === $crew_id;
     });
     $crew = array_filter($crew, function($c) use ($crew_id) {
         return $c['id'] === $crew_id;
@@ -40,7 +41,7 @@ $month = $_GET['month'] ?? '';
 $crew_filter = $_GET['crew_filter'] ?? '';
 
 // For crew members, force filter to their own ID
-if ($isCrew) {
+if ($crew_id) {
     $crew_filter = $crew_id;
 }
 

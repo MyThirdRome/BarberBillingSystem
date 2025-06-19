@@ -68,6 +68,10 @@ if (!empty($crew_id)) {
     }
 } else {
     error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter data properly");
+    // If crew_id is missing, use empty arrays instead of showing all data
+    $myWork = [];
+    $myAdvances = [];
+    $myPayments = [];
 }
 
 // Calculate statistics

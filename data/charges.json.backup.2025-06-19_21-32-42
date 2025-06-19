@@ -8,6 +8,17 @@
         "date": "2025-06-12",
         "created_at": "2025-06-12 16:26:42"
     },
+    "1": {
+        "id": "684b2c2aee5ba1.54805791",
+        "type": "Avance - Mohaned bouzaien",
+        "amount": 10,
+        "date": "2025-06-12T21:34",
+        "description": "Avance: RNE REGISTRE",
+        "category": "Salaires et Avances",
+        "created_at": "2025-06-12 21:36:10",
+        "crew_id": "684ae0dd37be06.94756449",
+        "advance_id": "684b2c2aedf0f8.87143634"
+    },
     "2": {
         "id": "684b2fa40ae759.95161049",
         "type": "Avance - Hanen mbarki",

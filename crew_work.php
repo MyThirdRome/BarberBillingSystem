@@ -8,23 +8,46 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'crew') {
     exit;
 }
 
-$crew_id = $_SESSION['user']['crew_id'];
-$crew_name = $_SESSION['user']['name'];
+$crew_id = $_SESSION['user']['crew_id'] ?? null;
+$crew_name = $_SESSION['user']['name'] ?? '';
 
 $work = loadData('work');
 $priceList = loadData('price_list');
 $message = '';
 $error = '';
 
+// Debug: Check crew_id and session data
+error_log("Crew login - User ID: " . ($_SESSION['user_id'] ?? 'none') . ", Crew ID: " . ($crew_id ?? 'none') . ", Name: " . $crew_name);
+
+// If crew_id is missing, try to find it from the crew data
+if (empty($crew_id)) {
+    $crew = loadData('crew');
+    foreach ($crew as $member) {
+        if ($member['username'] === $_SESSION['username']) {
+            $crew_id = $member['id'];
+            $_SESSION['user']['crew_id'] = $crew_id;
+            break;
+        }
+    }
+    error_log("Fixed missing crew_id for " . $_SESSION['username'] . ": " . ($crew_id ?? 'still missing'));
+}
+
 // Debug: Check if price list is loaded
 if (empty($priceList)) {
     error_log("Price list is empty for crew member: " . $crew_name);
 }
 
-// Filter work for current crew member
-$myWork = array_filter($work, function($w) use ($crew_id) {
-    return $w['crew_id'] === $crew_id;
-});
+// Filter work for current crew member - only if crew_id is available
+$myWork = [];
+if (!empty($crew_id)) {
+    $myWork = array_filter($work, function($w) use ($crew_id) {
+        return isset($w['crew_id']) && $w['crew_id'] === $crew_id;
+    });
+} else {
+    error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter work properly");
+    // For safety, show no work if crew_id is missing
+    $myWork = [];
+}
 
 // Handle form submissions
 if ($_POST) {

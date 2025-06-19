@@ -372,5 +372,16 @@
         "description": "Chargeur pc hp \r\nFacture n° : 25125296",
         "date": "2025-06-18",
         "created_at": "2025-06-18 17:21:57"
+    },
+    "42": {
+        "id": "6853e1c43809d1.19123783",
+        "type": "Avance - Mohaned bouzaien",
+        "amount": 12,
+        "date": "2025-06-19T12:08",
+        "description": "Avance: Test",
+        "category": "Salaires et Avances",
+        "created_at": "2025-06-19 12:09:08",
+        "crew_id": "684ae0dd37be06.94756449",
+        "advance_id": "6853e1c4365c67.18376981"
     }
 }

@@ -32,8 +32,29 @@ if ($_POST) {
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['permissions'] = $user['permissions'] ?? [];
                 
-                // Redirect based on role
+                // For crew members, ensure crew_id is properly set
                 if ($user['role'] === 'crew') {
+                    // If crew_id is missing from user data, find it from crew records
+                    if (empty($user['crew_id'])) {
+                        $crew = loadData('crew');
+                        foreach ($crew as $member) {
+                            if ($member['username'] === $user['username']) {
+                                $_SESSION['user']['crew_id'] = $member['id'];
+                                $_SESSION['user']['name'] = $member['name'];
+                                
+                                // Update user record with missing crew_id
+                                foreach ($users as &$u) {
+                                    if ($u['id'] === $user['id']) {
+                                        $u['crew_id'] = $member['id'];
+                                        $u['name'] = $member['name'];
+                                        break;
+                                    }
+                                }
+                                saveData('users', $users);
+                                break;
+                            }
+                        }
+                    }
                     header('Location: crew_dashboard.php');
                 } else {
                     header('Location: dashboard.php');

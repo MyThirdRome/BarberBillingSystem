@@ -8,8 +8,8 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'crew') {
     exit;
 }
 
-$crew_id = $_SESSION['user']['crew_id'];
-$crew_name = $_SESSION['user']['name'];
+$crew_id = $_SESSION['user']['crew_id'] ?? null;
+$crew_name = $_SESSION['user']['name'] ?? '';
 
 // Handle messages
 $message = $_SESSION['message'] ?? '';
@@ -22,18 +22,42 @@ $advances = loadData('advances');
 $payments = loadData('payments');
 $priceList = loadData('price_list');
 
-// Filter data for current crew member
-$myWork = array_filter($work, function($w) use ($crew_id) {
-    return $w['crew_id'] === $crew_id;
-});
+// Debug: Check crew_id and session data
+error_log("Crew dashboard - User ID: " . ($_SESSION['user_id'] ?? 'none') . ", Crew ID: " . ($crew_id ?? 'none') . ", Name: " . $crew_name);
 
-$myAdvances = array_filter($advances, function($a) use ($crew_id) {
-    return $a['crew_id'] === $crew_id;
-});
+// If crew_id is missing, try to find it from the crew data
+if (empty($crew_id)) {
+    $crew = loadData('crew');
+    foreach ($crew as $member) {
+        if ($member['username'] === $_SESSION['username']) {
+            $crew_id = $member['id'];
+            $_SESSION['user']['crew_id'] = $crew_id;
+            break;
+        }
+    }
+    error_log("Fixed missing crew_id for " . $_SESSION['username'] . ": " . ($crew_id ?? 'still missing'));
+}
 
-$myPayments = array_filter($payments, function($p) use ($crew_id) {
-    return $p['crew_id'] === $crew_id;
-});
+// Filter data for current crew member - only if crew_id is available
+$myWork = [];
+$myAdvances = [];
+$myPayments = [];
+
+if (!empty($crew_id)) {
+    $myWork = array_filter($work, function($w) use ($crew_id) {
+        return isset($w['crew_id']) && $w['crew_id'] === $crew_id;
+    });
+
+    $myAdvances = array_filter($advances, function($a) use ($crew_id) {
+        return isset($a['crew_id']) && $a['crew_id'] === $crew_id;
+    });
+
+    $myPayments = array_filter($payments, function($p) use ($crew_id) {
+        return isset($p['crew_id']) && $p['crew_id'] === $crew_id;
+    });
+} else {
+    error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter data properly");
+}
 
 // Calculate statistics
 $totalEarnings = array_sum(array_column($myWork, 'amount'));

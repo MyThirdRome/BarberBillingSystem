@@ -212,7 +212,7 @@ include 'includes/header.php';
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-sm btn-outline-primary" 
-                                                        onclick="editUser('<?= $user['id'] ?>')">
+                                                        onclick="editUser('<?= $user['id'] ?>'); return false;">
                                                     <i class="fas fa-edit"></i>
                                                 </button>
                                                 <?php if ($user['id'] !== $_SESSION['user_id']): ?>
@@ -384,30 +384,30 @@ include 'includes/header.php';
 <script>
 // Store user data for JavaScript access
 const userData = <?= json_encode($users, JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
-console.log('User data loaded:', userData);
 
-function editUser(id) {
-    console.log('Edit user called with ID:', id);
-    const user = userData.find(u => u.id === id);
-    console.log('Found user:', user);
-    
-    if (user) {
-        // Set form values
-        const editIdEl = document.getElementById('edit_id');
-        const editUsernameEl = document.getElementById('edit_username');
-        const editRoleEl = document.getElementById('edit_role');
+window.editUser = function(id) {
+    try {
+        console.log('editUser called with ID:', id);
         
-        if (editIdEl) editIdEl.value = user.id;
-        if (editUsernameEl) editUsernameEl.value = user.username;
-        if (editRoleEl) editRoleEl.value = user.role || 'viewer';
+        // Find user in data
+        const user = userData.find(u => u.id === id);
+        if (!user) {
+            alert('Utilisateur non trouvé');
+            return;
+        }
         
-        // Clear permission checkboxes
-        const viewCheckbox = document.getElementById('edit_perm_view');
-        const editCheckbox = document.getElementById('edit_perm_edit');
-        if (viewCheckbox) viewCheckbox.checked = false;
-        if (editCheckbox) editCheckbox.checked = false;
+        console.log('Found user:', user);
         
-        // Set permissions
+        // Fill form fields
+        document.getElementById('edit_id').value = user.id;
+        document.getElementById('edit_username').value = user.username;
+        document.getElementById('edit_role').value = user.role || 'viewer';
+        
+        // Clear checkboxes first
+        document.getElementById('edit_perm_view').checked = false;
+        document.getElementById('edit_perm_edit').checked = false;
+        
+        // Set permissions if they exist
         if (user.permissions && Array.isArray(user.permissions)) {
             user.permissions.forEach(perm => {
                 const checkbox = document.getElementById('edit_perm_' + perm);
@@ -418,23 +418,18 @@ function editUser(id) {
         }
         
         // Clear password fields
-        const newPasswordEl = document.getElementById('new_password');
-        const confirmPasswordEl = document.getElementById('edit_confirm_password');
-        if (newPasswordEl) newPasswordEl.value = '';
-        if (confirmPasswordEl) confirmPasswordEl.value = '';
+        document.getElementById('new_password').value = '';
+        document.getElementById('edit_confirm_password').value = '';
         
         // Show modal
-        const modalEl = document.getElementById('editUserModal');
-        if (modalEl) {
-            const modal = new bootstrap.Modal(modalEl);
-            modal.show();
-        } else {
-            console.error('Edit modal not found');
-        }
-    } else {
-        console.error('User not found with ID:', id);
+        const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        editModal.show();
+        
+    } catch (error) {
+        console.error('Error in editUser:', error);
+        alert('Erreur lors de l\'ouverture du formulaire d\'édition');
     }
-}
+};
 
 function deleteUser(id, username) {
     document.getElementById('delete_id').value = id;

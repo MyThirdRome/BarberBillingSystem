@@ -1,0 +1,220 @@
+{
+    "3": {
+        "id": "service_004",
+        "name": "Coloration",
+        "price": 80,
+        "category": "Coloration",
+        "description": "Coloration complète",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    "4": {
+        "id": "service_005",
+        "name": "Mèches",
+        "price": 120,
+        "category": "Coloration",
+        "description": "Mèches et balayage",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin"
+    },
+    "5": {
+        "id": "service_006",
+        "name": "Soin Capillaire",
+        "price": 50,
+        "category": "Soin",
+        "description": "Masque et soin nourrissant",
+        "created_at": "2025-04-01 10:00:00",
+        "created_by": "admin",
+        "updated_at": "2025-06-19 12:44:07",
+        "updated_by": "admin"
+    },
+    "10": {
+        "id": "6853e29d2aca97.54726147",
+        "name": "Soin de visage spécifique",
+        "price": 100,
+        "category": "Soin",
+        "description": "Soin complet + massage 💆‍♂️ 💆‍♀️",
+        "created_at": "2025-06-19 12:12:45",
+        "created_by": "admin"
+    },
+    "11": {
+        "id": "6853e9a3dcdbe6.30090297",
+        "name": "Coupe barbe",
+        "price": 20,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:42:43",
+        "created_by": "admin"
+    },
+    "12": {
+        "id": "6853e9b0a0c567.22966521",
+        "name": "Coupe barbe brushing",
+        "price": 25,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:42:56",
+        "created_by": "admin"
+    },
+    "13": {
+        "id": "6853e9bf676a69.50886717",
+        "name": "Brushing",
+        "price": 10,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:43:11",
+        "created_by": "admin"
+    },
+    "14": {
+        "id": "6853e9c7ee24e9.49283683",
+        "name": "Barbe",
+        "price": 10,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:43:19",
+        "created_by": "admin"
+    },
+    "15": {
+        "id": "6853ea1ee2e9e0.29263902",
+        "name": "Coupe enfant",
+        "price": 10,
+        "category": "Enfants",
+        "description": "",
+        "created_at": "2025-06-19 12:44:46",
+        "created_by": "admin"
+    },
+    "16": {
+        "id": "6853eb07056cd0.47190235",
+        "name": "Protéine homme cheveux courtes",
+        "price": 120,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:48:39",
+        "created_by": "admin"
+    },
+    "17": {
+        "id": "6853eb08c85009.88780903",
+        "name": "Protéine homme cheveux courtes",
+        "price": 120,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 12:48:40",
+        "created_by": "admin"
+    },
+    "18": {
+        "id": "6853f3fb2c9614.63730150",
+        "name": "Épilation cire",
+        "price": 5,
+        "category": "Hommes",
+        "description": "Épilation cire wax homme 🚹",
+        "created_at": "2025-06-19 13:26:51",
+        "created_by": "admin"
+    },
+    "19": {
+        "id": "6853f41b47d3f1.85407017",
+        "name": "Coupe barbe brushing masque de visage",
+        "price": 35,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 13:27:23",
+        "created_by": "admin"
+    },
+    "20": {
+        "id": "6853f4305e10e8.76692067",
+        "name": "Masque visage",
+        "price": 5,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 13:27:44",
+        "created_by": "admin"
+    },
+    "21": {
+        "id": "6853fb86412905.77463654",
+        "name": "Brushing",
+        "price": 10,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 13:59:02",
+        "created_by": "admin"
+    },
+    "22": {
+        "id": "6853fbb30ff380.27312548",
+        "name": "Brushing shampoing masque cheveux massage 💆‍♀️",
+        "price": 20,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 13:59:47",
+        "created_by": "admin"
+    },
+    "23": {
+        "id": "685409e78b15e8.18793009",
+        "name": "Épilation visage",
+        "price": 10,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 15:00:23",
+        "created_by": "admin"
+    },
+    "24": {
+        "id": "68540a0f07c3b2.53014522",
+        "name": "Brushing long shampoing masque cheveux massage 💆‍♀️",
+        "price": 25,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 15:01:03",
+        "created_by": "admin"
+    },
+    "25": {
+        "id": "68540a6971b3d9.11008655",
+        "name": "Épilation cire",
+        "price": 5,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 15:02:33",
+        "created_by": "admin"
+    },
+    "26": {
+        "id": "68543ee87b16e7.98954657",
+        "name": "Coloration cheveux naturels",
+        "price": 50,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 18:46:32",
+        "created_by": "admin"
+    },
+    "27": {
+        "id": "68543f0376d279.58199460",
+        "name": "Coloration barbe",
+        "price": 10,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 18:46:59",
+        "created_by": "admin"
+    },
+    "28": {
+        "id": "6854494f7ad711.23727426",
+        "name": "Masque visage Gold",
+        "price": 10,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 19:30:55",
+        "created_by": "admin"
+    },
+    "29": {
+        "id": "68544a29b5ad20.61037539",
+        "name": "Coupe  pointe de cheveux",
+        "price": 25,
+        "category": "Femme",
+        "description": "",
+        "created_at": "2025-06-19 19:34:33",
+        "created_by": "admin"
+    },
+    "31": {
+        "id": "68544b03c6d386.91152612",
+        "name": "Coupe cheveux",
+        "price": 15,
+        "category": "Hommes",
+        "description": "",
+        "created_at": "2025-06-19 19:38:11",
+        "created_by": "admin"
+    }
+}

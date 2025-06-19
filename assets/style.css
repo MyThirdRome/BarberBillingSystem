@@ -6,6 +6,7 @@
     --danger: 0 84% 60%;          /* #dc2626 */
     --warning: 45 93% 47%;        /* #ca8a04 */
     --info: 195 100% 50%;         /* #0ea5e9 */
+    --purple: 259 94% 51%;        /* #7c3aed */
     --light: 210 11% 98%;         /* #f8fafc */
     --dark: 220 26% 14%;          /* #1e293b */
     --background: 210 11% 98%;    /* #f8fafc */
@@ -225,6 +226,32 @@ body {
 .alert-info {
     background-color: hsl(var(--info) / 0.1);
     color: hsl(var(--info));
+}
+
+/* Purple Badge Support */
+.bg-purple {
+    background-color: hsl(var(--purple)) !important;
+    color: white !important;
+}
+
+.text-purple {
+    color: hsl(var(--purple)) !important;
+}
+
+.border-purple {
+    border-color: hsl(var(--purple)) !important;
+}
+
+.btn-purple {
+    background-color: hsl(var(--purple));
+    border-color: hsl(var(--purple));
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: hsl(259 94% 46%);
+    border-color: hsl(259 94% 46%);
+    color: white;
 }
 
 /* Footer */

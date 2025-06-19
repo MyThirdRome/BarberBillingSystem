@@ -59,13 +59,5 @@
         "target_username": "Ines",
         "ip_address": "172.31.128.36",
         "user_agent": "Mozilla\/5.0 (Linux; Android 10; K) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/137.0.0.0 Mobile Safari\/537.36"
-    },
-    {
-        "timestamp": "2025-06-19 23:04:37",
-        "admin_id": "684ae013a8f0b8.04596364",
-        "returned_from_user_id": "684daa3b252f13.70304433",
-        "returned_from_username": "Ines",
-        "impersonation_duration": 5,
-        "ip_address": "172.31.128.36"
     }
 ]

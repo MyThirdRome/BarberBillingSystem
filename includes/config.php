@@ -141,6 +141,18 @@ $chargeTypes = [
         'color' => 'secondary',
         'requires_crew' => false,
         'requires_description' => true
+    ],
+    'advance_manager' => [
+        'label' => 'Avance Gérant',
+        'color' => 'danger',
+        'requires_crew' => false,
+        'requires_description' => false
+    ],
+    'salon_products' => [
+        'label' => 'Produits Salon',
+        'color' => 'purple',
+        'requires_crew' => false,
+        'requires_description' => false
     ]
 ];
 

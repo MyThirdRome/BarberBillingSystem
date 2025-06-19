@@ -166,8 +166,17 @@ include 'includes/header.php';
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <span class="badge bg-<?= $user['role'] === 'admin' ? 'danger' : 'secondary' ?>">
-                                                    <?= $user['role'] === 'admin' ? 'Administrateur' : 'Utilisateur' ?>
+                                                <?php
+                                                $roleLabels = [
+                                                    'admin' => ['label' => 'Administrateur', 'color' => 'danger'],
+                                                    'crew' => ['label' => 'Équipe', 'color' => 'success'],
+                                                    'viewer' => ['label' => 'Consultation', 'color' => 'info'],
+                                                    'user' => ['label' => 'Utilisateur', 'color' => 'secondary']
+                                                ];
+                                                $roleInfo = $roleLabels[$user['role']] ?? ['label' => ucfirst($user['role']), 'color' => 'secondary'];
+                                                ?>
+                                                <span class="badge bg-<?= $roleInfo['color'] ?>">
+                                                    <?= $roleInfo['label'] ?>
                                                 </span>
                                             </td>
                                             <td>
@@ -243,6 +252,8 @@ include 'includes/header.php';
                         <label for="role" class="form-label">Rôle</label>
                         <select class="form-control" id="role" name="role">
                             <option value="user">Utilisateur</option>
+                            <option value="crew">Équipe</option>
+                            <option value="viewer">Consultation</option>
                             <option value="admin">Administrateur</option>
                         </select>
                     </div>
@@ -290,6 +301,8 @@ include 'includes/header.php';
                         <label for="edit_role" class="form-label">Rôle</label>
                         <select class="form-control" id="edit_role" name="role">
                             <option value="user">Utilisateur</option>
+                            <option value="crew">Équipe</option>
+                            <option value="viewer">Consultation</option>
                             <option value="admin">Administrateur</option>
                         </select>
                     </div>

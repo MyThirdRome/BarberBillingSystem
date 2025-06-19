@@ -2,7 +2,7 @@
     {
         "id": "684ae013a8f0b8.04596364",
         "username": "admin",
-        "password": "$2y$10$6KrWplMzXllsoi33UAbC8eoUtBSqVO7wT.2G\/v688NGRhWLqyEmRe",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
         "role": "admin",
         "permissions": [
             "view",
@@ -11,91 +11,95 @@
         ],
         "created_at": "2025-06-12 16:11:31",
         "created_by": "system",
-        "last_activity": "2025-06-19 21:32:28",
+        "last_activity": "2025-06-19 21:38:13",
         "login_count": 0,
-        "password_changed_at": "2025-06-12 16:21:07"
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684ae0dd37bed1.51920275",
         "username": "Mohaned",
-        "password": "$2y$10$rR2\/\/l8eGg1JyOuauYMbT.C3WzvsFvsF3flivlGuiBqMcFIfkDyEO",
-        "role": "viewer",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
+        "role": "crew",
         "crew_id": "684ae0dd37be06.94756449",
         "name": "Mohaned bouzaien",
         "created_at": "2025-06-12 16:14:53",
-        "last_activity": "2025-06-18 19:14:41",
+        "last_activity": "2025-06-19 21:35:09",
         "login_count": 0,
-        "permissions": [],
-        "updated_at": "2025-06-19 21:30:17",
-        "updated_by": "684ae013a8f0b8.04596364"
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684ae12942c237.34185245",
         "username": "Seif",
-        "password": "$2y$10$AngA\/fE3Dy7uDkoObt5svukFVnJmXsEXGHnmpfWBUqmzxQGt3wH\/G",
-        "role": "viewer",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
+        "role": "crew",
         "crew_id": "684ae12942c189.56153227",
         "name": "Seifeddine karchoud",
         "created_at": "2025-06-12 16:16:09",
-        "last_activity": "2025-06-18 14:51:13",
+        "last_activity": "2025-06-19 21:35:32",
         "login_count": 0,
-        "permissions": [],
-        "updated_at": "2025-06-19 21:31:10",
-        "updated_by": "684ae013a8f0b8.04596364"
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684ae1a5c99079.75386777",
         "username": "Hatem",
-        "password": "$2y$10$tIYzlMIPa4h35vs1SX713e.3y92PAfs0NsybdAKMG69LrnH5qrIVG",
-        "role": "viewer",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
+        "role": "crew",
         "crew_id": "684ae1a5c98fb8.48230325",
         "name": "Hatem zaidi",
         "created_at": "2025-06-12 16:18:13",
-        "last_activity": "2025-06-19 11:52:44",
+        "last_activity": "2025-06-19 21:35:49",
         "login_count": 0,
-        "permissions": [],
-        "updated_at": "2025-06-19 21:32:29",
-        "updated_by": "684ae013a8f0b8.04596364"
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684ae212707175.02407147",
         "username": "Hanen",
-        "password": "$2y$10$8J4Ybfv1t2pQb\/QRlw.4X.v\/5pTNoqSOfUgId9ApA1dLBFP5InoqK",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
         "role": "viewer",
         "crew_id": "684ae2127070a1.27531058",
         "name": "Hanen mbarki",
         "created_at": "2025-06-12 16:20:02",
         "permissions": [],
         "updated_at": "2025-06-18 00:50:17",
-        "updated_by": "684ae013a8f0b8.04596364"
+        "updated_by": "684ae013a8f0b8.04596364",
+        "password_changed_at": "2025-06-19 19:33:00",
+        "last_activity": "2025-06-19 21:36:17",
+        "login_count": 0
     },
     {
         "id": "684daa3b252f13.70304433",
         "username": "Ines",
-        "password": "$2y$10$GpGza4rxXkcqdDXGmYYLFerpdS3bDcTtNYWNtrbnPxyFy0NcTN.zW",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
         "role": "crew",
         "crew_id": "684daa3b252e44.15516497",
         "name": "Ines saidi",
-        "created_at": "2025-06-14 18:58:35"
+        "created_at": "2025-06-14 18:58:35",
+        "password_changed_at": "2025-06-19 19:33:00",
+        "last_activity": "2025-06-19 21:36:29",
+        "login_count": 0
     },
     {
         "id": "684eba10a39327.48780095",
         "username": "Aida chbil",
-        "password": "$2y$10$c44hfXNZNVZS0VCT4ajvDuKLywBcKV2XucadaQYxpY.vt6dRbFZdS",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
         "role": "user",
         "permissions": [
             "view"
         ],
         "created_at": "2025-06-15 14:18:24",
-        "created_by": "684ae013a8f0b8.04596364"
+        "created_by": "684ae013a8f0b8.04596364",
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684ebaf43cf3d9.69610115",
         "username": "Aida",
-        "password": "$2y$10$XrqinoxHAxtAJ4m6Pi8jSOQwdG399y2j26vffXtUiPa2HdfMtHBSS",
+        "password": "$2y$10$AnrznLg6Wcz6dqfAIf7BquvGEzwEudk4QYqJjhwZMcZ2AbMT5d3te",
         "role": "crew",
         "crew_id": "684ebaf43cf312.43069723",
         "name": "Aida chebil",
-        "created_at": "2025-06-15 14:22:12"
+        "created_at": "2025-06-15 14:22:12",
+        "password_changed_at": "2025-06-19 19:33:00",
+        "last_activity": "2025-06-19 21:36:44",
+        "login_count": 0
     }
 ]

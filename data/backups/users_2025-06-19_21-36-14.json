@@ -11,7 +11,7 @@
         ],
         "created_at": "2025-06-12 16:11:31",
         "created_by": "system",
-        "last_activity": "2025-06-19 21:40:09",
+        "last_activity": "2025-06-19 21:34:55",
         "login_count": 0,
         "password_changed_at": "2025-06-19 19:33:00"
     },
@@ -63,7 +63,7 @@
         "updated_at": "2025-06-18 00:50:17",
         "updated_by": "684ae013a8f0b8.04596364",
         "password_changed_at": "2025-06-19 19:33:00",
-        "last_activity": "2025-06-19 21:36:17",
+        "last_activity": "2025-06-19 21:36:14",
         "login_count": 0
     },
     {
@@ -74,9 +74,7 @@
         "crew_id": "684daa3b252e44.15516497",
         "name": "Ines saidi",
         "created_at": "2025-06-14 18:58:35",
-        "password_changed_at": "2025-06-19 19:33:00",
-        "last_activity": "2025-06-19 21:36:29",
-        "login_count": 0
+        "password_changed_at": "2025-06-19 19:33:00"
     },
     {
         "id": "684eba10a39327.48780095",
@@ -98,8 +96,6 @@
         "crew_id": "684ebaf43cf312.43069723",
         "name": "Aida chebil",
         "created_at": "2025-06-15 14:22:12",
-        "password_changed_at": "2025-06-19 19:33:00",
-        "last_activity": "2025-06-19 21:36:44",
-        "login_count": 0
+        "password_changed_at": "2025-06-19 19:33:00"
     }
 ]

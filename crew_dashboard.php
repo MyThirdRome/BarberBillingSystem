@@ -24,6 +24,8 @@ $priceList = loadData('price_list');
 
 // Debug: Check crew_id and session data
 error_log("Crew dashboard - User ID: " . ($_SESSION['user_id'] ?? 'none') . ", Crew ID: " . ($crew_id ?? 'none') . ", Name: " . $crew_name);
+error_log("Total work records loaded: " . count($work));
+error_log("Username: " . ($_SESSION['username'] ?? 'none'));
 
 // If crew_id is missing, try to find it from the crew data
 if (empty($crew_id)) {
@@ -55,6 +57,15 @@ if (!empty($crew_id)) {
     $myPayments = array_filter($payments, function($p) use ($crew_id) {
         return isset($p['crew_id']) && $p['crew_id'] === $crew_id;
     });
+    
+    // Debug filtering results
+    error_log("Filtered work for " . $_SESSION['username'] . " (crew_id: $crew_id): " . count($myWork) . " out of " . count($work) . " total records");
+    
+    // Special debug for Ines
+    if ($_SESSION['username'] === 'Ines') {
+        error_log("INES DEBUG - Total earnings: " . array_sum(array_column($myWork, 'amount')));
+        error_log("INES DEBUG - First 3 work records: " . json_encode(array_slice($myWork, 0, 3)));
+    }
 } else {
     error_log("Warning: crew_id is empty for user " . $_SESSION['username'] . " - cannot filter data properly");
 }

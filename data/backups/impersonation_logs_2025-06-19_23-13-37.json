@@ -67,39 +67,5 @@
         "returned_from_username": "Ines",
         "impersonation_duration": 5,
         "ip_address": "172.31.128.36"
-    },
-    {
-        "timestamp": "2025-06-19 23:13:37",
-        "admin_id": "684ae013a8f0b8.04596364",
-        "admin_username": "admin",
-        "target_user_id": "68540fcebcadb3.99904569",
-        "target_username": "Seif",
-        "ip_address": "172.31.128.36",
-        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/137.0.0.0 Safari\/537.36"
-    },
-    {
-        "timestamp": "2025-06-19 23:13:42",
-        "admin_id": "684ae013a8f0b8.04596364",
-        "returned_from_user_id": "68540fcebcadb3.99904569",
-        "returned_from_username": "Seif",
-        "impersonation_duration": 5,
-        "ip_address": "172.31.128.36"
-    },
-    {
-        "timestamp": "2025-06-19 23:13:56",
-        "admin_id": "684ae013a8f0b8.04596364",
-        "admin_username": "admin",
-        "target_user_id": "684ebaf43cf3d9.69610115",
-        "target_username": "Aida",
-        "ip_address": "172.31.128.36",
-        "user_agent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/137.0.0.0 Safari\/537.36"
-    },
-    {
-        "timestamp": "2025-06-19 23:14:00",
-        "admin_id": "684ae013a8f0b8.04596364",
-        "returned_from_user_id": "684ebaf43cf3d9.69610115",
-        "returned_from_username": "Aida",
-        "impersonation_duration": 4,
-        "ip_address": "172.31.128.36"
     }
 ]

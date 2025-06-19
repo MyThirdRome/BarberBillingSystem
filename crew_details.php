@@ -75,21 +75,34 @@ if ($_POST) {
             $advances[] = $newAdvance;
             saveData('advances', $advances);
             
-            // Automatically add to charges
+            // Automatically add to charges (prevent duplicates)
             $charges = loadData('charges');
-            $newCharge = [
-                'id' => generateId(),
-                'type' => 'Avance - ' . htmlspecialchars($crewMember['name']),
-                'amount' => $amount,
-                'date' => $date,
-                'description' => 'Avance: ' . $reason,
-                'category' => 'Salaires et Avances',
-                'created_at' => date('Y-m-d H:i:s'),
-                'crew_id' => $crew_id,
-                'advance_id' => $newAdvance['id']
-            ];
-            $charges[] = $newCharge;
-            saveData('charges', $charges);
+            
+            // Check if charge already exists for this advance
+            $existingCharge = false;
+            foreach ($charges as $charge) {
+                if (isset($charge['advance_id']) && $charge['advance_id'] === $newAdvance['id']) {
+                    $existingCharge = true;
+                    break;
+                }
+            }
+            
+            // Only add charge if it doesn't already exist
+            if (!$existingCharge) {
+                $newCharge = [
+                    'id' => generateId(),
+                    'type' => 'Avance - ' . htmlspecialchars($crewMember['name']),
+                    'amount' => $amount,
+                    'date' => $date,
+                    'description' => 'Avance: ' . $reason,
+                    'category' => 'Salaires et Avances',
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'crew_id' => $crew_id,
+                    'advance_id' => $newAdvance['id']
+                ];
+                $charges[] = $newCharge;
+                saveData('charges', $charges);
+            }
             
             $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
             

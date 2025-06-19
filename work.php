@@ -290,6 +290,8 @@ include 'includes/header.php';
                     
                     <div class="mb-3">
                         <label class="form-label">Prestations *</label>
+                        <!-- Debug: Price list count -->
+                        <div class="small text-muted mb-2">Services disponibles: <?= count($priceList) ?></div>
                         <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
                             <?php 
                             // Group services by category

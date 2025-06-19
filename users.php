@@ -384,13 +384,18 @@ include 'includes/header.php';
 <script>
 // Store user data for JavaScript access
 const userData = <?= json_encode($users, JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+console.log('userData type:', typeof userData, 'value:', userData);
 
 window.editUser = function(id) {
     try {
         console.log('editUser called with ID:', id);
         
+        // Ensure userData is an array
+        const userArray = Array.isArray(userData) ? userData : Object.values(userData);
+        console.log('userArray:', userArray);
+        
         // Find user in data
-        const user = userData.find(u => u.id === id);
+        const user = userArray.find(u => u.id === id);
         if (!user) {
             alert('Utilisateur non trouvé');
             return;

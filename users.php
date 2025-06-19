@@ -383,7 +383,8 @@ include 'includes/header.php';
 
 <script>
 // Store user data for JavaScript access
-const userData = <?= json_encode($users) ?>;
+const userData = <?= json_encode($users, JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+console.log('User data loaded:', userData);
 
 function editUser(id) {
     console.log('Edit user called with ID:', id);
@@ -442,8 +443,30 @@ function deleteUser(id, username) {
     new bootstrap.Modal(document.getElementById('deleteUserModal')).show();
 }
 
+// Test modal functionality
+function testModal() {
+    console.log('Testing modal...');
+    const modalEl = document.getElementById('editUserModal');
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+        console.log('Modal shown successfully');
+    } else {
+        console.error('Modal element not found');
+    }
+}
+
 // Password confirmation validation
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, setting up event listeners...');
+    
+    // Test if Bootstrap is loaded  
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap is not loaded!');
+    } else {
+        console.log('Bootstrap is available');
+    }
+    
     const forms = document.querySelectorAll('form');
     forms.forEach(form => {
         form.addEventListener('submit', function(e) {

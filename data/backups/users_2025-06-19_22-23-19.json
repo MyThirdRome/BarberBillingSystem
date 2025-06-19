@@ -11,7 +11,7 @@
         ],
         "created_at": "2025-06-12 16:11:31",
         "created_by": "system",
-        "last_activity": "2025-06-19 22:16:31",
+        "last_activity": "2025-06-19 22:21:51",
         "login_count": 0,
         "password_changed_at": "2025-06-19 22:16:39"
     },
@@ -25,20 +25,21 @@
         "created_at": "2025-06-12 16:14:53",
         "last_activity": "2025-06-19 20:39:16",
         "login_count": 0,
-        "password_changed_at": "2025-06-19 22:16:39"
+        "password_changed_at": "2025-06-19 22:16:39",
+        "updated_at": "2025-06-19 22:19:48"
     },
     "3": {
         "id": "684ae1a5c99079.75386777",
         "username": "Hatem",
         "password": "$2y$10$YomxcVBUW4lxJa4ssXTb\/e0\/EIXeTTIeDF\/3qvmH78Fj7w\/e3vZLq",
-        "role": "viewer",
+        "role": "crew",
         "crew_id": "684ae1a5c98fb8.48230325",
         "name": "Hatem zaidi",
         "created_at": "2025-06-12 16:18:13",
         "last_activity": "2025-06-19 20:17:28",
         "login_count": 0,
         "permissions": [],
-        "updated_at": "2025-06-19 15:22:01",
+        "updated_at": "2025-06-19 22:19:48",
         "updated_by": "684ae013a8f0b8.04596364",
         "password_changed_at": "2025-06-19 22:16:40"
     },
@@ -46,14 +47,14 @@
         "id": "684ae212707175.02407147",
         "username": "Hanen",
         "password": "$2y$10$01GBmNoYYWY9Z0o0assaKu.xnG41Dv8EEj5nqlrP60Fp4PrMrNmsC",
-        "role": "viewer",
+        "role": "crew",
         "crew_id": "684ae2127070a1.27531058",
         "name": "Hanen mbarki",
         "created_at": "2025-06-12 16:20:02",
         "permissions": [],
-        "updated_at": "2025-06-19 15:14:07",
+        "updated_at": "2025-06-19 22:19:48",
         "updated_by": "684ae013a8f0b8.04596364",
-        "last_activity": "2025-06-19 22:10:07",
+        "last_activity": "2025-06-19 22:23:08",
         "login_count": 0,
         "password_changed_at": "2025-06-19 22:16:40"
     },
@@ -65,7 +66,8 @@
         "crew_id": "684daa3b252e44.15516497",
         "name": "Ines saidi",
         "created_at": "2025-06-14 18:58:35",
-        "password_changed_at": "2025-06-19 22:16:40"
+        "password_changed_at": "2025-06-19 22:16:40",
+        "updated_at": "2025-06-19 22:19:48"
     },
     "6": {
         "id": "684eba10a39327.48780095",
@@ -89,18 +91,22 @@
         "created_at": "2025-06-15 14:22:12",
         "last_activity": "2025-06-19 15:26:42",
         "login_count": 0,
-        "password_changed_at": "2025-06-19 22:16:40"
+        "password_changed_at": "2025-06-19 22:16:40",
+        "updated_at": "2025-06-19 22:19:48"
     },
     "8": {
         "id": "68540fcebcadb3.99904569",
         "username": "Seif",
         "password": "$2y$10$mWkAgStf58OQMlvH.j8anun2Lg\/33PrnLxI10q4h3fS.Er7ZMuTL2",
-        "role": "user",
+        "role": "crew",
         "permissions": [],
         "created_at": "2025-06-19 15:25:34",
         "created_by": "684ae013a8f0b8.04596364",
-        "last_activity": "2025-06-19 22:16:41",
+        "last_activity": "2025-06-19 22:22:44",
         "login_count": 0,
-        "password_changed_at": "2025-06-19 22:16:40"
+        "password_changed_at": "2025-06-19 22:16:40",
+        "updated_at": "2025-06-19 22:19:48",
+        "crew_id": "684ae12942c189.56153227",
+        "name": "Seifeddine karchoud"
     }
 }

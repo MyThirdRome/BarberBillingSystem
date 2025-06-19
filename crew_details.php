@@ -51,6 +51,24 @@ $totalPayments = array_sum(array_column($crewPayments, 'net_payment'));
 $message = '';
 $error = '';
 
+// Handle success messages from redirects
+if (isset($_GET['success'])) {
+    switch ($_GET['success']) {
+        case 'advance_added':
+            $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
+            break;
+        case 'payment_added':
+            $message = 'Paiement enregistré avec succès et ajouté aux charges.';
+            break;
+        case 'advance_updated':
+            $message = 'Avance modifiée avec succès.';
+            break;
+        case 'advance_deleted':
+            $message = 'Avance supprimée avec succès.';
+            break;
+    }
+}
+
 if ($_POST) {
     $action = $_POST['action'] ?? '';
     
@@ -104,10 +122,9 @@ if ($_POST) {
                 saveData('charges', $charges);
             }
             
-            $message = 'Avance ajoutée avec succès et enregistrée dans les charges.';
-            
-            // Reload data
-            $advances = loadData('advances');
+            // Redirect to prevent duplicate submissions on refresh
+            header('Location: crew_details.php?id=' . $crew_id . '&success=advance_added');
+            exit;
         }
     } elseif ($action === 'add_payment') {
         $salary_month = $_POST['salary_month'] ?? '';
@@ -195,8 +212,6 @@ if ($_POST) {
             $charges[] = $salaryCharge;
             saveData('charges', $charges);
             
-            $message = 'Paiement enregistré avec succès et ajouté aux charges.';
-            
             // Mark advances as deducted
             foreach ($advances as &$advance) {
                 if ($advance['crew_id'] === $crew_id && $advance['status'] === 'pending') {
@@ -209,8 +224,9 @@ if ($_POST) {
             }
             saveData('advances', $advances);
             
-            // Reload data
-            $payments = loadData('payments');
+            // Redirect to prevent duplicate submissions on refresh
+            header('Location: crew_details.php?id=' . $crew_id . '&success=payment_added');
+            exit;
         }
     } elseif ($action === 'edit_advance') {
         $advance_id = $_POST['advance_id'] ?? '';
@@ -251,8 +267,9 @@ if ($_POST) {
                 }
                 saveData('charges', $charges);
                 
-                $message = 'Avance modifiée avec succès.';
-                $advances = loadData('advances');
+                // Redirect to prevent duplicate submissions on refresh
+                header('Location: crew_details.php?id=' . $crew_id . '&success=advance_updated');
+                exit;
             } else {
                 $error = 'Avance non trouvée.';
             }
@@ -292,8 +309,9 @@ if ($_POST) {
                 });
                 saveData('charges', $charges);
                 
-                $message = 'Avance supprimée avec succès.';
-                $advances = loadData('advances');
+                // Redirect to prevent duplicate submissions on refresh
+                header('Location: crew_details.php?id=' . $crew_id . '&success=advance_deleted');
+                exit;
             }
         }
     }

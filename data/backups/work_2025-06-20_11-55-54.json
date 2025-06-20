@@ -1948,22 +1948,5 @@
         "added_by": "crew",
         "added_by_name": "Mohaned bouzaien",
         "created_at": "2025-06-20 11:54:03"
-    },
-    "143": {
-        "id": "6855302a98e6d6.64836456",
-        "type": "Mèches",
-        "services": [
-            "service_005"
-        ],
-        "crew_id": "684ae0dd37be06.94756449",
-        "amount": 120,
-        "date": "2025-06-20T11:55",
-        "notes": "",
-        "customer_name": "",
-        "customer_phone": "",
-        "customer_email": "",
-        "added_by": "crew",
-        "added_by_name": "Mohaned bouzaien",
-        "created_at": "2025-06-20 11:55:54"
     }
 }

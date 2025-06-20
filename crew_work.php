@@ -16,7 +16,14 @@ $priceList = loadData('price_list');
 $message = '';
 $error = '';
 
-
+// Handle success messages from redirects
+if (isset($_GET['success'])) {
+    switch ($_GET['success']) {
+        case 'work_added':
+            $message = 'Prestation ajoutée avec succès.';
+            break;
+    }
+}
 
 // If crew_id is missing, try to find it from the crew data
 if (empty($crew_id)) {

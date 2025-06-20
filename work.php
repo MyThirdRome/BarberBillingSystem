@@ -16,6 +16,21 @@ $priceList = loadData('price_list');
 $message = '';
 $error = '';
 
+// Handle success messages from redirects
+if (isset($_GET['success'])) {
+    switch ($_GET['success']) {
+        case 'work_added':
+            $message = 'Travail ajouté avec succès.';
+            break;
+        case 'work_updated':
+            $message = 'Travail modifié avec succès.';
+            break;
+        case 'work_deleted':
+            $message = 'Travail supprimé avec succès.';
+            break;
+    }
+}
+
 // Handle form submissions
 if ($_POST) {
     $action = $_POST['action'] ?? '';
@@ -64,7 +79,10 @@ if ($_POST) {
             
             $work[] = $newWork;
             saveData('work', $work);
-            $message = 'Travail ajouté avec succès.';
+            
+            // Redirect to prevent duplicate submissions on refresh
+            header('Location: work.php?success=work_added');
+            exit;
         }
     } elseif ($action === 'edit') {
         $id = $_POST['id'] ?? '';
@@ -96,7 +114,10 @@ if ($_POST) {
             }
             
             saveData('work', $work);
-            $message = 'Travail modifié avec succès.';
+            
+            // Redirect to prevent duplicate submissions on refresh
+            header('Location: work.php?success=work_updated');
+            exit;
         }
     } elseif ($action === 'delete') {
         $id = $_POST['id'] ?? '';
@@ -106,7 +127,10 @@ if ($_POST) {
         });
         
         saveData('work', $work);
-        $message = 'Travail supprimé avec succès.';
+        
+        // Redirect to prevent duplicate submissions on refresh
+        header('Location: work.php?success=work_deleted');
+        exit;
     }
 }
 

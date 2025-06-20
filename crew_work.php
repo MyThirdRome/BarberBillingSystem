@@ -95,13 +95,10 @@ if ($_POST) {
             
             $work[] = $newWork;
             saveData('work', $work);
-            $message = 'Prestation ajoutée avec succès.';
             
-            // Reload work data
-            $work = loadData('work');
-            $myWork = array_filter($work, function($w) use ($crew_id) {
-                return $w['crew_id'] === $crew_id;
-            });
+            // Redirect to prevent duplicate submissions on refresh
+            header('Location: crew_work.php?success=work_added');
+            exit;
         }
     }
 }
